@@ -23,6 +23,14 @@ public class OracleAlterColumnSqlConverterTest {
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
 
         assertEquals(1, result.size());
+    }
 
+    @Test
+    public void testRenameColumn() throws JSQLParserException {
+        String testSql = "ALTER TABLE `bug` CHANGE COLUMN `newColumn` `newColumn1` INT(11) NULL DEFAULT NULL AFTER `assignTo`";
+
+        Statement statement = CCJSqlParserUtil.parse(testSql);
+
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
     }
 }
