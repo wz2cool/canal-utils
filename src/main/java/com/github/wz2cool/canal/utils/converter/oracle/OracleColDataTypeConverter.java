@@ -1,5 +1,6 @@
-package com.github.wz2cool.canal.utils.converter;
+package com.github.wz2cool.canal.utils.converter.oracle;
 
+import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import com.github.wz2cool.canal.utils.model.OracleDataType;
 import net.sf.jsqlparser.statement.create.table.ColDataType;

@@ -1,4 +1,4 @@
-package com.github.wz2cool.canal.utils.converter;
+package com.github.wz2cool.canal.utils.converter.oracle;
 
 import com.github.wz2cool.canal.utils.model.OracleDataType;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
@@ -41,7 +41,7 @@ public class OracleColDataTypeConverterTest {
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.get();
+        ColDataType resultValue = result.orElseGet(null);
         assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
         assertEquals("19", resultValue.getArgumentsStringList().get(0));
         assertEquals("0", resultValue.getArgumentsStringList().get(1));
@@ -57,7 +57,7 @@ public class OracleColDataTypeConverterTest {
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.get();
+        ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.RAW.getText(), resultValue.getDataType());
     }
 
@@ -68,7 +68,7 @@ public class OracleColDataTypeConverterTest {
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.get();
+        ColDataType resultValue = result.orElseGet(null);
         assertEquals(OracleDataType.BLOB.getText(), resultValue.getDataType());
     }
 
@@ -79,7 +79,7 @@ public class OracleColDataTypeConverterTest {
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.get();
+        ColDataType resultValue = result.orElseGet(null);
         assertEquals(OracleDataType.DATE.getText(), resultValue.getDataType());
     }
 
@@ -90,7 +90,7 @@ public class OracleColDataTypeConverterTest {
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.get();
+        ColDataType resultValue = result.orElseGet(null);
         assertEquals(OracleDataType.DATE.getText(), resultValue.getDataType());
     }
 
@@ -102,7 +102,7 @@ public class OracleColDataTypeConverterTest {
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.get();
+        ColDataType resultValue = result.orElseGet(null);
         assertEquals(OracleDataType.FLOAT.getText(), resultValue.getDataType());
         assertEquals("24", resultValue.getArgumentsStringList().get(0));
     }
@@ -114,7 +114,7 @@ public class OracleColDataTypeConverterTest {
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.get();
+        ColDataType resultValue = result.orElseGet(null);
         assertEquals(OracleDataType.FLOAT.getText(), resultValue.getDataType());
         assertEquals("24", resultValue.getArgumentsStringList().get(0));
     }
@@ -126,7 +126,7 @@ public class OracleColDataTypeConverterTest {
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.get();
+        ColDataType resultValue = result.orElseGet(null);
         assertEquals(OracleDataType.NVARCHAR2.getText(), resultValue.getDataType());
     }
 }
