@@ -66,7 +66,7 @@ public class OracleAlterColumnSqlConverter implements IAlterColumnSqlConverter {
                 String errorMsg = String.format("Cannot convert data type: %s", mysqlColDataType.getDataType());
                 throw new NotSupportDataTypeException(errorMsg);
             }
-            String result = String.format("ALTER TABLE %s ADD (%S %s)",
+            String result = String.format("ALTER TABLE %s ADD (%s %s)",
                     table, columnName, oracleColDataTypeOptional.get());
             return Optional.ofNullable(result);
         }
