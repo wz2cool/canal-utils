@@ -4,68 +4,104 @@ import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import com.github.wz2cool.canal.utils.model.OracleDataType;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class OracleColDataTypeConverter implements IColDataTypeConverter {
     @Override
-    public ColDataType convert(ColDataType mysqlColDataType) {
-        String mysqlColDataTypeString = mysqlColDataType.getDataType();
-        getOracleDataTypeString(mysqlColDataTypeString);
-        return null;
-    }
+    public Optional<ColDataType> convert(ColDataType mysqlColDataType) {
+        Optional<MysqlDataType> mysqlDataTypeOptional = MysqlDataType.getDataType(mysqlColDataType.getDataType());
 
-    private Optional<String> getOracleDataTypeString(String mysqlColDataTypeString) {
-        Optional<MysqlDataType> mysqlTypeOptional = MysqlDataType.getDataType(mysqlColDataTypeString);
-        if (!mysqlTypeOptional.isPresent()) {
+        if (!mysqlDataTypeOptional.isPresent()) {
             return Optional.empty();
         }
-
-
-        return Optional.empty()
+        ColDataType colDataType = getOracleDataType(
+                mysqlDataTypeOptional.get(), mysqlColDataType.getArgumentsStringList());
+        return Optional.ofNullable(colDataType);
     }
 
     // https://docs.oracle.com/cd/E12151_01/doc.150/e12155/oracle_mysql_compared.htm#BABGACIF
-    private OracleDataType getOracleDataType(final MysqlDataType mysqlDataType) {
+    private ColDataType getOracleDataType(final MysqlDataType mysqlDataType, final List<String> argumentsStringList) {
+        ColDataType result = new ColDataType();
+        List<String> useArgumentsStringList = new ArrayList<>();
         switch (mysqlDataType) {
-            case BIT:
-                return OracleDataType.RAW;
-            case INT:
-            case INTEGER:
-            case TINYINT:
             case BIGINT:
-            case SMALLINT:
-            case MEDIUMINT:
-            case NUMERIC:
-            case YEAR:
-                return OracleDataType.NUMBER;
-            case DATE:
-            case DATETIME:
-            case TIMESTAMP:
-            case TIME:
-                return OracleDataType.DATE;
-            case DECIMAL:
-            case DOUBLE:
-            case FLOAT:
-            case REAL:
-                return OracleDataType.Float;
-            case CHAR:
-                return OracleDataType.CHAR;
-            case LONGTEXT:
-            case MEDIUMTEXT:
-            case TEXT:
-            case TINYTEXT:
-                return OracleDataType.NCLOB;
-            case ENUM:
-            case SET:
-            case VARCHAR:
-                return OracleDataType.NVARCHAR2;
+                result.setDataType(OracleDataType.NUMBER.getText());
+                useArgumentsStringList.add("19");
+                useArgumentsStringList.add("0");
+                break;
+            case BIT:
+                result.setDataType(OracleDataType.RAW.getText());
+                break;
             case BLOB:
             case LONGBLOB:
             case MEDIUMBLOB:
             case TINYBLOB:
-                return OracleDataType.BLOB;
+                result.setDataType(OracleDataType.BLOB.getText());
+                break;
+            case CHAR:
+                result.setDataType(OracleDataType.CHAR.getText());
+                useArgumentsStringList.addAll(argumentsStringList);
+                break;
+            case DATE:
+            case DATETIME:
+            case TIME:
+            case TIMESTAMP:
+                result.setDataType(OracleDataType.CHAR.getText());
+                break;
+            case DECIMAL:
+            case DOUBLE:
+            case FLOAT:
+            case REAL:
+                result.setDataType(OracleDataType.FLOAT.getText());
+                useArgumentsStringList.add("24");
+                break;
+            case INT:
+            case INTEGER:
+                result.setDataType(OracleDataType.NUMBER.getText());
+                useArgumentsStringList.add("10");
+                useArgumentsStringList.add("0");
+                break;
+            case TINYINT:
+                result.setDataType(OracleDataType.NUMBER.getText());
+                useArgumentsStringList.add("3");
+                useArgumentsStringList.add("0");
+                break;
+            case SMALLINT:
+                result.setDataType(OracleDataType.NUMBER.getText());
+                useArgumentsStringList.add("5");
+                useArgumentsStringList.add("0");
+                break;
+            case MEDIUMINT:
+                result.setDataType(OracleDataType.NUMBER.getText());
+                useArgumentsStringList.add("7");
+                useArgumentsStringList.add("0");
+                break;
+            case YEAR:
+            case NUMERIC:
+                result.setDataType(OracleDataType.NUMBER.getText());
+                break;
+            case TEXT:
+            case LONGTEXT:
+            case TINYTEXT:
+            case MEDIUMTEXT:
+                result.setDataType(OracleDataType.NCLOB.getText());
+                break;
+            case ENUM:
+            case SET:
+            case VARCHAR:
+                result.setDataType(OracleDataType.NVARCHAR2.getText());
+                useArgumentsStringList.addAll(argumentsStringList);
+                break;
             default:
-                return OracleDataType.NCLOB;
+                result.setDataType(OracleDataType.NCLOB.getText());
+                break;
         }
+
+        result.setArgumentsStringList(useArgumentsStringList);
+        return result;
     }
+
+
 }

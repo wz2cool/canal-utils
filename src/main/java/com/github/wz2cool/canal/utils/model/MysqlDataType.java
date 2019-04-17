@@ -3,37 +3,47 @@ package com.github.wz2cool.canal.utils.model;
 import java.util.Optional;
 
 public enum MysqlDataType {
-    BIT,
-    TINYINT,
-    SMALLINT,
-    MEDIUMINT,
-    INT,
-    INTEGER,
-    BIGINT,
-    FLOAT,
-    DOUBLE,
-    DECIMAL,
-    DATE,
-    DATETIME,
-    TIMESTAMP,
-    TIME,
-    YEAR,
-    CHAR,
-    VARCHAR,
-    NUMERIC,
-    BINARY,
-    VARBINARY,
-    TINYBLOB,
-    TINYTEXT,
-    BLOB,
-    TEXT,
-    MEDIUMBLOB,
-    MEDIUMTEXT,
-    LONGBLOB,
-    LONGTEXT,
-    ENUM,
-    REAL,
-    SET;
+    BIT("BIT"),
+    TINYINT("TINYINT"),
+    SMALLINT("SMALLINT"),
+    MEDIUMINT("MEDIUMINT"),
+    INT("INT"),
+    INTEGER("INTEGER"),
+    BIGINT("BIGINT"),
+    FLOAT("FLOAT"),
+    DOUBLE("DOUBLE"),
+    DECIMAL("DECIMAL"),
+    DATE("DATE"),
+    DATETIME("DATETIME"),
+    TIMESTAMP("TIMESTAMP"),
+    TIME("TIME"),
+    YEAR("YEAR"),
+    CHAR("CHAR"),
+    VARCHAR("VARCHAR"),
+    NUMERIC("NUMERIC"),
+    BINARY("BINARY"),
+    VARBINARY("VARBINARY"),
+    TINYBLOB("TINYBLOB"),
+    TINYTEXT("TINYTEXT"),
+    BLOB("BLOB"),
+    TEXT("TEXT"),
+    MEDIUMBLOB("MEDIUMBLOB"),
+    MEDIUMTEXT("MEDIUMTEXT"),
+    LONGBLOB("LONGBLOB"),
+    LONGTEXT("LONGTEXT"),
+    ENUM("ENUM"),
+    REAL("REAL"),
+    SET("SET");
+
+    private String text;
+
+    MysqlDataType(String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return this.text;
+    }
 
     public static Optional<MysqlDataType> getDataType(String typeString) {
         try {
