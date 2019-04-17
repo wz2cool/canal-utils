@@ -27,10 +27,15 @@ public class OracleAlterColumnSqlConverterTest {
 
     @Test
     public void testRenameColumn() throws JSQLParserException {
-        String testSql = "ALTER TABLE `bug` CHANGE COLUMN `newColumn` `newColumn1` INT(11) NULL DEFAULT NULL AFTER `assignTo`";
-
+        String testSql = "ALTER TABLE `bug` CHANGE COLUMN `newColumn` `newColumn1` INT(11) NULL DEFAULT NULL";
         Statement statement = CCJSqlParserUtil.parse(testSql);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+    }
 
+    @Test
+    public void testDropColumn() throws JSQLParserException {
+        String testSql = "ALTER TABLE `bug` DROP COLUMN `newColumn1`";
+        Statement statement = CCJSqlParserUtil.parse(testSql);
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
     }
 }

@@ -47,6 +47,9 @@ public class OracleAlterColumnSqlConverter implements IAlterColumnSqlConverter {
     private List<String> generateAlterColumnSqlList(final String table, final AlterExpression alterExpression) {
         AlterOperation operation = alterExpression.getOperation();
         String colOldName = cleanText(alterExpression.getColOldName());
+
+
+
         List<AlterExpression.ColumnDataType> columnDataTypes = alterExpression.getColDataTypeList();
         List<String> result = new ArrayList<>();
         for (AlterExpression.ColumnDataType columnDataType : columnDataTypes) {
