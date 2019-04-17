@@ -24,12 +24,14 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
     // https://docs.oracle.com/cd/E12151_01/doc.150/e12155/oracle_mysql_compared.htm#BABGACIF
     private ColDataType getOracleDataType(final MysqlDataType mysqlDataType, final List<String> argumentsStringList) {
         ColDataType result = new ColDataType();
-        List<String> useArgumentsStringList = new ArrayList<>();
+        List<String> useArgumentsStringList = argumentsStringList == null ? new ArrayList<>() : argumentsStringList;
+        List<String> argStrings = new ArrayList<>();
+
         switch (mysqlDataType) {
             case BIGINT:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                useArgumentsStringList.add("19");
-                useArgumentsStringList.add("0");
+                argStrings.add("19");
+                argStrings.add("0");
                 break;
             case BIT:
                 result.setDataType(OracleDataType.RAW.getText());
@@ -42,41 +44,41 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
                 break;
             case CHAR:
                 result.setDataType(OracleDataType.CHAR.getText());
-                useArgumentsStringList.addAll(argumentsStringList);
+                argStrings.addAll(useArgumentsStringList);
                 break;
             case DATE:
             case DATETIME:
             case TIME:
             case TIMESTAMP:
-                result.setDataType(OracleDataType.CHAR.getText());
+                result.setDataType(OracleDataType.DATE.getText());
                 break;
             case DECIMAL:
             case DOUBLE:
             case FLOAT:
             case REAL:
                 result.setDataType(OracleDataType.FLOAT.getText());
-                useArgumentsStringList.add("24");
+                argStrings.add("24");
                 break;
             case INT:
             case INTEGER:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                useArgumentsStringList.add("10");
-                useArgumentsStringList.add("0");
+                argStrings.add("10");
+                argStrings.add("0");
                 break;
             case TINYINT:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                useArgumentsStringList.add("3");
-                useArgumentsStringList.add("0");
+                argStrings.add("3");
+                argStrings.add("0");
                 break;
             case SMALLINT:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                useArgumentsStringList.add("5");
-                useArgumentsStringList.add("0");
+                argStrings.add("5");
+                argStrings.add("0");
                 break;
             case MEDIUMINT:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                useArgumentsStringList.add("7");
-                useArgumentsStringList.add("0");
+                argStrings.add("7");
+                argStrings.add("0");
                 break;
             case YEAR:
             case NUMERIC:
@@ -92,14 +94,14 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             case SET:
             case VARCHAR:
                 result.setDataType(OracleDataType.NVARCHAR2.getText());
-                useArgumentsStringList.addAll(argumentsStringList);
+                argStrings.addAll(useArgumentsStringList);
                 break;
             default:
                 result.setDataType(OracleDataType.NCLOB.getText());
                 break;
         }
 
-        result.setArgumentsStringList(useArgumentsStringList);
+        result.setArgumentsStringList(argStrings);
         return result;
     }
 
