@@ -1,20 +1,19 @@
 package com.github.wz2cool.canal.utils.model;
 
-import net.sf.jsqlparser.statement.alter.AlterExpression;
-import net.sf.jsqlparser.statement.alter.AlterOperation;
+import net.sf.jsqlparser.statement.create.table.ColDataType;
 
 public class AlterColumnExpression {
-    private AlterOperation operation;
+    private EnhancedAlterOperation operation;
     private String tableName;
     private String columnName;
-    private String oldColName;
-    private AlterExpression.ColumnDataType colDataType;
+    private String colOldName;
+    private ColDataType colDataType;
 
-    public AlterOperation getOperation() {
+    public EnhancedAlterOperation getOperation() {
         return operation;
     }
 
-    public void setOperation(AlterOperation operation) {
+    public void setOperation(EnhancedAlterOperation operation) {
         this.operation = operation;
     }
 
@@ -34,19 +33,19 @@ public class AlterColumnExpression {
         this.columnName = columnName;
     }
 
-    public String getOldColName() {
-        return oldColName;
+    public String getColOldName() {
+        return colOldName;
     }
 
-    public void setOldColName(String oldColName) {
-        this.oldColName = oldColName;
+    public void setColOldName(String colOldName) {
+        this.colOldName = colOldName;
     }
 
-    public AlterExpression.ColumnDataType getColDataType() {
+    public ColDataType getColDataType() {
         return colDataType;
     }
 
-    public void setColDataType(AlterExpression.ColumnDataType colDataType) {
+    public void setColDataType(ColDataType colDataType) {
         this.colDataType = colDataType;
     }
 }
