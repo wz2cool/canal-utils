@@ -67,11 +67,6 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
         for (AlterColumnExpression changeColumnTypeExpression : changeColumnTypeExpressions) {
             String tableName = changeColumnTypeExpression.getTableName();
             String columnName = changeColumnTypeExpression.getColumnName();
-            String colOldName = changeColumnTypeExpression.getColOldName();
-            if (!columnName.equals(colOldName)) {
-                // ignore if column name change.
-                continue;
-            }
 
             ColDataType mysqlColDataType = changeColumnTypeExpression.getColDataType();
             Optional<ColDataType> oracleColDataTypeOptional = oracleColDataTypeConverter.convert(mysqlColDataType);

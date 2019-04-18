@@ -63,4 +63,35 @@ public class OracleAlterColumnSqlConverterTest {
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
         assertEquals("ALTER TABLE bug DROP COLUMN newColumn1", result.get(0));
     }
+
+    @Test
+    public void testDropMultiColumn() throws JSQLParserException {
+        String testSql = "ALTER TABLE `users`\n" +
+                "\tDROP COLUMN `col1`,\n" +
+                "\tDROP COLUMN `col2`;";
+        Statement statement = CCJSqlParserUtil.parse(testSql);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        assertEquals("ALTER TABLE users DROP COLUMN col1", result.get(0));
+        assertEquals("ALTER TABLE users DROP COLUMN col2", result.get(1));
+    }
+
+    @Test
+    public void testChangeColumnType() throws JSQLParserException {
+        String testSql = "ALTER TABLE `users`\n" +
+                "\tCHANGE COLUMN `col1` `col1` INT";
+        Statement statement = CCJSqlParserUtil.parse(testSql);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (10, 0))", result.get(0));
+    }
+
+    @Test
+    public void testChangeMultiColumnType() throws JSQLParserException {
+        String testSql = "ALTER TABLE `users`\n" +
+                "\tCHANGE COLUMN `col1` `col1` BIGINT NULL DEFAULT NULL AFTER `password`,\n" +
+                "\tCHANGE COLUMN `col2` `col2` BIGINT NULL DEFAULT NULL AFTER `col1`;";
+        Statement statement = CCJSqlParserUtil.parse(testSql);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (19, 0))", result.get(0));
+        assertEquals("ALTER TABLE users MODIFY (col2 NUMBER (19, 0))", result.get(1));
+    }
 }
