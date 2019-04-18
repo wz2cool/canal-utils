@@ -26,10 +26,10 @@ public abstract class AlterColumnSqlConverterBase {
         String tableName = cleanText(mysqlAlter.getTable().getName());
         for (AlterExpression alterExpression : alterExpressions) {
             String optionalSpecifier = alterExpression.getOptionalSpecifier();
-            if (!"COLUMN".equalsIgnoreCase(optionalSpecifier)) {
-                continue;
+            if ("COLUMN".equalsIgnoreCase(optionalSpecifier) ||
+                    (alterExpression.getColDataTypeList() != null && !alterExpression.getColDataTypeList().isEmpty())) {
+                alterExpressionsForColumn.add(alterExpression);
             }
-            alterExpressionsForColumn.add(alterExpression);
         }
 
         if (alterExpressionsForColumn.isEmpty()) {
@@ -53,12 +53,14 @@ public abstract class AlterColumnSqlConverterBase {
 
         List<AlterColumnExpression> result = new ArrayList<>();
         AlterOperation operation = alterExpression.getOperation();
-        Optional<AlterColumnExpression> renameColumnExpression =
-                getRenameColumnExpression(operation, tableName, alterExpression.getColumnName(), alterExpression.getColOldName());
-        renameColumnExpression.ifPresent(result::add);
+
         Optional<AlterColumnExpression> dropColumnExpression =
                 getDropColumnExpression(operation, tableName, alterExpression.getColumnName());
         dropColumnExpression.ifPresent(result::add);
+
+        List<AlterColumnExpression> renameColumnExpressions =
+                getRenameColumnExpression(operation, tableName, alterExpression.getColOldName(), alterExpression.getColDataTypeList());
+        result.addAll(renameColumnExpressions);
 
         List<AlterColumnExpression> addColumnExpressions =
                 getAddColumnExpressions(operation, tableName, alterExpression.getColDataTypeList());
@@ -91,25 +93,34 @@ public abstract class AlterColumnSqlConverterBase {
         return result;
     }
 
-    private Optional<AlterColumnExpression> getRenameColumnExpression(
+    private List<AlterColumnExpression> getRenameColumnExpression(
             final AlterOperation alterOperation,
             final String tableName,
-            final String columnName,
-            final String colOldName
+            final String colOldName,
+            final List<AlterExpression.ColumnDataType> columnDataTypes
     ) {
+        List<AlterColumnExpression> result = new ArrayList<>();
         if (alterOperation != AlterOperation.CHANGE
-                || columnName == null
                 || colOldName == null
-                || columnName.equals(colOldName)) {
-            return Optional.empty();
+                || columnDataTypes == null
+                || columnDataTypes.isEmpty()) {
+            return result;
         }
 
-        AlterColumnExpression renameColumnExpression = new AlterColumnExpression();
-        renameColumnExpression.setTableName(cleanText(tableName));
-        renameColumnExpression.setColumnName(cleanText(columnName));
-        renameColumnExpression.setColOldName(cleanText(colOldName));
-        renameColumnExpression.setOperation(EnhancedAlterOperation.RENAME_COLUMN);
-        return Optional.of(renameColumnExpression);
+        for (AlterExpression.ColumnDataType columnDataType : columnDataTypes) {
+            String columnName = columnDataType.getColumnName();
+            if (columnName.equals(colOldName)) {
+                continue;
+            }
+
+            AlterColumnExpression renameColumnExpression = new AlterColumnExpression();
+            renameColumnExpression.setTableName(cleanText(tableName));
+            renameColumnExpression.setColumnName(cleanText(columnName));
+            renameColumnExpression.setColOldName(cleanText(colOldName));
+            renameColumnExpression.setOperation(EnhancedAlterOperation.RENAME_COLUMN);
+            result.add(renameColumnExpression);
+        }
+        return result;
     }
 
     private List<AlterColumnExpression> getChangeColumnTypeExpressions(
