@@ -123,7 +123,7 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
         for (AlterColumnExpression dropColumnExpression : dropColumnExpressions) {
             String columnName = dropColumnExpression.getColumnName();
             String tableName = dropColumnExpression.getTableName();
-            String dropSql = String.format("ALTER TABLE %s DROP %s", tableName, columnName);
+            String dropSql = String.format("ALTER TABLE %s DROP COLUMN %s", tableName, columnName);
             result.add(dropSql);
         }
         return result;
