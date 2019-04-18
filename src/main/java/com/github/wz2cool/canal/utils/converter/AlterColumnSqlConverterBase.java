@@ -26,8 +26,9 @@ public abstract class AlterColumnSqlConverterBase {
         String tableName = cleanText(mysqlAlter.getTable().getName());
         for (AlterExpression alterExpression : alterExpressions) {
             String optionalSpecifier = alterExpression.getOptionalSpecifier();
-            if ("COLUMN".equalsIgnoreCase(optionalSpecifier) ||
-                    (alterExpression.getColDataTypeList() != null && !alterExpression.getColDataTypeList().isEmpty())) {
+            if ("COLUMN".equalsIgnoreCase(optionalSpecifier)
+                    || (alterExpression.getColDataTypeList() != null && !alterExpression.getColDataTypeList().isEmpty())
+                    || (alterExpression.getOperation() == AlterOperation.DROP && alterExpression.getColumnName() != null)) {
                 alterExpressionsForColumn.add(alterExpression);
             }
         }

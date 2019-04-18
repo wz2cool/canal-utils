@@ -61,5 +61,6 @@ public class OracleAlterColumnSqlConverterTest {
         String testSql = "ALTER TABLE `bug` DROP COLUMN `newColumn1`";
         Statement statement = CCJSqlParserUtil.parse(testSql);
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        assertEquals("ALTER TABLE bug DROP newColumn1", result.get(0));
     }
 }
