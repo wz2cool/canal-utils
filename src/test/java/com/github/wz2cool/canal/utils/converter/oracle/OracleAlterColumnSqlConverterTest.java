@@ -76,15 +76,6 @@ public class OracleAlterColumnSqlConverterTest {
     }
 
     @Test
-    public void testChangeColumnType() throws JSQLParserException {
-        String testSql = "ALTER TABLE `users`\n" +
-                "\tCHANGE COLUMN `col1` `col1` INT";
-        Statement statement = CCJSqlParserUtil.parse(testSql);
-        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
-        assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (10, 0))", result.get(0));
-    }
-
-    @Test
     public void testChangeMultiColumnType() throws JSQLParserException {
         String testSql = "ALTER TABLE `users`\n" +
                 "\tCHANGE COLUMN `col1` `col1` BIGINT NULL DEFAULT NULL AFTER `password`,\n" +
@@ -93,5 +84,26 @@ public class OracleAlterColumnSqlConverterTest {
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
         assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (19, 0))", result.get(0));
         assertEquals("ALTER TABLE users MODIFY (col2 NUMBER (19, 0))", result.get(1));
+    }
+
+    @Test
+    public void testDropMultiColumns() throws JSQLParserException {
+        String testSql = "ALTER TABLE `test`\n" +
+                "\tDROP COLUMN `col11`,\n" +
+                "\tDROP COLUMN `col22`;";
+        Statement statement = CCJSqlParserUtil.parse(testSql);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        assertEquals("ALTER TABLE test DROP COLUMN col11", result.get(0));
+        assertEquals("ALTER TABLE test DROP COLUMN col22", result.get(1));
+    }
+
+    @Test
+    public void testChangeColumnType() throws JSQLParserException {
+        String testSql = "ALTER TABLE `test`\n" +
+                "\tCHANGE COLUMN `Column1` `Column1` INT NOT NULL AFTER `date_test`";
+        Statement statement = CCJSqlParserUtil.parse(testSql);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+
+        assertEquals("ALTER TABLE test MODIFY (Column1 NUMBER (10, 0))", result.get(0));
     }
 }
