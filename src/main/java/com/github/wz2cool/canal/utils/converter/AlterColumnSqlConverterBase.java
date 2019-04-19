@@ -15,7 +15,6 @@ public abstract class AlterColumnSqlConverterBase {
     public abstract List<String> convert(Alter mysqlAlter);
 
     protected List<AlterColumnExpression> getAlterColumnExpressions(Alter mysqlAlter) {
-
         List<AlterColumnExpression> result = new ArrayList<>();
         if (mysqlAlter == null) {
             return result;
@@ -67,7 +66,7 @@ public abstract class AlterColumnSqlConverterBase {
                 getAddColumnExpressions(operation, tableName, alterExpression.getColDataTypeList());
         result.addAll(addColumnExpressions);
         List<AlterColumnExpression> changeTypeColumnExpressions =
-                getChangeColumnTypeExpressions(operation, tableName, alterExpression.getColDataTypeList());
+                getChangeColumnTypeExpressions(operation, tableName, alterExpression.getColOldName(), alterExpression.getColDataTypeList());
         result.addAll(changeTypeColumnExpressions);
         return result;
     }
@@ -127,6 +126,7 @@ public abstract class AlterColumnSqlConverterBase {
     private List<AlterColumnExpression> getChangeColumnTypeExpressions(
             final AlterOperation alterOperation,
             final String tableName,
+            final String colOldName,
             final List<AlterExpression.ColumnDataType> columnDataTypes) {
         if (alterOperation != AlterOperation.CHANGE || columnDataTypes == null || columnDataTypes.isEmpty()) {
             return new ArrayList<>();
@@ -136,6 +136,11 @@ public abstract class AlterColumnSqlConverterBase {
         for (AlterExpression.ColumnDataType columnDataType : columnDataTypes) {
             AlterColumnExpression changeTypeColumnExpression = new AlterColumnExpression();
             String columnName = columnDataType.getColumnName();
+            if (!columnName.equals(colOldName)) {
+                // need check rename
+                continue;
+            }
+
             ColDataType colDataType = columnDataType.getColDataType();
             changeTypeColumnExpression.setTableName(cleanText(tableName));
             changeTypeColumnExpression.setColumnName(cleanText(columnName));
