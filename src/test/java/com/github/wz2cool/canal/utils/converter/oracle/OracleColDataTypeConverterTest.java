@@ -56,6 +56,21 @@ public class OracleColDataTypeConverterTest {
     }
 
     @Test
+    public void testCHAR() {
+        ColDataType colDataType = new ColDataType();
+        colDataType.setDataType("CHAR");
+        List<String> args = new ArrayList<>();
+        args.add("200");
+        colDataType.setArgumentsStringList(args);
+        Optional<ColDataType> result = converter.convert(colDataType);
+        assertTrue(result.isPresent());
+
+        ColDataType resultValue = result.orElse(null);
+        assertEquals(OracleDataType.CHAR.getText(), resultValue.getDataType());
+        assertEquals("200", resultValue.getArgumentsStringList().get(0));
+    }
+
+    @Test
     public void testBLOB() {
         ColDataType colDataType = new ColDataType();
         colDataType.setDataType("blob");
