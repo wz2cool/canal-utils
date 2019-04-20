@@ -17,6 +17,9 @@ public enum MysqlDataType {
     DATETIME("DATETIME"),
     TIMESTAMP("TIMESTAMP"),
     TIME("TIME"),
+    /**
+     * not support year type.
+     */
     YEAR("YEAR"),
     CHAR("CHAR"),
     VARCHAR("VARCHAR"),

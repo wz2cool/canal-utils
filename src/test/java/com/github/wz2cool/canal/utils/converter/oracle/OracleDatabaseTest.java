@@ -180,6 +180,60 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, to_date('%s', 'yyyy-mm-dd'))",
+                TABLE_NAME, 1, "2019-04-20");
+        executeAlterSql(insertSql);
+
+    }
+
+    @Test
+    public void addDATETIMEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addDATETIMEColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` DATETIME NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, to_date('%s', 'yyyy-mm-dd hh24:mi:ss'))",
+                TABLE_NAME, 1, "2019-04-20 22:16:12");
+        executeAlterSql(insertSql);
+    }
+
+    @Test
+    public void addTIMESTAMPColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addTIMESTAMPColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` TIMESTAMP NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, to_date('%s', 'yyyy-mm-dd hh24:mi:ss'))",
+                TABLE_NAME, 1, "2019-04-20 22:16:12");
+        executeAlterSql(insertSql);
+    }
+
+    @Test
+    public void addTIMEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addTIMESTAMPColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` TIME NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, to_date('%s', 'hh24:mi:ss'))",
+                TABLE_NAME, 1, "10:00:00");
+        executeAlterSql(insertSql);
+    }
+
+    @Test
+    public void addYEARColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        // not support year.
     }
 
     private void executeAlterSql(String sql) throws SQLException, ClassNotFoundException {
