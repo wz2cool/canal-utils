@@ -30,6 +30,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -42,6 +45,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -54,6 +60,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -66,6 +75,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -78,6 +90,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -90,6 +105,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -102,6 +120,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1000000);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -114,6 +135,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 3.33333);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -126,6 +150,9 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 3.33333);
+        executeAlterSql(insertSql);
     }
 
     @Test
@@ -133,6 +160,21 @@ public class OracleDatabaseTest {
         System.out.println("addDECIMALColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DECIMAL NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 3.33333);
+        executeAlterSql(insertSql);
+    }
+
+    @Test
+    public void addDATEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addDATEColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` DATE NULL AFTER `assignTo`;", TABLE_NAME);
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
         for (String sql : result) {
@@ -166,7 +208,6 @@ public class OracleDatabaseTest {
 
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             statement.execute(createTableSQL);
-            System.out.println("create table success");
             System.out.println("create table success");
         }
     }

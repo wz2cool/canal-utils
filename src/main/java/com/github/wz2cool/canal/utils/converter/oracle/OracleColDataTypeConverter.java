@@ -35,8 +35,9 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
                 argStrings.add("0");
                 break;
             case BIT:
-                result.setDataType(OracleDataType.RAW.getText());
+                result.setDataType(OracleDataType.NUMBER.getText());
                 argStrings.add("1");
+                argStrings.add("0");
                 break;
             case BLOB:
             case LONGBLOB:
