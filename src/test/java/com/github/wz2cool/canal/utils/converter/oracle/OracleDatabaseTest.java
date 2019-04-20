@@ -10,10 +10,6 @@ import java.sql.*;
 import java.util.List;
 
 public class OracleDatabaseTest {
-    private static String USERNAMR = "test";
-    private static String PASSWORD = "innodealing";
-    private static String DRVIER = "oracle.jdbc.driver.OracleDriver";
-    private static String URL = "jdbc:oracle:thin:@192.168.2.111:1521:XE";
     private static String TABLE_NAME = "MY_TEST";
 
     private final OracleAlterColumnSqlConverter oracleAlterColumnSqlConverter = new OracleAlterColumnSqlConverter();
@@ -26,8 +22,117 @@ public class OracleDatabaseTest {
 
     @Test
     public void addBITColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addBITColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` BIT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addTINYINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addTINYINTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` TINYINT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addMEDIUMINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addMEDIUMINTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` MEDIUMINT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addSMALLINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addSMALLINTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` SMALLINT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addINTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` INT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addINTEGERColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addINTEGERColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` INTEGER NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addBIGINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addBIGINTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` BIGINT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addFLOATColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addFLOATColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` FLOAT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addDOUBLEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addDOUBLEColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` DOUBLE NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void addDECIMALColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addDECIMALColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` DECIMAL NULL AFTER `assignTo`;", TABLE_NAME);
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
         for (String sql : result) {
@@ -56,9 +161,9 @@ public class OracleDatabaseTest {
     }
 
     private void createTestTable() throws SQLException, ClassNotFoundException {
-        String createTableSQL = "CREATE TABLE " + TABLE_NAME + "("
-                + "USER_ID NUMBER(5) NOT NULL, PRIMARY KEY (USER_ID) "
-                + ")";
+        String createTableSQL = String.format("CREATE TABLE %s (USER_ID NUMBER(5) NOT NULL, PRIMARY KEY (USER_ID) )",
+                TABLE_NAME);
+
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             statement.execute(createTableSQL);
             System.out.println("create table success");
@@ -67,7 +172,11 @@ public class OracleDatabaseTest {
     }
 
     private Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName(DRVIER);
-        return DriverManager.getConnection(URL, USERNAMR, PASSWORD);
+        String driver = "oracle.jdbc.driver.OracleDriver";
+        Class.forName(driver);
+        String username = "test";
+        String password = "innodealing";
+        String URL = "jdbc:oracle:thin:@192.168.2.111:1521:XE";
+        return DriverManager.getConnection(URL, username, password);
     }
 }
