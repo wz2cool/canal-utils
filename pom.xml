@@ -21,6 +21,15 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <!-- mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2 -Dpackaging=jar -Dfile=lib/ojdbc7-12.1.0.2.jar -->
+        <!-- https://mvnrepository.com/artifact/com.oracle/ojdbc7 -->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>12.1.0.2</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
