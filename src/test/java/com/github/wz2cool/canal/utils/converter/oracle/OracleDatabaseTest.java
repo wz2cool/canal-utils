@@ -171,6 +171,11 @@ public class OracleDatabaseTest {
     }
 
     @Test
+    public void addNUMERICColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        // not support
+    }
+
+    @Test
     public void addDATEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
         System.out.println("addDATEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -234,6 +239,36 @@ public class OracleDatabaseTest {
     @Test
     public void addYEARColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
         // not support year.
+    }
+
+    @Test
+    public void addCHARColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addCHARColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` CHAR (50) NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, '%s')", TABLE_NAME, 1, "test");
+        executeAlterSql(insertSql);
+    }
+
+    @Test
+    public void addVARCHARColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addVARCHARColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` VARCHAR (255) NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, '%s')", TABLE_NAME, 1, "test");
+        executeAlterSql(insertSql);
     }
 
     private void executeAlterSql(String sql) throws SQLException, ClassNotFoundException {

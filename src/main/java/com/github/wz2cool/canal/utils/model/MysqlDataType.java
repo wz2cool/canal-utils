@@ -23,6 +23,9 @@ public enum MysqlDataType {
     YEAR("YEAR"),
     CHAR("CHAR"),
     VARCHAR("VARCHAR"),
+    /**
+     * not support NUMERIC type.
+     */
     NUMERIC("NUMERIC"),
     BINARY("BINARY"),
     VARBINARY("VARBINARY"),
