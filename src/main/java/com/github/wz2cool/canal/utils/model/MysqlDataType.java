@@ -27,7 +27,13 @@ public enum MysqlDataType {
      * not support NUMERIC type.
      */
     NUMERIC("NUMERIC"),
+    /**
+     * not support BINARY type.
+     */
     BINARY("BINARY"),
+    /**
+     * not support VARBINARY type.
+     */
     VARBINARY("VARBINARY"),
     TINYBLOB("TINYBLOB"),
     TINYTEXT("TINYTEXT"),
