@@ -275,7 +275,124 @@ public class OracleDatabaseTest {
         insertData(MysqlDataType.TINYBLOB, "0x32");
     }
 
-    private void executeAlterSql(String sql) throws SQLException, ClassNotFoundException {
+    @Test
+    public void addTINYTEXTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addTINYTEXTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` TINYTEXT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.TINYTEXT, "test");
+    }
+
+    @Test
+    public void addTEXTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addTEXTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` TEXT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.TEXT, "test");
+    }
+
+    @Test
+    public void addMEDIUMTEXTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addTEXTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` MEDIUMTEXT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.MEDIUMTEXT, "test");
+    }
+
+    @Test
+    public void addLONGTEXTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addLONGTEXTColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` LONGTEXT NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.LONGTEXT, "test");
+    }
+
+    @Test
+    public void addENUMColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addENUMColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` ENUM NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.ENUM, "test");
+    }
+
+    @Test
+    public void addSETColumn() {
+        // don't support set type
+    }
+
+    @Test
+    public void addBLOBColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addBLOBColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` BLOB NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.BLOB, "0x32");
+    }
+
+    @Test
+    public void addMEDIUMBLOBColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addBLOBColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` MEDIUMBLOB NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.MEDIUMBLOB, "0x32");
+    }
+
+    @Test
+    public void addLONGBLOBColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addLONGBLOBColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` LONGBLOB NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.LONGBLOB, "0x32");
+    }
+
+    private synchronized void executeAlterSql(String sql) throws SQLException, ClassNotFoundException {
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             // execute the SQL statement
             System.out.println(String.format("sql: %s", sql));
@@ -284,7 +401,7 @@ public class OracleDatabaseTest {
         }
     }
 
-    private void insertData(MysqlDataType mysqlDataType, String value) throws SQLException, ClassNotFoundException {
+    private synchronized void insertData(MysqlDataType mysqlDataType, String value) throws SQLException, ClassNotFoundException {
         try (Connection dbConnection = getConnection()) {
             ValuePlaceholder valuePlaceholder = oracleValuePlaceholderConverter.convert(mysqlDataType, value);
             String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)",
@@ -321,7 +438,7 @@ public class OracleDatabaseTest {
         }
     }
 
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
+    private synchronized Connection getConnection() throws ClassNotFoundException, SQLException {
         String driver = "oracle.jdbc.driver.OracleDriver";
         Class.forName(driver);
         String username = "test";

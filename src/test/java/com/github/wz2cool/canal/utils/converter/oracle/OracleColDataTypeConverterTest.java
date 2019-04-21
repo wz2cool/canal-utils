@@ -253,7 +253,7 @@ public class OracleColDataTypeConverterTest {
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.NVARCHAR2.getText(), resultValue.getDataType());
+        assertEquals(OracleDataType.NCLOB.getText(), resultValue.getDataType());
     }
 
     @Test

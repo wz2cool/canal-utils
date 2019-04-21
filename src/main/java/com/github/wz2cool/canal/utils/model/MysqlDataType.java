@@ -38,7 +38,13 @@ public enum MysqlDataType {
     LONGBLOB("LONGBLOB"),
     LONGTEXT("LONGTEXT"),
     ENUM("ENUM"),
+    /**
+     * not support REAL type.
+     */
     REAL("REAL"),
+    /**
+     * not support ENUM type.
+     */
     SET("SET");
 
     private String text;

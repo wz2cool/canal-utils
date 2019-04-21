@@ -94,7 +94,12 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
                 result.setDataType(OracleDataType.NCLOB.getText());
                 break;
             case ENUM:
+                result.setDataType(OracleDataType.NVARCHAR2.getText());
+                argStrings.add("50");
+                break;
             case SET:
+                result.setDataType(OracleDataType.NCLOB.getText());
+                break;
             case VARCHAR:
                 result.setDataType(OracleDataType.NVARCHAR2.getText());
                 argStrings.addAll(useArgumentsStringList);

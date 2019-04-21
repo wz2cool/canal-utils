@@ -24,6 +24,9 @@ public class OracleValuePlaceholderConverter implements IValuePlaceholderConvert
                 result.setValue(value);
                 break;
             case TINYBLOB:
+            case BLOB:
+            case MEDIUMBLOB:
+            case LONGBLOB:
                 result.setPlaceholder("hextoraw(?)");
                 result.setValue(StringUtils.stripStart(value, "0x"));
                 break;
