@@ -1,18 +1,24 @@
 package com.github.wz2cool.canal.utils.converter.oracle;
 
+import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.alter.Alter;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.sql.*;
 import java.util.List;
 
+@FixMethodOrder(MethodSorters.JVM)
 public class OracleDatabaseTest {
     private static String TABLE_NAME = "MY_TEST";
 
     private final OracleAlterColumnSqlConverter oracleAlterColumnSqlConverter = new OracleAlterColumnSqlConverter();
+    private final OracleValuePlaceholderConverter oracleValuePlaceholderConverter = new OracleValuePlaceholderConverter();
+
 
     @Before
     public void initTable() throws SQLException, ClassNotFoundException {
@@ -31,8 +37,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.BIT, "1");
     }
 
     @Test
@@ -171,7 +176,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addNUMERICColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addNUMERICColumn() {
         // not support
     }
 
@@ -237,7 +242,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addYEARColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addYEARColumn() {
         // not support year.
     }
 
@@ -271,12 +276,43 @@ public class OracleDatabaseTest {
         executeAlterSql(insertSql);
     }
 
+    @Test
+    public void addTINYBLOBColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+        System.out.println("addTINYBLOBColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` TINYBLOB NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, '%s')", TABLE_NAME, 1, "61736466617364666173");
+        executeAlterSql(insertSql);
+    }
+
     private void executeAlterSql(String sql) throws SQLException, ClassNotFoundException {
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             // execute the SQL statement
             System.out.println(String.format("sql: %s", sql));
             statement.execute(sql);
             System.out.println("execute success");
+        }
+    }
+
+    private void insertData(MysqlDataType mysqlDataType, String value) throws SQLException, ClassNotFoundException {
+        try (Connection dbConnection = getConnection()) {
+            String valuePlaceholder = oracleValuePlaceholderConverter.convert(mysqlDataType);
+            String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)",
+                    TABLE_NAME, 1, valuePlaceholder);
+
+            try (PreparedStatement statement = dbConnection.prepareStatement(insertSql)) {
+                System.out.println(String.format("insertSql: %s", insertSql));
+                statement.setString(1, value);
+                statement.execute();
+                System.out.println("execute success");
+            }
+
         }
     }
 
