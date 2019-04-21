@@ -23,6 +23,8 @@ public class OracleDatabaseTest {
 
     @Before
     public void initTable() throws SQLException, ClassNotFoundException {
+        String driver = "oracle.jdbc.driver.OracleDriver";
+        Class.forName(driver);
         tryDropTestTable();
         createTestTable();
     }
@@ -439,8 +441,7 @@ public class OracleDatabaseTest {
     }
 
     private synchronized Connection getConnection() throws ClassNotFoundException, SQLException {
-        String driver = "oracle.jdbc.driver.OracleDriver";
-        Class.forName(driver);
+
         String username = "test";
         String password = "innodealing";
         String URL = "jdbc:oracle:thin:@192.168.2.111:1521:XE";
