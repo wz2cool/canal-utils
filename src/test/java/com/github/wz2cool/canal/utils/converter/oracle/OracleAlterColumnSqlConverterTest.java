@@ -20,7 +20,7 @@ public class OracleAlterColumnSqlConverterTest {
         Statement statement = CCJSqlParserUtil.parse(testSql);
 
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
-        String expectSql = "ALTER TABLE bug ADD (newColumn NUMBER (10, 0))";
+        String expectSql = "ALTER TABLE bug ADD (newColumn NUMBER (11, 0))";
         assertEquals(expectSql, result.get(0));
     }
 
@@ -32,8 +32,8 @@ public class OracleAlterColumnSqlConverterTest {
 
         Statement statement = CCJSqlParserUtil.parse(testSql);
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
-        assertEquals("ALTER TABLE test ADD (col1 NUMBER (10, 0))", result.get(0));
-        assertEquals("ALTER TABLE test ADD (col2 NUMBER (10, 0))", result.get(1));
+        assertEquals("ALTER TABLE test ADD (col1 NUMBER (11, 0))", result.get(0));
+        assertEquals("ALTER TABLE test ADD (col2 NUMBER (11, 0))", result.get(1));
     }
 
     @Test
@@ -82,8 +82,8 @@ public class OracleAlterColumnSqlConverterTest {
                 "\tCHANGE COLUMN `col2` `col2` BIGINT NULL DEFAULT NULL AFTER `col1`;";
         Statement statement = CCJSqlParserUtil.parse(testSql);
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
-        assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (19, 0))", result.get(0));
-        assertEquals("ALTER TABLE users MODIFY (col2 NUMBER (19, 0))", result.get(1));
+        assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (20, 0))", result.get(0));
+        assertEquals("ALTER TABLE users MODIFY (col2 NUMBER (20, 0))", result.get(1));
     }
 
     @Test
@@ -104,6 +104,6 @@ public class OracleAlterColumnSqlConverterTest {
         Statement statement = CCJSqlParserUtil.parse(testSql);
         List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
 
-        assertEquals("ALTER TABLE test MODIFY (Column1 NUMBER (10, 0))", result.get(0));
+        assertEquals("ALTER TABLE test MODIFY (Column1 NUMBER (11, 0))", result.get(0));
     }
 }

@@ -37,7 +37,7 @@ public class OracleColDataTypeConverterTest {
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
-        assertEquals("19", resultValue.getArgumentsStringList().get(0));
+        assertEquals("20", resultValue.getArgumentsStringList().get(0));
         assertEquals("0", resultValue.getArgumentsStringList().get(1));
     }
 
@@ -159,7 +159,7 @@ public class OracleColDataTypeConverterTest {
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
-        assertEquals("10", resultValue.getArgumentsStringList().get(0));
+        assertEquals("11", resultValue.getArgumentsStringList().get(0));
         assertEquals("0", resultValue.getArgumentsStringList().get(1));
     }
 
@@ -172,7 +172,7 @@ public class OracleColDataTypeConverterTest {
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
-        assertEquals("10", resultValue.getArgumentsStringList().get(0));
+        assertEquals("11", resultValue.getArgumentsStringList().get(0));
         assertEquals("0", resultValue.getArgumentsStringList().get(1));
     }
 
@@ -207,7 +207,7 @@ public class OracleColDataTypeConverterTest {
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
-        assertEquals("7", resultValue.getArgumentsStringList().get(0));
+        assertEquals("8", resultValue.getArgumentsStringList().get(0));
         assertEquals("0", resultValue.getArgumentsStringList().get(1));
     }
 
@@ -265,7 +265,7 @@ public class OracleColDataTypeConverterTest {
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
-        assertEquals("5", resultValue.getArgumentsStringList().get(0));
+        assertEquals("6", resultValue.getArgumentsStringList().get(0));
     }
 
     @Test
@@ -321,7 +321,7 @@ public class OracleColDataTypeConverterTest {
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
-        assertEquals("3", resultValue.getArgumentsStringList().get(0));
+        assertEquals("4", resultValue.getArgumentsStringList().get(0));
         assertEquals("0", resultValue.getArgumentsStringList().get(1));
     }
 
@@ -334,7 +334,7 @@ public class OracleColDataTypeConverterTest {
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
-        assertEquals("3", resultValue.getArgumentsStringList().get(0));
+        assertEquals("4", resultValue.getArgumentsStringList().get(0));
         assertEquals("0", resultValue.getArgumentsStringList().get(1));
     }
 

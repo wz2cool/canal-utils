@@ -31,7 +31,7 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
         switch (mysqlDataType) {
             case BIGINT:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                argStrings.add("19");
+                argStrings.add("20");
                 argStrings.add("0");
                 break;
             case BIT:
@@ -65,22 +65,22 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             case INT:
             case INTEGER:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                argStrings.add("10");
+                argStrings.add("11");
                 argStrings.add("0");
                 break;
             case TINYINT:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                argStrings.add("3");
+                argStrings.add("4");
                 argStrings.add("0");
                 break;
             case SMALLINT:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                argStrings.add("5");
+                argStrings.add("6");
                 argStrings.add("0");
                 break;
             case MEDIUMINT:
                 result.setDataType(OracleDataType.NUMBER.getText());
-                argStrings.add("7");
+                argStrings.add("8");
                 argStrings.add("0");
                 break;
             case YEAR:
