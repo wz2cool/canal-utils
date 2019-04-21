@@ -134,6 +134,5 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
         } else {
             return colDataType.toString();
         }
-
     }
 }

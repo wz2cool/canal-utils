@@ -53,21 +53,25 @@ public abstract class AlterColumnSqlConverterBase {
 
         List<AlterColumnExpression> result = new ArrayList<>();
         AlterOperation operation = alterExpression.getOperation();
+        String columnName = alterExpression.getColumnName();
+        String colOlcName = alterExpression.getColOldName();
+        List<AlterExpression.ColumnDataType> colDataTypeList = alterExpression.getColDataTypeList();
 
         Optional<AlterColumnExpression> dropColumnExpression =
-                getDropColumnExpression(operation, tableName, alterExpression.getColumnName());
+                getDropColumnExpression(operation, tableName, columnName);
         dropColumnExpression.ifPresent(result::add);
 
         List<AlterColumnExpression> renameColumnExpressions =
-                getRenameColumnExpression(operation, tableName, alterExpression.getColOldName(), alterExpression.getColDataTypeList());
+                getRenameColumnExpression(operation, tableName, colOlcName, colDataTypeList);
         result.addAll(renameColumnExpressions);
 
         List<AlterColumnExpression> addColumnExpressions =
-                getAddColumnExpressions(operation, tableName, alterExpression.getColDataTypeList());
+                getAddColumnExpressions(operation, tableName, colDataTypeList);
         result.addAll(addColumnExpressions);
-        List<AlterColumnExpression> changeTypeColumnExpressions =
-                getChangeColumnTypeExpressions(operation, tableName, alterExpression.getColOldName(), alterExpression.getColDataTypeList());
-        result.addAll(changeTypeColumnExpressions);
+
+        List<AlterColumnExpression> changeColumnTypeExpressions =
+                getChangeColumnTypeExpressions(operation, tableName, colOlcName, colDataTypeList);
+        result.addAll(changeColumnTypeExpressions);
         return result;
     }
 

@@ -30,7 +30,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addBITColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addBITColumn() throws JSQLParserException, SQLException {
         System.out.println("addBITColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` BIT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -44,7 +44,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addTINYINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addTINYINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addTINYINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TINYINT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -58,7 +58,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addMEDIUMINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addMEDIUMINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addMEDIUMINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMINT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -72,7 +72,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addSMALLINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addSMALLINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addSMALLINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` SMALLINT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -86,7 +86,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` INT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -100,7 +100,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addINTEGERColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addINTEGERColumn() throws JSQLParserException, SQLException {
         System.out.println("addINTEGERColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` INTEGER NULL AFTER `assignTo`;", TABLE_NAME);
@@ -114,7 +114,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addBIGINTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addBIGINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addBIGINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` BIGINT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -128,7 +128,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addFLOATColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addFLOATColumn() throws JSQLParserException, SQLException {
         System.out.println("addFLOATColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` FLOAT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -142,7 +142,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addDOUBLEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addDOUBLEColumn() throws JSQLParserException, SQLException {
         System.out.println("addDOUBLEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DOUBLE NULL AFTER `assignTo`;", TABLE_NAME);
@@ -156,7 +156,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addDECIMALColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addDECIMALColumn() throws JSQLParserException, SQLException {
         System.out.println("addDECIMALColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DECIMAL NULL AFTER `assignTo`;", TABLE_NAME);
@@ -175,7 +175,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addDATEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addDATEColumn() throws JSQLParserException, SQLException {
         System.out.println("addDATEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DATE NULL AFTER `assignTo`;", TABLE_NAME);
@@ -189,7 +189,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addDATETIMEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addDATETIMEColumn() throws JSQLParserException, SQLException {
         System.out.println("addDATETIMEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DATETIME NULL AFTER `assignTo`;", TABLE_NAME);
@@ -203,7 +203,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addTIMESTAMPColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addTIMESTAMPColumn() throws JSQLParserException, SQLException {
         System.out.println("addTIMESTAMPColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TIMESTAMP NULL AFTER `assignTo`;", TABLE_NAME);
@@ -217,7 +217,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addTIMEColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addTIMEColumn() throws JSQLParserException, SQLException {
         System.out.println("addTIMESTAMPColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TIME NULL AFTER `assignTo`;", TABLE_NAME);
@@ -236,7 +236,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addCHARColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addCHARColumn() throws JSQLParserException, SQLException {
         System.out.println("addCHARColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` CHAR (50) NULL AFTER `assignTo`;", TABLE_NAME);
@@ -250,7 +250,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addVARCHARColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addVARCHARColumn() throws JSQLParserException, SQLException {
         System.out.println("addVARCHARColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` VARCHAR (255) NULL AFTER `assignTo`;", TABLE_NAME);
@@ -264,7 +264,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addTINYBLOBColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addTINYBLOBColumn() throws JSQLParserException, SQLException {
         System.out.println("addTINYBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TINYBLOB NULL AFTER `assignTo`;", TABLE_NAME);
@@ -278,7 +278,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addTINYTEXTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addTINYTEXTColumn() throws JSQLParserException, SQLException {
         System.out.println("addTINYTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TINYTEXT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -292,7 +292,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addTEXTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addTEXTColumn() throws JSQLParserException, SQLException {
         System.out.println("addTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TEXT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -306,7 +306,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addMEDIUMTEXTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addMEDIUMTEXTColumn() throws JSQLParserException, SQLException {
         System.out.println("addTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMTEXT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -320,7 +320,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addLONGTEXTColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addLONGTEXTColumn() throws JSQLParserException, SQLException {
         System.out.println("addLONGTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` LONGTEXT NULL AFTER `assignTo`;", TABLE_NAME);
@@ -334,7 +334,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addENUMColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addENUMColumn() throws JSQLParserException, SQLException {
         System.out.println("addENUMColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` ENUM NULL AFTER `assignTo`;", TABLE_NAME);
@@ -353,7 +353,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addBLOBColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addBLOBColumn() throws JSQLParserException, SQLException {
         System.out.println("addBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` BLOB NULL AFTER `assignTo`;", TABLE_NAME);
@@ -367,7 +367,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addMEDIUMBLOBColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addMEDIUMBLOBColumn() throws JSQLParserException, SQLException {
         System.out.println("addBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMBLOB NULL AFTER `assignTo`;", TABLE_NAME);
@@ -381,7 +381,7 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addLONGBLOBColumn() throws JSQLParserException, SQLException, ClassNotFoundException {
+    public void addLONGBLOBColumn() throws JSQLParserException, SQLException {
         System.out.println("addLONGBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` LONGBLOB NULL AFTER `assignTo`;", TABLE_NAME);
@@ -394,7 +394,64 @@ public class OracleDatabaseTest {
         insertData(MysqlDataType.LONGBLOB, "0x32");
     }
 
-    private synchronized void executeAlterSql(String sql) throws SQLException, ClassNotFoundException {
+    @Test
+    public void addMultiColumns() throws JSQLParserException, SQLException {
+        System.out.println("addMultiColumns");
+        String msqlAddColumn = String.format("ALTER TABLE %s\n" +
+                "\tADD COLUMN `col1` DECIMAL(10,0) NOT NULL AFTER `assignTo`,\n" +
+                "\tADD COLUMN `col2` TEXT NOT NULL AFTER `col1`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
+    @Test
+    public void changeColumnType() throws SQLException, JSQLParserException {
+        System.out.println("addMultiColumns");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` INTEGER NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        String mysqlChangeColumnType = String.format("ALTER TABLE `%s`\n" +
+                "\tCHANGE COLUMN `col1` `col1` DATETIME NULL DEFAULT NULL AFTER `assignTo`;", TABLE_NAME);
+        statement = CCJSqlParserUtil.parse(mysqlChangeColumnType);
+        List<String> changeColumnTypeSqls = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : changeColumnTypeSqls) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.DATETIME, "2019-04-20 22:16:12");
+    }
+
+    @Test
+    public void renameColumn() throws SQLException, JSQLParserException {
+        System.out.println("addMultiColumns");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col2` INTEGER NULL AFTER `assignTo`;", TABLE_NAME);
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        String mysqlChangeColumnType = String.format("ALTER TABLE `%s`\n" +
+                "\tCHANGE COLUMN `col2` `col1` INT(11) NULL DEFAULT NULL AFTER `assignTo`;", TABLE_NAME);
+        statement = CCJSqlParserUtil.parse(mysqlChangeColumnType);
+        List<String> changeColumnTypeSqls = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        for (String sql : changeColumnTypeSqls) {
+            executeAlterSql(sql);
+        }
+
+        insertData(MysqlDataType.INT, "1");
+    }
+
+    private synchronized void executeAlterSql(String sql) throws SQLException {
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             // execute the SQL statement
             System.out.println(String.format("sql: %s", sql));
@@ -403,7 +460,7 @@ public class OracleDatabaseTest {
         }
     }
 
-    private synchronized void insertData(MysqlDataType mysqlDataType, String value) throws SQLException, ClassNotFoundException {
+    private synchronized void insertData(MysqlDataType mysqlDataType, String value) throws SQLException {
         try (Connection dbConnection = getConnection()) {
             ValuePlaceholder valuePlaceholder = oracleValuePlaceholderConverter.convert(mysqlDataType, value);
             String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)",
@@ -415,11 +472,10 @@ public class OracleDatabaseTest {
                 statement.execute();
                 System.out.println("execute success");
             }
-
         }
     }
 
-    private void tryDropTestTable() throws SQLException, ClassNotFoundException {
+    private void tryDropTestTable() throws SQLException {
         String dropTableSql = String.format("DROP TABLE %s", TABLE_NAME);
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             // execute the SQL statement
@@ -430,7 +486,7 @@ public class OracleDatabaseTest {
         }
     }
 
-    private void createTestTable() throws SQLException, ClassNotFoundException {
+    private void createTestTable() throws SQLException {
         String createTableSQL = String.format("CREATE TABLE %s (USER_ID NUMBER(5) NOT NULL, PRIMARY KEY (USER_ID) )",
                 TABLE_NAME);
 
@@ -440,8 +496,7 @@ public class OracleDatabaseTest {
         }
     }
 
-    private synchronized Connection getConnection() throws ClassNotFoundException, SQLException {
-
+    private synchronized Connection getConnection() throws SQLException {
         String username = "test";
         String password = "innodealing";
         String URL = "jdbc:oracle:thin:@192.168.2.111:1521:XE";
