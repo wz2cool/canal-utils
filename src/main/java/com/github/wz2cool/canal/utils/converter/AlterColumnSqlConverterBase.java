@@ -47,11 +47,11 @@ public abstract class AlterColumnSqlConverterBase {
 
     private List<AlterColumnExpression> getAlterColumnExpressions(
             final String tableName, final AlterExpression alterExpression) {
+        List<AlterColumnExpression> result = new ArrayList<>();
         if (alterExpression == null) {
-            return new ArrayList<>();
+            return result;
         }
 
-        List<AlterColumnExpression> result = new ArrayList<>();
         AlterOperation operation = alterExpression.getOperation();
         String columnName = alterExpression.getColumnName();
         String colOlcName = alterExpression.getColOldName();
@@ -62,7 +62,7 @@ public abstract class AlterColumnSqlConverterBase {
         dropColumnExpression.ifPresent(result::add);
 
         List<AlterColumnExpression> renameColumnExpressions =
-                getRenameColumnExpression(operation, tableName, colOlcName, colDataTypeList);
+                getRenameColumnExpressions(operation, tableName, colOlcName, colDataTypeList);
         result.addAll(renameColumnExpressions);
 
         List<AlterColumnExpression> addColumnExpressions =
@@ -79,11 +79,11 @@ public abstract class AlterColumnSqlConverterBase {
             final AlterOperation alterOperation,
             final String tableName,
             final List<AlterExpression.ColumnDataType> columnDataTypes) {
+        List<AlterColumnExpression> result = new ArrayList<>();
         if (alterOperation != AlterOperation.ADD || columnDataTypes == null || columnDataTypes.isEmpty()) {
-            return new ArrayList<>();
+            return result;
         }
 
-        List<AlterColumnExpression> result = new ArrayList<>();
         for (AlterExpression.ColumnDataType columnDataType : columnDataTypes) {
             AlterColumnExpression addColumnExpression = new AlterColumnExpression();
             String columnName = columnDataType.getColumnName();
@@ -97,7 +97,7 @@ public abstract class AlterColumnSqlConverterBase {
         return result;
     }
 
-    private List<AlterColumnExpression> getRenameColumnExpression(
+    private List<AlterColumnExpression> getRenameColumnExpressions(
             final AlterOperation alterOperation,
             final String tableName,
             final String colOldName,
@@ -114,6 +114,7 @@ public abstract class AlterColumnSqlConverterBase {
         for (AlterExpression.ColumnDataType columnDataType : columnDataTypes) {
             String columnName = columnDataType.getColumnName();
             if (columnName.equals(colOldName)) {
+                // ignore if column name not change.
                 continue;
             }
 
@@ -132,11 +133,11 @@ public abstract class AlterColumnSqlConverterBase {
             final String tableName,
             final String colOldName,
             final List<AlterExpression.ColumnDataType> columnDataTypes) {
+        List<AlterColumnExpression> result = new ArrayList<>();
         if (alterOperation != AlterOperation.CHANGE || columnDataTypes == null || columnDataTypes.isEmpty()) {
-            return new ArrayList<>();
+            return result;
         }
 
-        List<AlterColumnExpression> result = new ArrayList<>();
         for (AlterExpression.ColumnDataType columnDataType : columnDataTypes) {
             AlterColumnExpression changeTypeColumnExpression = new AlterColumnExpression();
             String columnName = columnDataType.getColumnName();
