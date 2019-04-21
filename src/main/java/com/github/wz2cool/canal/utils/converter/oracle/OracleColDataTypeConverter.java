@@ -12,6 +12,10 @@ import java.util.Optional;
 public class OracleColDataTypeConverter implements IColDataTypeConverter {
     @Override
     public Optional<ColDataType> convert(ColDataType mysqlColDataType) {
+        if (mysqlColDataType == null) {
+            return Optional.empty();
+        }
+
         Optional<MysqlDataType> mysqlDataTypeOptional = MysqlDataType.getDataType(mysqlColDataType.getDataType());
 
         if (!mysqlDataTypeOptional.isPresent()) {

@@ -17,8 +17,12 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
 
     @Override
     public List<String> convert(Alter mysqlAlter) {
-        List<AlterColumnExpression> alterColumnExpressions = getAlterColumnExpressions(mysqlAlter);
         List<String> result = new ArrayList<>();
+        if (mysqlAlter == null) {
+            return result;
+        }
+
+        List<AlterColumnExpression> alterColumnExpressions = getAlterColumnExpressions(mysqlAlter);
         List<String> convertToAddColumnSqlList = convertToAddColumnSqlList(alterColumnExpressions);
         List<String> convertToChangeColumnTypeSqlList = convertToChangeColumnTypeSqlList(alterColumnExpressions);
         List<String> convertToRenameColumnSqlList = convertToRenameColumnSqlList(alterColumnExpressions);
