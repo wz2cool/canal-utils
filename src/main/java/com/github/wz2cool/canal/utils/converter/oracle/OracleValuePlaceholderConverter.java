@@ -2,20 +2,36 @@ package com.github.wz2cool.canal.utils.converter.oracle;
 
 import com.github.wz2cool.canal.utils.converter.IValuePlaceholderConverter;
 import com.github.wz2cool.canal.utils.model.MysqlDataType;
+import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
+import org.apache.commons.lang3.StringUtils;
 
 public class OracleValuePlaceholderConverter implements IValuePlaceholderConverter {
     @Override
-    public String convert(final MysqlDataType mysqlDataType) {
+    public ValuePlaceholder convert(final MysqlDataType mysqlDataType, final String value) {
+        ValuePlaceholder result = new ValuePlaceholder();
         switch (mysqlDataType) {
             case DATE:
-                return "to_date(?, 'yyyy-mm-dd')";
+                result.setPlaceholder("to_date(?, 'yyyy-mm-dd')");
+                result.setValue(value);
+                break;
             case DATETIME:
             case TIMESTAMP:
-                return "to_date(?, 'yyyy-mm-dd hh24:mi:ss')";
+                result.setPlaceholder("to_date(?, 'yyyy-mm-dd hh24:mi:ss')");
+                result.setValue(value);
+                break;
             case TIME:
-                return "to_date(?, 'hh24:mi:ss')";
+                result.setPlaceholder("to_date(?, 'hh24:mi:ss')");
+                result.setValue(value);
+                break;
+            case TINYBLOB:
+                result.setPlaceholder("hextoraw(?)");
+                result.setValue(StringUtils.stripStart(value, "0x"));
+                break;
             default:
-                return "?";
+                result.setPlaceholder("?");
+                result.setValue(value);
+                break;
         }
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 package com.github.wz2cool.canal.utils.converter.oracle;
 
 import com.github.wz2cool.canal.utils.model.MysqlDataType;
+import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.alter.Alter;
@@ -12,7 +13,7 @@ import org.junit.runners.MethodSorters;
 import java.sql.*;
 import java.util.List;
 
-@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OracleDatabaseTest {
     private static String TABLE_NAME = "MY_TEST";
 
@@ -51,8 +52,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.TINYINT, "1");
     }
 
     @Test
@@ -66,8 +66,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.MEDIUMINT, "1");
     }
 
     @Test
@@ -81,8 +80,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.SMALLINT, "1");
     }
 
     @Test
@@ -96,8 +94,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.INT, "1");
     }
 
     @Test
@@ -111,8 +108,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.INTEGER, "1");
     }
 
     @Test
@@ -126,8 +122,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 1000000);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.BIGINT, "1");
     }
 
     @Test
@@ -141,8 +136,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 3.33333);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.FLOAT, "3.33333");
     }
 
     @Test
@@ -156,8 +150,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 3.33333);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.DOUBLE, "3.33333");
     }
 
     @Test
@@ -171,8 +164,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)", TABLE_NAME, 1, 3.33333);
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.DECIMAL, "3.33333");
     }
 
     @Test
@@ -190,10 +182,8 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, to_date('%s', 'yyyy-mm-dd'))",
-                TABLE_NAME, 1, "2019-04-20");
-        executeAlterSql(insertSql);
 
+        insertData(MysqlDataType.DATE, "2019-04-20");
     }
 
     @Test
@@ -206,9 +196,8 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, to_date('%s', 'yyyy-mm-dd hh24:mi:ss'))",
-                TABLE_NAME, 1, "2019-04-20 22:16:12");
-        executeAlterSql(insertSql);
+
+        insertData(MysqlDataType.DATETIME, "2019-04-20 22:16:12");
     }
 
     @Test
@@ -221,9 +210,8 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, to_date('%s', 'yyyy-mm-dd hh24:mi:ss'))",
-                TABLE_NAME, 1, "2019-04-20 22:16:12");
-        executeAlterSql(insertSql);
+
+        insertData(MysqlDataType.TIMESTAMP, "2019-04-20 22:16:12");
     }
 
     @Test
@@ -236,9 +224,8 @@ public class OracleDatabaseTest {
         for (String sql : result) {
             executeAlterSql(sql);
         }
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, to_date('%s', 'hh24:mi:ss'))",
-                TABLE_NAME, 1, "10:00:00");
-        executeAlterSql(insertSql);
+
+        insertData(MysqlDataType.TIME, "10:00:00");
     }
 
     @Test
@@ -257,8 +244,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, '%s')", TABLE_NAME, 1, "test");
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.CHAR, "test");
     }
 
     @Test
@@ -272,8 +258,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, '%s')", TABLE_NAME, 1, "test");
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.VARCHAR, "test");
     }
 
     @Test
@@ -287,8 +272,7 @@ public class OracleDatabaseTest {
             executeAlterSql(sql);
         }
 
-        String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, '%s')", TABLE_NAME, 1, "61736466617364666173");
-        executeAlterSql(insertSql);
+        insertData(MysqlDataType.TINYBLOB, "0x32");
     }
 
     private void executeAlterSql(String sql) throws SQLException, ClassNotFoundException {
@@ -302,13 +286,13 @@ public class OracleDatabaseTest {
 
     private void insertData(MysqlDataType mysqlDataType, String value) throws SQLException, ClassNotFoundException {
         try (Connection dbConnection = getConnection()) {
-            String valuePlaceholder = oracleValuePlaceholderConverter.convert(mysqlDataType);
+            ValuePlaceholder valuePlaceholder = oracleValuePlaceholderConverter.convert(mysqlDataType, value);
             String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)",
-                    TABLE_NAME, 1, valuePlaceholder);
+                    TABLE_NAME, 1, valuePlaceholder.getPlaceholder());
 
             try (PreparedStatement statement = dbConnection.prepareStatement(insertSql)) {
-                System.out.println(String.format("insertSql: %s", insertSql));
-                statement.setString(1, value);
+                System.out.println(String.format("[%s] insertSql: %s", mysqlDataType.getText(), insertSql));
+                statement.setString(1, valuePlaceholder.getValue());
                 statement.execute();
                 System.out.println("execute success");
             }
