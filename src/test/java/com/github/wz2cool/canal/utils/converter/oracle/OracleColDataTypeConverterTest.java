@@ -66,7 +66,7 @@ public class OracleColDataTypeConverterTest {
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.CHAR.getText(), resultValue.getDataType());
+        assertEquals(OracleDataType.NCHAR.getText(), resultValue.getDataType());
         assertEquals("200", resultValue.getArgumentsStringList().get(0));
     }
 

@@ -46,7 +46,7 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
                 result.setDataType(OracleDataType.BLOB.getText());
                 break;
             case CHAR:
-                result.setDataType(OracleDataType.CHAR.getText());
+                result.setDataType(OracleDataType.NCHAR.getText());
                 argStrings.addAll(useArgumentsStringList);
                 break;
             case DATE:
