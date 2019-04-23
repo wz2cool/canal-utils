@@ -54,7 +54,7 @@ public abstract class AlterColumnSqlConverterBase {
 
         AlterOperation operation = alterExpression.getOperation();
         String columnName = alterExpression.getColumnName();
-        String colOlcName = alterExpression.getColOldName();
+        String colOldName = alterExpression.getColOldName();
         List<AlterExpression.ColumnDataType> colDataTypeList = alterExpression.getColDataTypeList();
 
         Optional<AlterColumnExpression> dropColumnExpression =
@@ -62,7 +62,7 @@ public abstract class AlterColumnSqlConverterBase {
         dropColumnExpression.ifPresent(result::add);
 
         List<AlterColumnExpression> renameColumnExpressions =
-                getRenameColumnExpressions(operation, tableName, colOlcName, colDataTypeList);
+                getRenameColumnExpressions(operation, tableName, colOldName, colDataTypeList);
         result.addAll(renameColumnExpressions);
 
         List<AlterColumnExpression> addColumnExpressions =
@@ -70,7 +70,7 @@ public abstract class AlterColumnSqlConverterBase {
         result.addAll(addColumnExpressions);
 
         List<AlterColumnExpression> changeColumnTypeExpressions =
-                getChangeColumnTypeExpressions(operation, tableName, colOlcName, colDataTypeList);
+                getChangeColumnTypeExpressions(operation, tableName, colOldName, colDataTypeList);
         result.addAll(changeColumnTypeExpressions);
         return result;
     }
