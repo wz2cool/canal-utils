@@ -3,7 +3,8 @@ package com.github.wz2cool.canal.utils.converter.oracle;
 import com.github.wz2cool.canal.utils.converter.IValuePlaceholderConverter;
 import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
-import org.apache.commons.lang3.StringUtils;
+
+import java.nio.charset.StandardCharsets;
 
 public class OracleValuePlaceholderConverter implements IValuePlaceholderConverter {
     @Override
@@ -27,8 +28,8 @@ public class OracleValuePlaceholderConverter implements IValuePlaceholderConvert
             case BLOB:
             case MEDIUMBLOB:
             case LONGBLOB:
-                result.setPlaceholder("hextoraw(?)");
-                result.setValue(StringUtils.stripStart(value, "0x"));
+                result.setPlaceholder("?");
+                result.setValue(value == null ? null : value.getBytes(StandardCharsets.ISO_8859_1));
                 break;
             default:
                 result.setPlaceholder("?");

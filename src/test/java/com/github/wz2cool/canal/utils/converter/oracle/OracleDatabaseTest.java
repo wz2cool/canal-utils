@@ -468,7 +468,7 @@ public class OracleDatabaseTest {
 
             try (PreparedStatement statement = dbConnection.prepareStatement(insertSql)) {
                 System.out.println(String.format("[%s] insertSql: %s", mysqlDataType.getText(), insertSql));
-                statement.setString(1, valuePlaceholder.getValue());
+                statement.setObject(1, valuePlaceholder.getValue());
                 statement.execute();
                 System.out.println("execute success");
             }
@@ -499,7 +499,7 @@ public class OracleDatabaseTest {
     private synchronized Connection getConnection() throws SQLException {
         String username = "test";
         String password = "innodealing";
-        String URL = "jdbc:oracle:thin:@192.168.2.111:1521:XE";
+        String URL = "jdbc:oracle:thin:@192.168.14.34:1521:XE";
         return DriverManager.getConnection(URL, username, password);
     }
 }

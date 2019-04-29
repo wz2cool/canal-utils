@@ -3,7 +3,7 @@ package com.github.wz2cool.canal.utils.model;
 public class ValuePlaceholder {
     private String placeholder;
 
-    private String value;
+    private Object value;
 
     public String getPlaceholder() {
         return placeholder;
@@ -13,11 +13,11 @@ public class ValuePlaceholder {
         this.placeholder = placeholder;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 }
