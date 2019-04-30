@@ -499,7 +499,7 @@ public class OracleDatabaseTest {
     private synchronized Connection getConnection() throws SQLException {
         String username = "test";
         String password = "innodealing";
-        String URL = "jdbc:oracle:thin:@192.168.14.34:1521:XE";
+        String URL = "jdbc:oracle:thin:@192.168.2.116:1521:XE";
         return DriverManager.getConnection(URL, username, password);
     }
 }
