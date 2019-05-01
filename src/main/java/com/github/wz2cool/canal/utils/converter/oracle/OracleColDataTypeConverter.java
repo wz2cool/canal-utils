@@ -17,10 +17,10 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
         }
 
         Optional<MysqlDataType> mysqlDataTypeOptional = MysqlDataType.getDataType(mysqlColDataType.getDataType());
-
         if (!mysqlDataTypeOptional.isPresent()) {
             return Optional.empty();
         }
+
         ColDataType colDataType = getOracleDataType(
                 mysqlDataTypeOptional.get(), mysqlColDataType.getArgumentsStringList());
         return Optional.ofNullable(colDataType);
@@ -62,7 +62,6 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             case DECIMAL:
             case DOUBLE:
             case FLOAT:
-            case REAL:
                 result.setDataType(OracleDataType.FLOAT.getText());
                 argStrings.add("24");
                 break;
@@ -87,29 +86,15 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
                 argStrings.add("8");
                 argStrings.add("0");
                 break;
-            case YEAR:
-            case NUMERIC:
-                result.setDataType(OracleDataType.NUMBER.getText());
-                break;
             case TEXT:
             case LONGTEXT:
             case TINYTEXT:
             case MEDIUMTEXT:
                 result.setDataType(OracleDataType.NCLOB.getText());
                 break;
-            case ENUM:
-                result.setDataType(OracleDataType.NVARCHAR2.getText());
-                argStrings.add("50");
-                break;
-            case SET:
-                result.setDataType(OracleDataType.NCLOB.getText());
-                break;
             case VARCHAR:
                 result.setDataType(OracleDataType.NVARCHAR2.getText());
                 argStrings.addAll(useArgumentsStringList);
-                break;
-            default:
-                result.setDataType(OracleDataType.NCLOB.getText());
                 break;
         }
 

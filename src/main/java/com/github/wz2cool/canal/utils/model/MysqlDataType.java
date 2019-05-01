@@ -17,41 +17,24 @@ public enum MysqlDataType {
     DATETIME("DATETIME"),
     TIMESTAMP("TIMESTAMP"),
     TIME("TIME"),
-    /**
-     * not support year type.
-     */
-    YEAR("YEAR"),
     CHAR("CHAR"),
     VARCHAR("VARCHAR"),
-    /**
-     * not support NUMERIC type.
-     */
-    NUMERIC("NUMERIC"),
-    /**
-     * not support BINARY type.
-     */
-    BINARY("BINARY"),
-    /**
-     * not support VARBINARY type.
-     */
-    VARBINARY("VARBINARY"),
     TINYBLOB("TINYBLOB"),
-    TINYTEXT("TINYTEXT"),
     BLOB("BLOB"),
-    TEXT("TEXT"),
     MEDIUMBLOB("MEDIUMBLOB"),
-    MEDIUMTEXT("MEDIUMTEXT"),
     LONGBLOB("LONGBLOB"),
-    LONGTEXT("LONGTEXT"),
-    ENUM("ENUM"),
-    /**
-     * not support REAL type.
-     */
+    TINYTEXT("TINYTEXT"),
+    TEXT("TEXT"),
+    MEDIUMTEXT("MEDIUMTEXT"),
+    LONGTEXT("LONGTEXT");
+
+   /* ENUM("ENUM"),
     REAL("REAL"),
-    /**
-     * not support ENUM type.
-     */
-    SET("SET");
+    SET("SET"),
+    YEAR("YEAR"),
+    NUMERIC("NUMERIC"),
+    BINARY("BINARY"),
+    VARBINARY("VARBINARY")*/
 
     private String text;
 

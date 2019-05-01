@@ -334,20 +334,6 @@ public class OracleDatabaseTest {
     }
 
     @Test
-    public void addENUMColumn() throws JSQLParserException, SQLException {
-        System.out.println("addENUMColumn");
-        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
-                "\tADD COLUMN `col1` ENUM NULL AFTER `assignTo`;", TABLE_NAME);
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
-        for (String sql : result) {
-            executeAlterSql(sql);
-        }
-
-        insertData(MysqlDataType.ENUM, "test");
-    }
-
-    @Test
     public void addSETColumn() {
         // don't support set type
     }
