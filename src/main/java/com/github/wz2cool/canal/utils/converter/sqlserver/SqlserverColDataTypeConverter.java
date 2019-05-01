@@ -21,14 +21,14 @@ public class SqlserverColDataTypeConverter implements IColDataTypeConverter {
             return Optional.empty();
         }
 
-        ColDataType colDataType = getSqlserverDataType(
+        ColDataType colDataType = getSqlserverColDataType(
                 mysqlDataTypeOptional.get(), mysqlColDataType.getArgumentsStringList());
         return Optional.ofNullable(colDataType);
     }
 
     // https://dev.mysql.com/doc/workbench/en/wb-migration-database-mssql-typemapping.html
     // https://docs.microsoft.com/en-us/sql/ssma/mysql/project-settings-type-mapping-mysqltosql?view=sql-server-2017
-    private ColDataType getSqlserverDataType(final MysqlDataType mysqlDataType, final List<String> argumentsStringList) {
+    private ColDataType getSqlserverColDataType(final MysqlDataType mysqlDataType, final List<String> argumentsStringList) {
         ColDataType result = new ColDataType();
         List<String> useArgumentsStringList = argumentsStringList == null ? new ArrayList<>() : argumentsStringList;
         List<String> argStrings = new ArrayList<>();

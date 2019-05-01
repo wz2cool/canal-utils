@@ -21,13 +21,13 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             return Optional.empty();
         }
 
-        ColDataType colDataType = getOracleDataType(
+        ColDataType colDataType = getOracleColDataType(
                 mysqlDataTypeOptional.get(), mysqlColDataType.getArgumentsStringList());
         return Optional.ofNullable(colDataType);
     }
 
     // https://docs.oracle.com/cd/E12151_01/doc.150/e12155/oracle_mysql_compared.htm#BABGACIF
-    private ColDataType getOracleDataType(final MysqlDataType mysqlDataType, final List<String> argumentsStringList) {
+    private ColDataType getOracleColDataType(final MysqlDataType mysqlDataType, final List<String> argumentsStringList) {
         ColDataType result = new ColDataType();
         List<String> useArgumentsStringList = argumentsStringList == null ? new ArrayList<>() : argumentsStringList;
         List<String> argStrings = new ArrayList<>();
