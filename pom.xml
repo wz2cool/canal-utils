@@ -43,6 +43,14 @@
             <version>7.2.1.jre8</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.ibm.db2.jcc/db2jcc4 -->
+        <!--mvn install:install-file -Dfile=lib/db2jcc4-10.1.jar -DgroupId=com.ibm.db2.jcc -DartifactId=db2jcc4 -Dversion=10.1 -Dpackaging=jar-->
+        <dependency>
+            <groupId>com.ibm.db2.jcc</groupId>
+            <artifactId>db2jcc4</artifactId>
+            <version>10.1</version>
+            <scope>test</scope>
+        </dependency>
 
 
     </dependencies>

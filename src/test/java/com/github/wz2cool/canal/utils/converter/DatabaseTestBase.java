@@ -377,14 +377,14 @@ public abstract class DatabaseTestBase {
         }
 
         String mysqlChangeColumnType = String.format("ALTER TABLE `%s`\n" +
-                "\tCHANGE COLUMN `col1` `col1` DATETIME NULL DEFAULT NULL AFTER `assignTo`;", getTestTableName());
+                "\tCHANGE COLUMN `col1` `col1` VARCHAR(255) NULL DEFAULT NULL AFTER `assignTo`;", getTestTableName());
         statement = CCJSqlParserUtil.parse(mysqlChangeColumnType);
         List<String> changeColumnTypeSqls = getAlterColumnSqlConverter().convert((Alter) statement);
         for (String sql : changeColumnTypeSqls) {
             executeAlterSql(sql);
         }
 
-        insertData(MysqlDataType.DATETIME, "2019-04-20 22:16:12");
+        insertData(MysqlDataType.VARCHAR, "TEST");
     }
 
 
