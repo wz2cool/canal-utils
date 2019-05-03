@@ -120,7 +120,7 @@ public abstract class DatabaseTestBase {
     public void addFLOATColumn() throws JSQLParserException, SQLException {
         System.out.println("addFLOATColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
-                "\tADD COLUMN `col1` FLOAT NULL AFTER `assignTo`;", getTestTableName());
+                "\tADD COLUMN `col1` FLOAT (18 ,6) NULL AFTER `assignTo`;", getTestTableName());
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
         List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
         for (String sql : result) {
@@ -134,7 +134,7 @@ public abstract class DatabaseTestBase {
     public void addDOUBLEColumn() throws JSQLParserException, SQLException {
         System.out.println("addDOUBLEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
-                "\tADD COLUMN `col1` DOUBLE NULL AFTER `assignTo`;", getTestTableName());
+                "\tADD COLUMN `col1` DOUBLE (18 ,6) NULL AFTER `assignTo`;", getTestTableName());
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
         List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
         for (String sql : result) {
@@ -148,7 +148,7 @@ public abstract class DatabaseTestBase {
     public void addDECIMALColumn() throws JSQLParserException, SQLException {
         System.out.println("addDECIMALColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
-                "\tADD COLUMN `col1` DECIMAL NULL AFTER `assignTo`;", getTestTableName());
+                "\tADD COLUMN `col1` DECIMAL (18, 6) NULL AFTER `assignTo`;", getTestTableName());
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
         List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
         for (String sql : result) {

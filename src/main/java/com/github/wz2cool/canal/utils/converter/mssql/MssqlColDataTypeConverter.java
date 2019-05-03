@@ -55,6 +55,7 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
             case DOUBLE:
             case DECIMAL:
                 result.setDataType(MssqlDataType.DECIMAL.getText());
+                argStrings.addAll(useArgumentsStringList);
                 break;
             case DATE:
                 result.setDataType(MssqlDataType.DATE.getText());
@@ -79,7 +80,7 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
             case MEDIUMBLOB:
             case LONGBLOB:
                 result.setDataType(MssqlDataType.VARBINARY.getText());
-                argStrings.add("max");
+                argStrings.add("MAX");
                 break;
             case TINYTEXT:
             case TEXT:

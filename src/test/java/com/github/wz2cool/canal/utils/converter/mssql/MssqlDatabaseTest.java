@@ -4,13 +4,17 @@ import com.github.wz2cool.canal.utils.converter.AlterColumnSqlConverterBase;
 import com.github.wz2cool.canal.utils.converter.DatabaseTestBase;
 import com.github.wz2cool.canal.utils.converter.IValuePlaceholderConverter;
 import net.sf.jsqlparser.JSQLParserException;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MssqlDatabaseTest extends DatabaseTestBase {
     private final static String TABLE_NAME = "MY_TEST";
     private final MssqlAlterColumnSqlConverter mssqlAlterColumnSqlConverter = new MssqlAlterColumnSqlConverter();
@@ -39,7 +43,8 @@ public class MssqlDatabaseTest extends DatabaseTestBase {
         return DriverManager.getConnection(URL, username, password);
     }
 
-    public MssqlDatabaseTest() throws ClassNotFoundException, SQLException {
+    @Before
+    public void initTable() throws SQLException, ClassNotFoundException {
         String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         Class.forName(driver);
         tryDropTestTable();
@@ -164,6 +169,21 @@ public class MssqlDatabaseTest extends DatabaseTestBase {
     @Test
     public void addVARCHARColumn() throws SQLException, JSQLParserException {
         super.addVARCHARColumn();
+    }
+
+    @Test
+    public void addMultiColumns() throws SQLException, JSQLParserException {
+        super.addMultiColumns();
+    }
+
+    @Test
+    public void changeColumnType() throws SQLException, JSQLParserException {
+        super.changeColumnType();
+    }
+
+    @Test
+    public void renameColumn() throws SQLException, JSQLParserException {
+        super.renameColumn();
     }
 
     private void tryDropTestTable() {
