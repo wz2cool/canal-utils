@@ -60,16 +60,15 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
                 result.setDataType(MssqlDataType.DATE.getText());
                 break;
             case DATETIME:
-                result.setDataType(MssqlDataType.DATETIME.getText());
-                break;
             case TIMESTAMP:
-                result.setDataType(MssqlDataType.TIMESTAMP.getText());
+                result.setDataType(MssqlDataType.DATETIME.getText());
                 break;
             case TIME:
                 result.setDataType(MssqlDataType.TIME.getText());
                 break;
             case CHAR:
                 result.setDataType(MssqlDataType.NCHAR.getText());
+                argStrings.addAll(useArgumentsStringList);
                 break;
             case VARCHAR:
                 result.setDataType(MssqlDataType.NVARCHAR.getText());
@@ -80,6 +79,7 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
             case MEDIUMBLOB:
             case LONGBLOB:
                 result.setDataType(MssqlDataType.VARBINARY.getText());
+                argStrings.add("max");
                 break;
             case TINYTEXT:
             case TEXT:

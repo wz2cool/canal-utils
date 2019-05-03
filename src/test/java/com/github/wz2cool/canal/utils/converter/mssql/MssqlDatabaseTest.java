@@ -1,23 +1,43 @@
 package com.github.wz2cool.canal.utils.converter.mssql;
 
-import com.github.wz2cool.canal.utils.converter.oracle.OracleAlterColumnSqlConverter;
-import com.github.wz2cool.canal.utils.converter.oracle.OracleValuePlaceholderConverter;
-import com.github.wz2cool.canal.utils.model.MysqlDataType;
-import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
+import com.github.wz2cool.canal.utils.converter.AlterColumnSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.DatabaseTestBase;
+import com.github.wz2cool.canal.utils.converter.IValuePlaceholderConverter;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.alter.Alter;
 import org.junit.Test;
 
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-public class MssqlDatabaseTest {
-    private static String TABLE_NAME = "MY_TEST";
-
+public class MssqlDatabaseTest extends DatabaseTestBase {
+    private final static String TABLE_NAME = "MY_TEST";
     private final MssqlAlterColumnSqlConverter mssqlAlterColumnSqlConverter = new MssqlAlterColumnSqlConverter();
     private final MssqlValuePlaceholderConverter mssqlValuePlaceholderConverter = new MssqlValuePlaceholderConverter();
 
+    @Override
+    protected String getTestTableName() {
+        return TABLE_NAME;
+    }
+
+    @Override
+    protected AlterColumnSqlConverterBase getAlterColumnSqlConverter() {
+        return this.mssqlAlterColumnSqlConverter;
+    }
+
+    @Override
+    protected IValuePlaceholderConverter getValuePlaceholderConverter() {
+        return this.mssqlValuePlaceholderConverter;
+    }
+
+    @Override
+    protected Connection getConnection() throws SQLException {
+        String username = "sa";
+        String password = "Innodealing@123";
+        String URL = "jdbc:sqlserver://192.168.2.112:1433;DatabaseName=test";
+        return DriverManager.getConnection(URL, username, password);
+    }
 
     public MssqlDatabaseTest() throws ClassNotFoundException, SQLException {
         String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
@@ -28,42 +48,123 @@ public class MssqlDatabaseTest {
 
     @Test
     public void addBITColumn() throws JSQLParserException, SQLException {
-        System.out.println("addBITColumn");
-        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
-                "\tADD COLUMN `col1` BIT NULL AFTER `assignTo`;", TABLE_NAME);
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = mssqlAlterColumnSqlConverter.convert((Alter) statement);
-        for (String sql : result) {
-            executeAlterSql(sql);
-        }
-
-        insertData(MysqlDataType.BIT, "1");
+        super.addBITColumn();
     }
 
-    private synchronized void executeAlterSql(String sql) throws SQLException {
-        try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
-            // execute the SQL statement
-            System.out.println(String.format("sql: %s", sql));
-            statement.execute(sql);
-            System.out.println("execute success");
-        }
+    @Test
+    public void addTINYINTColumn() throws JSQLParserException, SQLException {
+        super.addTINYINTColumn();
     }
 
-    private synchronized void insertData(MysqlDataType mysqlDataType, String value) throws SQLException {
-        try (Connection dbConnection = getConnection()) {
-            ValuePlaceholder valuePlaceholder = mssqlValuePlaceholderConverter.convert(mysqlDataType, value);
-            String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)",
-                    TABLE_NAME, 1, valuePlaceholder.getPlaceholder());
-
-            try (PreparedStatement statement = dbConnection.prepareStatement(insertSql)) {
-                System.out.println(String.format("[%s] insertSql: %s", mysqlDataType.getText(), insertSql));
-                statement.setObject(1, valuePlaceholder.getValue());
-                statement.execute();
-                System.out.println("execute success");
-            }
-        }
+    @Test
+    public void addBIGINTColumn() throws SQLException, JSQLParserException {
+        super.addBIGINTColumn();
     }
 
+    @Test
+    public void addBLOBColumn() throws SQLException, JSQLParserException {
+        super.addBLOBColumn();
+    }
+
+    @Test
+    public void addCHARColumn() throws SQLException, JSQLParserException {
+        super.addCHARColumn();
+    }
+
+    @Test
+    public void addDATEColumn() throws SQLException, JSQLParserException {
+        super.addDATEColumn();
+    }
+
+    @Test
+    public void addDATETIMEColumn() throws SQLException, JSQLParserException {
+        super.addDATETIMEColumn();
+    }
+
+    @Test
+    public void addDECIMALColumn() throws SQLException, JSQLParserException {
+        super.addDECIMALColumn();
+    }
+
+    @Test
+    public void addDOUBLEColumn() throws SQLException, JSQLParserException {
+        super.addDOUBLEColumn();
+    }
+
+    @Test
+    public void addFLOATColumn() throws SQLException, JSQLParserException {
+        super.addFLOATColumn();
+    }
+
+    @Test
+    public void addINTColumn() throws SQLException, JSQLParserException {
+        super.addINTColumn();
+    }
+
+    @Test
+    public void addINTEGERColumn() throws SQLException, JSQLParserException {
+        super.addINTEGERColumn();
+    }
+
+    @Test
+    public void addLONGBLOBColumn() throws SQLException, JSQLParserException {
+        super.addLONGBLOBColumn();
+    }
+
+    @Test
+    public void addLONGTEXTColumn() throws SQLException, JSQLParserException {
+        super.addLONGTEXTColumn();
+    }
+
+    @Test
+    public void addMEDIUMBLOBColumn() throws SQLException, JSQLParserException {
+        super.addMEDIUMBLOBColumn();
+    }
+
+    @Test
+    public void addMEDIUMINTColumn() throws SQLException, JSQLParserException {
+        super.addMEDIUMINTColumn();
+    }
+
+    @Test
+    public void addMEDIUMTEXTColumn() throws SQLException, JSQLParserException {
+        super.addMEDIUMTEXTColumn();
+    }
+
+    @Test
+    public void addSMALLINTColumn() throws SQLException, JSQLParserException {
+        super.addSMALLINTColumn();
+    }
+
+    @Test
+    public void addTEXTColumn() throws SQLException, JSQLParserException {
+        super.addTEXTColumn();
+    }
+
+    @Test
+    public void addTIMEColumn() throws SQLException, JSQLParserException {
+        super.addTIMEColumn();
+    }
+
+    @Test
+    public void addTIMESTAMPColumn() throws SQLException, JSQLParserException {
+        super.addTIMESTAMPColumn();
+    }
+
+    @Test
+    public void addTINYBLOBColumn() throws SQLException, JSQLParserException {
+        super.addTINYBLOBColumn();
+    }
+
+    @Test
+    public void addTINYTEXTColumn() throws SQLException, JSQLParserException {
+        super.addTINYTEXTColumn();
+    }
+
+    @Test
+    public void addVARCHARColumn() throws SQLException, JSQLParserException {
+        super.addVARCHARColumn();
+    }
 
     private void tryDropTestTable() {
         String dropTableSql = String.format("DROP TABLE %s", TABLE_NAME);
@@ -84,12 +185,5 @@ public class MssqlDatabaseTest {
             statement.execute(createTableSQL);
             System.out.println("create table success");
         }
-    }
-
-    private synchronized Connection getConnection() throws SQLException {
-        String username = "sa";
-        String password = "Innodealing@123";
-        String URL = "jdbc:sqlserver://192.168.2.112:1433;DatabaseName=test";
-        return DriverManager.getConnection(URL, username, password);
     }
 }
