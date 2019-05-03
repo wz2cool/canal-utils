@@ -28,10 +28,12 @@ public class Db2AlterColumnSqlConverter extends AlterColumnSqlConverterBase {
         List<String> convertToChangeColumnTypeSqlList = convertToChangeColumnTypeSqlList(mysqlAlterColumnExpressions);
         List<String> convertToRenameColumnSqlList = convertToRenameColumnSqlList(mysqlAlterColumnExpressions);
         List<String> convertToDropColumnSqlList = convertToDropColumnSqlList(mysqlAlterColumnExpressions);
+        List<String> reorgTableSqlList = getReorgTableSqlList(mysqlAlterColumnExpressions);
         result.addAll(convertToAddColumnSqlList);
         result.addAll(convertToChangeColumnTypeSqlList);
         result.addAll(convertToRenameColumnSqlList);
         result.addAll(convertToDropColumnSqlList);
+        result.addAll(reorgTableSqlList);
         return result;
     }
 
@@ -68,8 +70,24 @@ public class Db2AlterColumnSqlConverter extends AlterColumnSqlConverterBase {
             return result;
         }
 
-        // https://dba.stackexchange.com/questions/127848/db2-reorg-recommended-commands
-        // cannot reorg table , so we don't support change column Type.
+        List<AlterColumnExpression> changeColumnTypeExpressions = alterColumnExpressions.stream()
+                .filter(x -> x.getOperation() == EnhancedAlterOperation.CHANGE_COLUMN_TYPE).collect(Collectors.toList());
+
+        for (AlterColumnExpression changeColumnTypeExpression : changeColumnTypeExpressions) {
+            String tableName = changeColumnTypeExpression.getTableName();
+            String columnName = changeColumnTypeExpression.getColumnName();
+
+            ColDataType mysqlColDataType = changeColumnTypeExpression.getColDataType();
+            Optional<ColDataType> db2ColDataTypeOptional = db2ColDataTypeConverter.convert(mysqlColDataType);
+            if (!db2ColDataTypeOptional.isPresent()) {
+                String errorMsg = String.format("[Change Type] Cannot convert data type: %s", mysqlColDataType.getDataType());
+                throw new NotSupportDataTypeException(errorMsg);
+            }
+            String db2DataTypeString = getDb2DataTypeString(db2ColDataTypeOptional.get());
+            String changeTypeSql = String.format("ALTER TABLE %s ALTER COLUMN %s SET DATA TYPE %s",
+                    tableName, columnName, db2DataTypeString);
+            result.add(changeTypeSql);
+        }
         return result;
     }
 
@@ -108,6 +126,28 @@ public class Db2AlterColumnSqlConverter extends AlterColumnSqlConverterBase {
             String tableName = dropColumnExpression.getTableName();
             String dropSql = String.format("ALTER TABLE %s DROP COLUMN %s", tableName, columnName);
             result.add(dropSql);
+        }
+        return result;
+    }
+
+    // https://dba.stackexchange.com/questions/127848/db2-reorg-recommended-commands
+    private List<String> getReorgTableSqlList(final List<AlterColumnExpression> alterColumnExpressions) {
+        // need reorg table if drop column and change column type
+        List<String> result = new ArrayList<>();
+        if (alterColumnExpressions == null || alterColumnExpressions.isEmpty()) {
+            return result;
+        }
+
+        List<String> needReorgTables = alterColumnExpressions.stream()
+                .filter(x -> x.getOperation() == EnhancedAlterOperation.DROP_COLUMN
+                        || x.getOperation() == EnhancedAlterOperation.CHANGE_COLUMN_TYPE)
+                .map(AlterColumnExpression::getTableName)
+                .distinct()
+                .collect(Collectors.toList());
+
+        for (String tableName : needReorgTables) {
+            String sql = String.format("Call Sysproc.admin_cmd ('reorg Table %s')", tableName);
+            result.add(sql);
         }
         return result;
     }

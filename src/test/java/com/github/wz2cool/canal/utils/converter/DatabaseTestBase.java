@@ -5,12 +5,12 @@ import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.alter.Alter;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class DatabaseTestBase {
     protected abstract String getTestTableName();
@@ -32,6 +32,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.BIT, "1");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
     public void addTINYINTColumn() throws JSQLParserException, SQLException {
@@ -45,6 +47,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.TINYINT, "1");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
     public void addMEDIUMINTColumn() throws JSQLParserException, SQLException {
@@ -58,6 +62,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.MEDIUMINT, "1");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
 
@@ -72,6 +78,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.SMALLINT, "1");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
 
@@ -86,6 +94,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.INT, "1");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
 
@@ -100,6 +110,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.INTEGER, "1");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
 
@@ -114,6 +126,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.BIGINT, "1");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
 
@@ -128,6 +142,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.FLOAT, "3.33333");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("3.33333", StringUtils.strip(insertOptional.orElse(null), "0"));
     }
 
 
@@ -142,6 +158,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.DOUBLE, "3.33333");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("3.33333", StringUtils.strip(insertOptional.orElse(null), "0"));
     }
 
 
@@ -156,6 +174,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.DECIMAL, "3.33333");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("3.33333", StringUtils.strip(insertOptional.orElse(null), "0"));
     }
 
     public void addDATEColumn() throws JSQLParserException, SQLException {
@@ -169,6 +189,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.DATE, "2019-04-20");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("2019-04-20", insertOptional.orElse(null));
     }
 
 
@@ -183,6 +205,9 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.DATETIME, "2019-04-20 22:16:12");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("2019-04-20 22:16:12",
+                StringUtils.strip(insertOptional.orElse(null), ".0"));
     }
 
 
@@ -197,6 +222,9 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.TIMESTAMP, "2019-04-20 22:16:12");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("2019-04-20 22:16:12",
+                StringUtils.strip(insertOptional.orElse(null), ".0"));
     }
 
 
@@ -211,6 +239,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.TIME, "10:00:00");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("10:00:00", insertOptional.orElse(null));
     }
 
 
@@ -225,6 +255,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.CHAR, "test");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
 
@@ -239,6 +271,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.VARCHAR, "test");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
 
@@ -253,6 +287,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.TINYBLOB, "0x32");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("0x32", insertOptional.orElse(null));
     }
 
 
@@ -449,5 +485,19 @@ public abstract class DatabaseTestBase {
                 System.out.println("execute success");
             }
         }
+    }
+
+    // get col1 value after insert
+    private synchronized Optional<String> getData() throws SQLException {
+        String sql = String.format("SELECT col1 FROM %s", getTestTableName());
+        try (Connection dbConnection = getConnection();
+             Statement statement = dbConnection.createStatement()) {
+            // ResultSet
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs.next()) {
+                return Optional.ofNullable(rs.getString(1));
+            }
+        }
+        return Optional.empty();
     }
 }

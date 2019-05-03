@@ -62,11 +62,8 @@ public class Db2ColDataTypeConverter implements IColDataTypeConverter {
             case TIME:
                 result.setDataType(Db2DataType.TIME.getText());
                 break;
-            case CHAR:
-                result.setDataType(Db2DataType.CHAR.getText());
-                argStrings.addAll(useArgumentsStringList);
-                break;
             case VARCHAR:
+            case CHAR:
                 result.setDataType(Db2DataType.VARCHAR.getText());
                 argStrings.addAll(useArgumentsStringList);
                 break;

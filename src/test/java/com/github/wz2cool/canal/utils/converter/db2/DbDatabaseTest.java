@@ -5,13 +5,16 @@ import com.github.wz2cool.canal.utils.converter.DatabaseTestBase;
 import com.github.wz2cool.canal.utils.converter.IValuePlaceholderConverter;
 import net.sf.jsqlparser.JSQLParserException;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DbDatabaseTest extends DatabaseTestBase {
     private static String TABLE_NAME = "MY_TEST";
     private final Db2AlterColumnSqlConverter db2AlterColumnSqlConverter = new Db2AlterColumnSqlConverter();
