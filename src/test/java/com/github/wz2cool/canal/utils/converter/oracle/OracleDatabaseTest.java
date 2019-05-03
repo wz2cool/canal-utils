@@ -461,13 +461,13 @@ public class OracleDatabaseTest {
         }
     }
 
-    private void tryDropTestTable() throws SQLException {
+    private void tryDropTestTable() {
         String dropTableSql = String.format("DROP TABLE %s", TABLE_NAME);
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             // execute the SQL statement
             statement.execute(dropTableSql);
             System.out.println("Drop table success");
-        } catch (SQLSyntaxErrorException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
