@@ -3,18 +3,16 @@ package com.github.wz2cool.canal.utils.converter.oracle;
 import com.github.wz2cool.canal.utils.converter.AlterColumnSqlConverterBase;
 import com.github.wz2cool.canal.utils.converter.DatabaseTestBase;
 import com.github.wz2cool.canal.utils.converter.IValuePlaceholderConverter;
-import com.github.wz2cool.canal.utils.model.MysqlDataType;
-import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.alter.Alter;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OracleDatabaseTest extends DatabaseTestBase {
