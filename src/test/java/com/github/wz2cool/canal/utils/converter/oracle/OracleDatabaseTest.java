@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OracleDatabaseTest extends DatabaseTestBase {
@@ -40,7 +41,7 @@ public class OracleDatabaseTest extends DatabaseTestBase {
     protected Connection getConnection() throws SQLException {
         String username = "test";
         String password = "innodealing";
-        String URL = "jdbc:oracle:thin:@192.168.2.116:1521:XE";
+        String URL = "jdbc:oracle:thin:@192.168.2.117:1521:XE";
         return DriverManager.getConnection(URL, username, password);
     }
 
@@ -78,12 +79,12 @@ public class OracleDatabaseTest extends DatabaseTestBase {
     }
 
     @Test
-    public void addDATEColumn() throws SQLException, JSQLParserException {
+    public void addDATEColumn() throws SQLException, JSQLParserException, ParseException {
         super.addDATEColumn();
     }
 
     @Test
-    public void addDATETIMEColumn() throws SQLException, JSQLParserException {
+    public void addDATETIMEColumn() throws SQLException, JSQLParserException, ParseException {
         super.addDATETIMEColumn();
     }
 
@@ -148,12 +149,12 @@ public class OracleDatabaseTest extends DatabaseTestBase {
     }
 
     @Test
-    public void addTIMEColumn() throws SQLException, JSQLParserException {
+    public void addTIMEColumn() throws SQLException, JSQLParserException, ParseException {
         super.addTIMEColumn();
     }
 
     @Test
-    public void addTIMESTAMPColumn() throws SQLException, JSQLParserException {
+    public void addTIMESTAMPColumn() throws SQLException, JSQLParserException, ParseException {
         super.addTIMESTAMPColumn();
     }
 

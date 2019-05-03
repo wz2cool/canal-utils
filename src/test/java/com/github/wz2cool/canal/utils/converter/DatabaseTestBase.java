@@ -10,6 +10,9 @@ import org.junit.Assert;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -179,7 +182,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("3.33333", StringUtils.strip(insertOptional.orElse(null), "0"));
     }
 
-    public void addDATEColumn() throws JSQLParserException, SQLException {
+    public void addDATEColumn() throws JSQLParserException, SQLException, ParseException {
         System.out.println("addDATEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DATE NULL AFTER `assignTo`;", getTestTableName());
@@ -191,11 +194,14 @@ public abstract class DatabaseTestBase {
 
         insertData(MysqlDataType.DATE, "2019-04-20");
         Optional<String> insertOptional = getData();
-        Assert.assertEquals("2019-04-20", insertOptional.orElse(null));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date expectedDate = simpleDateFormat.parse("2019-04-20");
+        Date actualDate = simpleDateFormat.parse(insertOptional.orElse(null));
+        Assert.assertEquals(expectedDate, actualDate);
     }
 
 
-    public void addDATETIMEColumn() throws JSQLParserException, SQLException {
+    public void addDATETIMEColumn() throws JSQLParserException, SQLException, ParseException {
         System.out.println("addDATETIMEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DATETIME NULL AFTER `assignTo`;", getTestTableName());
@@ -207,12 +213,14 @@ public abstract class DatabaseTestBase {
 
         insertData(MysqlDataType.DATETIME, "2019-04-20 22:16:12");
         Optional<String> insertOptional = getData();
-        Assert.assertEquals("2019-04-20 22:16:12",
-                StringUtils.strip(insertOptional.orElse(null), ".0"));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date expectedDate = simpleDateFormat.parse("2019-04-20 22:16:12");
+        Date actualDate = simpleDateFormat.parse(insertOptional.orElse(null));
+        Assert.assertEquals(expectedDate, actualDate);
     }
 
 
-    public void addTIMESTAMPColumn() throws JSQLParserException, SQLException {
+    public void addTIMESTAMPColumn() throws JSQLParserException, SQLException, ParseException {
         System.out.println("addTIMESTAMPColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TIMESTAMP NULL AFTER `assignTo`;", getTestTableName());
@@ -224,12 +232,14 @@ public abstract class DatabaseTestBase {
 
         insertData(MysqlDataType.TIMESTAMP, "2019-04-20 22:16:12");
         Optional<String> insertOptional = getData();
-        Assert.assertEquals("2019-04-20 22:16:12",
-                StringUtils.strip(insertOptional.orElse(null), ".0"));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date expectedDate = simpleDateFormat.parse("2019-04-20 22:16:12");
+        Date actualDate = simpleDateFormat.parse(insertOptional.orElse(null));
+        Assert.assertEquals(expectedDate, actualDate);
     }
 
 
-    public void addTIMEColumn() throws JSQLParserException, SQLException {
+    public void addTIMEColumn() throws JSQLParserException, SQLException, ParseException {
         System.out.println("addTIMESTAMPColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TIME NULL AFTER `assignTo`;", getTestTableName());
@@ -241,7 +251,11 @@ public abstract class DatabaseTestBase {
 
         insertData(MysqlDataType.TIME, "10:00:00");
         Optional<String> insertOptional = getData();
-        Assert.assertEquals("10:00:00", insertOptional.orElse(null));
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date expectedDate = simpleDateFormat.parse("10:00:00");
+        Date actualDate = simpleDateFormat.parse(insertOptional.orElse(null));
+        Assert.assertEquals(expectedDate, actualDate);
     }
 
 
@@ -290,7 +304,7 @@ public abstract class DatabaseTestBase {
         insertData(MysqlDataType.TINYBLOB, "0x32");
 
         byte[] expectedBytes = "0x32".getBytes(StandardCharsets.ISO_8859_1);
-        Optional<byte[]> insertOptional = getByesData();
+        Optional<byte[]> insertOptional = getBytesData();
         Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
@@ -370,7 +384,7 @@ public abstract class DatabaseTestBase {
 
         insertData(MysqlDataType.BLOB, "0x32");
         byte[] expectedBytes = "0x32".getBytes(StandardCharsets.ISO_8859_1);
-        Optional<byte[]> insertOptional = getByesData();
+        Optional<byte[]> insertOptional = getBytesData();
         Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
@@ -387,7 +401,7 @@ public abstract class DatabaseTestBase {
 
         insertData(MysqlDataType.MEDIUMBLOB, "0x32");
         byte[] expectedBytes = "0x32".getBytes(StandardCharsets.ISO_8859_1);
-        Optional<byte[]> insertOptional = getByesData();
+        Optional<byte[]> insertOptional = getBytesData();
         Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
@@ -404,7 +418,7 @@ public abstract class DatabaseTestBase {
 
         insertData(MysqlDataType.LONGBLOB, "0x32");
         byte[] expectedBytes = "0x32".getBytes(StandardCharsets.ISO_8859_1);
-        Optional<byte[]> insertOptional = getByesData();
+        Optional<byte[]> insertOptional = getBytesData();
         Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
@@ -523,7 +537,7 @@ public abstract class DatabaseTestBase {
         return Optional.empty();
     }
 
-    private synchronized Optional<byte[]> getByesData() throws SQLException {
+    private synchronized Optional<byte[]> getBytesData() throws SQLException {
         String sql = String.format("SELECT col1 FROM %s", getTestTableName());
         try (Connection dbConnection = getConnection();
              Statement statement = dbConnection.createStatement()) {

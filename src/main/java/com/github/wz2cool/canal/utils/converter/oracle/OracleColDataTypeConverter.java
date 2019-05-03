@@ -49,15 +49,14 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             case TINYBLOB:
                 result.setDataType(OracleDataType.BLOB.getText());
                 break;
-            case CHAR:
-                result.setDataType(OracleDataType.NCHAR.getText());
-                argStrings.addAll(useArgumentsStringList);
-                break;
             case DATE:
             case DATETIME:
-            case TIME:
             case TIMESTAMP:
                 result.setDataType(OracleDataType.DATE.getText());
+                break;
+            case TIME:
+                result.setDataType(OracleDataType.VARCHAR2.getText());
+                argStrings.add("50");
                 break;
             case DECIMAL:
             case DOUBLE:
@@ -93,6 +92,7 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
                 result.setDataType(OracleDataType.NCLOB.getText());
                 break;
             case VARCHAR:
+            case CHAR:
                 result.setDataType(OracleDataType.NVARCHAR2.getText());
                 argStrings.addAll(useArgumentsStringList);
                 break;

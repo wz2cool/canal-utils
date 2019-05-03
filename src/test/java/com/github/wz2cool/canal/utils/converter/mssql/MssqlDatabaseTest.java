@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MssqlDatabaseTest extends DatabaseTestBase {
@@ -77,12 +78,12 @@ public class MssqlDatabaseTest extends DatabaseTestBase {
     }
 
     @Test
-    public void addDATEColumn() throws SQLException, JSQLParserException {
+    public void addDATEColumn() throws SQLException, JSQLParserException, ParseException {
         super.addDATEColumn();
     }
 
     @Test
-    public void addDATETIMEColumn() throws SQLException, JSQLParserException {
+    public void addDATETIMEColumn() throws SQLException, JSQLParserException, ParseException {
         super.addDATETIMEColumn();
     }
 
@@ -147,12 +148,12 @@ public class MssqlDatabaseTest extends DatabaseTestBase {
     }
 
     @Test
-    public void addTIMEColumn() throws SQLException, JSQLParserException {
+    public void addTIMEColumn() throws SQLException, JSQLParserException, ParseException {
         super.addTIMEColumn();
     }
 
     @Test
-    public void addTIMESTAMPColumn() throws SQLException, JSQLParserException {
+    public void addTIMESTAMPColumn() throws SQLException, JSQLParserException, ParseException {
         super.addTIMESTAMPColumn();
     }
 

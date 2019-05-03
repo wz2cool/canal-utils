@@ -68,9 +68,6 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
                 result.setDataType(MssqlDataType.TIME.getText());
                 break;
             case CHAR:
-                result.setDataType(MssqlDataType.NCHAR.getText());
-                argStrings.addAll(useArgumentsStringList);
-                break;
             case VARCHAR:
                 result.setDataType(MssqlDataType.NVARCHAR.getText());
                 argStrings.addAll(useArgumentsStringList);

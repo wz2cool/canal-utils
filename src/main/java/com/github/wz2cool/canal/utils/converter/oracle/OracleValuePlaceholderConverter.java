@@ -20,10 +20,6 @@ public class OracleValuePlaceholderConverter implements IValuePlaceholderConvert
                 result.setPlaceholder("to_date(?, 'yyyy-mm-dd hh24:mi:ss')");
                 result.setValue(value);
                 break;
-            case TIME:
-                result.setPlaceholder("to_date(?, 'hh24:mi:ss')");
-                result.setValue(value);
-                break;
             case TINYBLOB:
             case BLOB:
             case MEDIUMBLOB:
