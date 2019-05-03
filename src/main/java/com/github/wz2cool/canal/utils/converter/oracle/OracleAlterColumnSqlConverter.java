@@ -22,11 +22,11 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
             return result;
         }
 
-        List<AlterColumnExpression> alterColumnExpressions = getAlterColumnExpressions(mysqlAlter);
-        List<String> convertToAddColumnSqlList = convertToAddColumnSqlList(alterColumnExpressions);
-        List<String> convertToChangeColumnTypeSqlList = convertToChangeColumnTypeSqlList(alterColumnExpressions);
-        List<String> convertToRenameColumnSqlList = convertToRenameColumnSqlList(alterColumnExpressions);
-        List<String> convertToDropColumnSqlList = convertToDropColumnSqlList(alterColumnExpressions);
+        List<AlterColumnExpression> mysqlAlterColumnExpressions = getMysqlAlterColumnExpressions(mysqlAlter);
+        List<String> convertToAddColumnSqlList = convertToAddColumnSqlList(mysqlAlterColumnExpressions);
+        List<String> convertToChangeColumnTypeSqlList = convertToChangeColumnTypeSqlList(mysqlAlterColumnExpressions);
+        List<String> convertToRenameColumnSqlList = convertToRenameColumnSqlList(mysqlAlterColumnExpressions);
+        List<String> convertToDropColumnSqlList = convertToDropColumnSqlList(mysqlAlterColumnExpressions);
         result.addAll(convertToAddColumnSqlList);
         result.addAll(convertToChangeColumnTypeSqlList);
         result.addAll(convertToRenameColumnSqlList);
@@ -101,10 +101,6 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
             String tableName = renameColumnExpression.getTableName();
             String columnName = renameColumnExpression.getColumnName();
             String colOldName = renameColumnExpression.getColOldName();
-            if (columnName.equals(colOldName)) {
-                // ignore if column name change.
-                continue;
-            }
 
             String renameSql = String.format("ALTER TABLE %s RENAME COLUMN %s to %s",
                     tableName, colOldName, columnName);

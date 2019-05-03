@@ -5,19 +5,22 @@ import com.github.wz2cool.canal.utils.converter.oracle.OracleValuePlaceholderCon
 import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.alter.Alter;
 import org.junit.Test;
 
 import java.sql.*;
+import java.util.List;
 
 public class MssqlDatabaseTest {
     private static String TABLE_NAME = "MY_TEST";
 
-    private final OracleAlterColumnSqlConverter oracleAlterColumnSqlConverter = new OracleAlterColumnSqlConverter();
-    private final OracleValuePlaceholderConverter oracleValuePlaceholderConverter = new OracleValuePlaceholderConverter();
+    private final MssqlAlterColumnSqlConverter mssqlAlterColumnSqlConverter = new MssqlAlterColumnSqlConverter();
+    private final MssqlValuePlaceholderConverter mssqlValuePlaceholderConverter = new MssqlValuePlaceholderConverter();
 
 
     public MssqlDatabaseTest() throws ClassNotFoundException, SQLException {
-        String driver = "com.microsoft.mssql.jdbc.SQLServerDriver";
+        String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         Class.forName(driver);
         tryDropTestTable();
         createTestTable();
@@ -25,21 +28,30 @@ public class MssqlDatabaseTest {
 
     @Test
     public void addBITColumn() throws JSQLParserException, SQLException {
-       /* System.out.println("addBITColumn");
+        System.out.println("addBITColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` BIT NULL AFTER `assignTo`;", TABLE_NAME);
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = oracleAlterColumnSqlConverter.convert((Alter) statement);
+        List<String> result = mssqlAlterColumnSqlConverter.convert((Alter) statement);
         for (String sql : result) {
             executeAlterSql(sql);
         }
 
-        insertData(MysqlDataType.BIT, "1");*/
+        insertData(MysqlDataType.BIT, "1");
+    }
+
+    private synchronized void executeAlterSql(String sql) throws SQLException {
+        try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
+            // execute the SQL statement
+            System.out.println(String.format("sql: %s", sql));
+            statement.execute(sql);
+            System.out.println("execute success");
+        }
     }
 
     private synchronized void insertData(MysqlDataType mysqlDataType, String value) throws SQLException {
         try (Connection dbConnection = getConnection()) {
-            ValuePlaceholder valuePlaceholder = oracleValuePlaceholderConverter.convert(mysqlDataType, value);
+            ValuePlaceholder valuePlaceholder = mssqlValuePlaceholderConverter.convert(mysqlDataType, value);
             String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)",
                     TABLE_NAME, 1, valuePlaceholder.getPlaceholder());
 
@@ -77,7 +89,7 @@ public class MssqlDatabaseTest {
     private synchronized Connection getConnection() throws SQLException {
         String username = "sa";
         String password = "Innodealing@123";
-        String URL = "jdbc:mssql://192.168.2.117:1433;DatabaseName=test";
+        String URL = "jdbc:sqlserver://192.168.2.112:1433;DatabaseName=test";
         return DriverManager.getConnection(URL, username, password);
     }
 }

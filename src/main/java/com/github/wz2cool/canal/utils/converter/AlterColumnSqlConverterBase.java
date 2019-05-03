@@ -14,7 +14,13 @@ import java.util.Optional;
 public abstract class AlterColumnSqlConverterBase {
     public abstract List<String> convert(Alter mysqlAlter);
 
-    protected List<AlterColumnExpression> getAlterColumnExpressions(Alter mysqlAlter) {
+    /**
+     * Get list of AlterColumnExpression for mysql.
+     *
+     * @param mysqlAlter
+     * @return
+     */
+    protected List<AlterColumnExpression> getMysqlAlterColumnExpressions(Alter mysqlAlter) {
         List<AlterColumnExpression> result = new ArrayList<>();
         if (mysqlAlter == null) {
             return result;
@@ -38,14 +44,14 @@ public abstract class AlterColumnSqlConverterBase {
 
         for (AlterExpression alterExpression : alterExpressionsForColumn) {
             List<AlterColumnExpression> alterColumnExpressions =
-                    getAlterColumnExpressions(tableName, alterExpression);
+                    getMysqlAlterColumnExpressions(tableName, alterExpression);
             result.addAll(alterColumnExpressions);
         }
 
         return result;
     }
 
-    private List<AlterColumnExpression> getAlterColumnExpressions(
+    private List<AlterColumnExpression> getMysqlAlterColumnExpressions(
             final String tableName, final AlterExpression alterExpression) {
         List<AlterColumnExpression> result = new ArrayList<>();
         if (alterExpression == null) {
