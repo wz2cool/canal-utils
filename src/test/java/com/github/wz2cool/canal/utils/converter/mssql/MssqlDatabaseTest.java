@@ -186,6 +186,11 @@ public class MssqlDatabaseTest extends DatabaseTestBase {
         super.renameColumn();
     }
 
+    @Test
+    public void dropColumn() throws SQLException, JSQLParserException {
+        super.dropColumn();
+    }
+
     private void tryDropTestTable() {
         String dropTableSql = String.format("DROP TABLE %s", TABLE_NAME);
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {

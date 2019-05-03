@@ -409,6 +409,24 @@ public abstract class DatabaseTestBase {
         insertData(MysqlDataType.INT, "1");
     }
 
+    protected void dropColumn() throws SQLException, JSQLParserException {
+        System.out.println("dropColumn");
+        String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
+                "\tADD COLUMN `col1` MEDIUMTEXT NULL AFTER `assignTo`;", getTestTableName());
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
+        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+
+        String mysqlDropColumn = String.format("alter table `%s` drop column `%s`;", getTestTableName(), "col1");
+        statement = CCJSqlParserUtil.parse(mysqlDropColumn);
+        result = getAlterColumnSqlConverter().convert((Alter) statement);
+        for (String sql : result) {
+            executeAlterSql(sql);
+        }
+    }
+
     private synchronized void executeAlterSql(String sql) throws SQLException {
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             // execute the SQL statement

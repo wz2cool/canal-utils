@@ -189,6 +189,10 @@ public class OracleDatabaseTest extends DatabaseTestBase {
         super.renameColumn();
     }
 
+    @Test
+    public void dropColumn() throws SQLException, JSQLParserException {
+        super.dropColumn();
+    }
 
     private void tryDropTestTable() {
         String dropTableSql = String.format("DROP TABLE %s", TABLE_NAME);
