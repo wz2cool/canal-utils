@@ -1,6 +1,6 @@
 package com.github.wz2cool.canal.utils.model;
 
-public enum SqlserverDataType {
+public enum MssqlDataType {
     CHAR("CHAR"),
     VARCHAR("VARCHAR"),
     TEXT("TEXT"),
@@ -31,7 +31,7 @@ public enum SqlserverDataType {
 
     private String text;
 
-    SqlserverDataType(String text) {
+    MssqlDataType(String text) {
         this.text = text;
     }
 

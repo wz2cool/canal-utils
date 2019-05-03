@@ -1,15 +1,15 @@
-package com.github.wz2cool.canal.utils.converter.sqlserver;
+package com.github.wz2cool.canal.utils.converter.mssql;
 
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.MysqlDataType;
-import com.github.wz2cool.canal.utils.model.SqlserverDataType;
+import com.github.wz2cool.canal.utils.model.MssqlDataType;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SqlserverColDataTypeConverter implements IColDataTypeConverter {
+public class MssqlColDataTypeConverter implements IColDataTypeConverter {
     @Override
     public Optional<ColDataType> convert(ColDataType mysqlColDataType) {
         if (mysqlColDataType == null) {
@@ -35,57 +35,57 @@ public class SqlserverColDataTypeConverter implements IColDataTypeConverter {
 
         switch (mysqlDataType) {
             case BIT:
-                result.setDataType(SqlserverDataType.BIT.getText());
+                result.setDataType(MssqlDataType.BIT.getText());
                 break;
             case TINYINT:
-                result.setDataType(SqlserverDataType.TINYINT.getText());
+                result.setDataType(MssqlDataType.TINYINT.getText());
                 break;
             case SMALLINT:
-                result.setDataType(SqlserverDataType.SMALLINT.getText());
+                result.setDataType(MssqlDataType.SMALLINT.getText());
                 break;
             case MEDIUMINT:
             case INT:
             case INTEGER:
-                result.setDataType(SqlserverDataType.INT.getText());
+                result.setDataType(MssqlDataType.INT.getText());
                 break;
             case BIGINT:
-                result.setDataType(SqlserverDataType.BIGINT.getText());
+                result.setDataType(MssqlDataType.BIGINT.getText());
                 break;
             case FLOAT:
             case DOUBLE:
             case DECIMAL:
-                result.setDataType(SqlserverDataType.DECIMAL.getText());
+                result.setDataType(MssqlDataType.DECIMAL.getText());
                 break;
             case DATE:
-                result.setDataType(SqlserverDataType.DATE.getText());
+                result.setDataType(MssqlDataType.DATE.getText());
                 break;
             case DATETIME:
-                result.setDataType(SqlserverDataType.DATETIME.getText());
+                result.setDataType(MssqlDataType.DATETIME.getText());
                 break;
             case TIMESTAMP:
-                result.setDataType(SqlserverDataType.TIMESTAMP.getText());
+                result.setDataType(MssqlDataType.TIMESTAMP.getText());
                 break;
             case TIME:
-                result.setDataType(SqlserverDataType.TIME.getText());
+                result.setDataType(MssqlDataType.TIME.getText());
                 break;
             case CHAR:
-                result.setDataType(SqlserverDataType.NCHAR.getText());
+                result.setDataType(MssqlDataType.NCHAR.getText());
                 break;
             case VARCHAR:
-                result.setDataType(SqlserverDataType.NVARCHAR.getText());
+                result.setDataType(MssqlDataType.NVARCHAR.getText());
                 argStrings.addAll(useArgumentsStringList);
                 break;
             case TINYBLOB:
             case BLOB:
             case MEDIUMBLOB:
             case LONGBLOB:
-                result.setDataType(SqlserverDataType.VARBINARY.getText());
+                result.setDataType(MssqlDataType.VARBINARY.getText());
                 break;
             case TINYTEXT:
             case TEXT:
             case MEDIUMTEXT:
             case LONGTEXT:
-                result.setDataType(SqlserverDataType.NTEXT.getText());
+                result.setDataType(MssqlDataType.NTEXT.getText());
                 break;
         }
 
