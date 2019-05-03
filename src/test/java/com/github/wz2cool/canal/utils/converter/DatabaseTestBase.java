@@ -8,6 +8,7 @@ import net.sf.jsqlparser.statement.alter.Alter;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
@@ -287,8 +288,10 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.TINYBLOB, "0x32");
-        Optional<String> insertOptional = getData();
-        Assert.assertEquals("0x32", insertOptional.orElse(null));
+
+        byte[] expectedBytes = "0x32".getBytes(StandardCharsets.ISO_8859_1);
+        Optional<byte[]> insertOptional = getByesData();
+        Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
 
@@ -303,6 +306,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.TINYTEXT, "test");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
 
@@ -317,6 +322,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.TEXT, "test");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
 
@@ -331,6 +338,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.MEDIUMTEXT, "test");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
 
@@ -345,6 +354,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.LONGTEXT, "test");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
     public void addBLOBColumn() throws JSQLParserException, SQLException {
@@ -358,6 +369,9 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.BLOB, "0x32");
+        byte[] expectedBytes = "0x32".getBytes(StandardCharsets.ISO_8859_1);
+        Optional<byte[]> insertOptional = getByesData();
+        Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
 
@@ -372,6 +386,9 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.MEDIUMBLOB, "0x32");
+        byte[] expectedBytes = "0x32".getBytes(StandardCharsets.ISO_8859_1);
+        Optional<byte[]> insertOptional = getByesData();
+        Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
 
@@ -386,6 +403,9 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.LONGBLOB, "0x32");
+        byte[] expectedBytes = "0x32".getBytes(StandardCharsets.ISO_8859_1);
+        Optional<byte[]> insertOptional = getByesData();
+        Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
 
@@ -421,6 +441,8 @@ public abstract class DatabaseTestBase {
         }
 
         insertData(MysqlDataType.VARCHAR, "TEST");
+        Optional<String> insertOptional = getData();
+        Assert.assertEquals("TEST", insertOptional.orElse(null));
     }
 
 
@@ -496,6 +518,19 @@ public abstract class DatabaseTestBase {
             ResultSet rs = statement.executeQuery(sql);
             if (rs.next()) {
                 return Optional.ofNullable(rs.getString(1));
+            }
+        }
+        return Optional.empty();
+    }
+
+    private synchronized Optional<byte[]> getByesData() throws SQLException {
+        String sql = String.format("SELECT col1 FROM %s", getTestTableName());
+        try (Connection dbConnection = getConnection();
+             Statement statement = dbConnection.createStatement()) {
+            // ResultSet
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs.next()) {
+                return Optional.ofNullable(rs.getBytes(1));
             }
         }
         return Optional.empty();
