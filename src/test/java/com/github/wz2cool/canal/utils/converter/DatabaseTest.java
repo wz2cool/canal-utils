@@ -1,5 +1,9 @@
 package com.github.wz2cool.canal.utils.converter;
 
+import com.github.wz2cool.canal.utils.converter.factory.AlterColumnSqlConverterFactory;
+import com.github.wz2cool.canal.utils.converter.factory.ValuePlaceholderConverterFactory;
+import com.github.wz2cool.canal.utils.helper.ConfigHelper;
+import com.github.wz2cool.canal.utils.helper.DatabaseInfo;
 import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
 import net.sf.jsqlparser.JSQLParserException;
@@ -7,6 +11,10 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.alter.Alter;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
@@ -16,15 +24,44 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class DatabaseTestBase {
-    protected abstract String getTestTableName();
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class DatabaseTest {
+    private final AlterColumnSqlConverterFactory alterColumnSqlConverterFactory = new AlterColumnSqlConverterFactory();
+    private final ValuePlaceholderConverterFactory valuePlaceholderConverterFactory = new ValuePlaceholderConverterFactory();
 
-    protected abstract AlterColumnSqlConverterBase getAlterColumnSqlConverter();
+    private final DatabaseInfo databaseInfo;
 
-    protected abstract IValuePlaceholderConverter getValuePlaceholderConverter();
+    public DatabaseTest() {
+        this.databaseInfo = ConfigHelper.getInstance().getDatabaseInfo();
+    }
 
-    protected abstract Connection getConnection() throws SQLException;
+    private String getTestTableName() {
+        return "MY_TEST";
+    }
 
+    private AlterColumnSqlConverterBase getAlterColumnSqlConverter() {
+        return alterColumnSqlConverterFactory.create(this.databaseInfo.getDatabaseType());
+    }
+
+    private IValuePlaceholderConverter getValuePlaceholderConverter() {
+        return valuePlaceholderConverterFactory.create(this.databaseInfo.getDatabaseType());
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                this.databaseInfo.getJdbcUrl(),
+                this.databaseInfo.getUsername(),
+                this.databaseInfo.getPassword());
+    }
+
+    @Before
+    public void initTable() throws SQLException, ClassNotFoundException {
+        Class.forName(this.databaseInfo.getClassName());
+        tryDropTestTable();
+        createTestTable();
+    }
+
+    @Test
     public void addBITColumn() throws JSQLParserException, SQLException {
         System.out.println("addBITColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -40,6 +77,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
+    @Test
     public void addTINYINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addTINYINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -55,6 +93,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
+    @Test
     public void addMEDIUMINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addMEDIUMINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -70,7 +109,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addSMALLINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addSMALLINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -86,7 +125,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -102,7 +141,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addINTEGERColumn() throws JSQLParserException, SQLException {
         System.out.println("addINTEGERColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -118,7 +157,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addBIGINTColumn() throws JSQLParserException, SQLException {
         System.out.println("addBIGINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -134,7 +173,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("1", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addFLOATColumn() throws JSQLParserException, SQLException {
         System.out.println("addFLOATColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -150,7 +189,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("3.33333", StringUtils.strip(insertOptional.orElse(null), "0"));
     }
 
-
+    @Test
     public void addDOUBLEColumn() throws JSQLParserException, SQLException {
         System.out.println("addDOUBLEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -166,7 +205,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("3.33333", StringUtils.strip(insertOptional.orElse(null), "0"));
     }
 
-
+    @Test
     public void addDECIMALColumn() throws JSQLParserException, SQLException {
         System.out.println("addDECIMALColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -182,6 +221,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("3.33333", StringUtils.strip(insertOptional.orElse(null), "0"));
     }
 
+    @Test
     public void addDATEColumn() throws JSQLParserException, SQLException, ParseException {
         System.out.println("addDATEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -200,7 +240,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals(expectedDate, actualDate);
     }
 
-
+    @Test
     public void addDATETIMEColumn() throws JSQLParserException, SQLException, ParseException {
         System.out.println("addDATETIMEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -219,7 +259,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals(expectedDate, actualDate);
     }
 
-
+    @Test
     public void addTIMESTAMPColumn() throws JSQLParserException, SQLException, ParseException {
         System.out.println("addTIMESTAMPColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -238,7 +278,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals(expectedDate, actualDate);
     }
 
-
+    @Test
     public void addTIMEColumn() throws JSQLParserException, SQLException, ParseException {
         System.out.println("addTIMESTAMPColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -258,7 +298,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals(expectedDate, actualDate);
     }
 
-
+    @Test
     public void addCHARColumn() throws JSQLParserException, SQLException {
         System.out.println("addCHARColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -274,7 +314,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addVARCHARColumn() throws JSQLParserException, SQLException {
         System.out.println("addVARCHARColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -290,7 +330,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addTINYBLOBColumn() throws JSQLParserException, SQLException {
         System.out.println("addTINYBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -308,7 +348,7 @@ public abstract class DatabaseTestBase {
         Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addTINYTEXTColumn() throws JSQLParserException, SQLException {
         System.out.println("addTINYTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -324,7 +364,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addTEXTColumn() throws JSQLParserException, SQLException {
         System.out.println("addTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -340,7 +380,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addMEDIUMTEXTColumn() throws JSQLParserException, SQLException {
         System.out.println("addTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -356,7 +396,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addLONGTEXTColumn() throws JSQLParserException, SQLException {
         System.out.println("addLONGTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -372,6 +412,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("test", insertOptional.orElse(null));
     }
 
+    @Test
     public void addBLOBColumn() throws JSQLParserException, SQLException {
         System.out.println("addBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -388,7 +429,7 @@ public abstract class DatabaseTestBase {
         Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addMEDIUMBLOBColumn() throws JSQLParserException, SQLException {
         System.out.println("addBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -405,7 +446,7 @@ public abstract class DatabaseTestBase {
         Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addLONGBLOBColumn() throws JSQLParserException, SQLException {
         System.out.println("addLONGBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -422,7 +463,7 @@ public abstract class DatabaseTestBase {
         Assert.assertArrayEquals(expectedBytes, insertOptional.orElse(null));
     }
 
-
+    @Test
     public void addMultiColumns() throws JSQLParserException, SQLException {
         System.out.println("addMultiColumns");
         String msqlAddColumn = String.format("ALTER TABLE %s\n" +
@@ -435,7 +476,7 @@ public abstract class DatabaseTestBase {
         }
     }
 
-
+    @Test
     public void changeColumnType() throws SQLException, JSQLParserException {
         System.out.println("addMultiColumns");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -459,7 +500,7 @@ public abstract class DatabaseTestBase {
         Assert.assertEquals("TEST", insertOptional.orElse(null));
     }
 
-
+    @Test
     public void renameColumn() throws SQLException, JSQLParserException {
         System.out.println("addMultiColumns");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
@@ -481,7 +522,8 @@ public abstract class DatabaseTestBase {
         insertData(MysqlDataType.INT, "1");
     }
 
-    protected void dropColumn() throws SQLException, JSQLParserException {
+    @Test
+    public void dropColumn() throws SQLException, JSQLParserException {
         System.out.println("dropColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMTEXT NULL AFTER `assignTo`;", getTestTableName());
@@ -548,5 +590,26 @@ public abstract class DatabaseTestBase {
             }
         }
         return Optional.empty();
+    }
+
+    private void tryDropTestTable() {
+        String dropTableSql = String.format("DROP TABLE %s", getTestTableName());
+        try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
+            // execute the SQL statement
+            statement.execute(dropTableSql);
+            System.out.println("Drop table success");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void createTestTable() throws SQLException {
+        String createTableSQL = String.format("CREATE TABLE %s (USER_ID INT NOT NULL, PRIMARY KEY (USER_ID) )",
+                getTestTableName());
+
+        try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
+            statement.execute(createTableSQL);
+            System.out.println("create table success");
+        }
     }
 }

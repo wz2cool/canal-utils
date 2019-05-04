@@ -1,9 +1,10 @@
 package com.github.wz2cool.canal.utils.converter.oracle;
 
+import com.github.wz2cool.canal.utils.helper.ConfigHelper;
+import com.github.wz2cool.canal.utils.helper.DatabaseInfo;
 import com.github.wz2cool.canal.utils.model.OracleDataType;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 import org.junit.Test;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class OracleColDataTypeConverterTest {
 
     @Test
     public void testInvalidType() {
-        ColDataType colDataType = new ColDataType();
+                ColDataType colDataType = new ColDataType();
         colDataType.setDataType("xxxxxxxx");
         List<String> args = new ArrayList<>();
         args.add("200");
