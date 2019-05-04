@@ -102,7 +102,7 @@ public class PostgresqlAlterColumnSqlConverter extends AlterColumnSqlConverterBa
             String columnName = renameColumnExpression.getColumnName();
             String colOldName = renameColumnExpression.getColOldName();
 
-            String renameSql = String.format("ALTER TABLE %s RENAME COLUMN %s TO %s;",
+            String renameSql = String.format("ALTER TABLE %s RENAME COLUMN %s TO %s",
                     tableName, colOldName, columnName);
             result.add(renameSql);
         }
