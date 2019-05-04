@@ -81,7 +81,7 @@ public class PostgresqlAlterColumnSqlConverter extends AlterColumnSqlConverterBa
                 throw new NotSupportDataTypeException(errorMsg);
             }
             String postgresqlDataTypeString = getDataTypeString(postgresqlColDataTypeOptional.get());
-            String changeTypeSql = String.format("ALTER TABLE %s ALTER COLUMN %s %s",
+            String changeTypeSql = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s",
                     tableName, columnName, postgresqlDataTypeString);
             result.add(changeTypeSql);
         }
@@ -102,7 +102,7 @@ public class PostgresqlAlterColumnSqlConverter extends AlterColumnSqlConverterBa
             String columnName = renameColumnExpression.getColumnName();
             String colOldName = renameColumnExpression.getColOldName();
 
-            String renameSql = String.format("EXEC sp_RENAME '%s.%s', '%s', 'COLUMN'",
+            String renameSql = String.format("ALTER TABLE %s RENAME COLUMN %s TO %s;",
                     tableName, colOldName, columnName);
             result.add(renameSql);
         }
