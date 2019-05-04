@@ -68,6 +68,7 @@ public class PostgresqlColDataTypeConverter implements IColDataTypeConverter {
                 result.setDataType(PostgresqlDataType.VARCHAR.getText());
                 argStrings.addAll(useArgumentsStringList);
                 break;
+            case MEDIUMBLOB:
             case TINYBLOB:
             case BLOB:
             case LONGBLOB:
