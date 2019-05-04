@@ -17,7 +17,7 @@ public class OracleColDataTypeConverterTest {
 
     @Test
     public void testInvalidType() {
-                ColDataType colDataType = new ColDataType();
+        ColDataType colDataType = new ColDataType();
         colDataType.setDataType("xxxxxxxx");
         List<String> args = new ArrayList<>();
         args.add("200");

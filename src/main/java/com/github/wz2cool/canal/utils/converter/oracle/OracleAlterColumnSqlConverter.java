@@ -53,7 +53,7 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
                 throw new NotSupportDataTypeException(errorMsg);
             }
 
-            String oracleDataTypeString = getOracleDataTypeString(oracleColDataTypeOptional.get());
+            String oracleDataTypeString = getDataTypeString(oracleColDataTypeOptional.get());
             String addColumnSql = String.format("ALTER TABLE %s ADD (%s %s)",
                     tableName, columnName, oracleDataTypeString);
             result.add(addColumnSql);
@@ -80,7 +80,7 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
                 String errorMsg = String.format("[Change Type] Cannot convert data type: %s", mysqlColDataType.getDataType());
                 throw new NotSupportDataTypeException(errorMsg);
             }
-            String oracleDataTypeString = getOracleDataTypeString(oracleColDataTypeOptional.get());
+            String oracleDataTypeString = getDataTypeString(oracleColDataTypeOptional.get());
             String changeTypeSql = String.format("ALTER TABLE %s MODIFY (%s %s)",
                     tableName, columnName, oracleDataTypeString);
             result.add(changeTypeSql);
@@ -125,14 +125,5 @@ public class OracleAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
             result.add(dropSql);
         }
         return result;
-    }
-
-    private String getOracleDataTypeString(final ColDataType colDataType) {
-        List<String> argumentsStringList = colDataType.getArgumentsStringList();
-        if (argumentsStringList == null || argumentsStringList.isEmpty()) {
-            return colDataType.getDataType();
-        } else {
-            return colDataType.toString();
-        }
     }
 }

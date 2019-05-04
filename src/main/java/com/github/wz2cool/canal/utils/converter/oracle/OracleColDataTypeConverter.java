@@ -101,6 +101,4 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
         result.setArgumentsStringList(argStrings);
         return result;
     }
-
-
 }

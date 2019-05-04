@@ -51,6 +51,16 @@ public abstract class AlterColumnSqlConverterBase {
         return result;
     }
 
+
+    protected String getDataTypeString(final ColDataType colDataType) {
+        List<String> argumentsStringList = colDataType.getArgumentsStringList();
+        if (argumentsStringList == null || argumentsStringList.isEmpty()) {
+            return colDataType.getDataType();
+        } else {
+            return colDataType.toString();
+        }
+    }
+
     private List<AlterColumnExpression> getMysqlAlterColumnExpressions(
             final String tableName, final AlterExpression alterExpression) {
         List<AlterColumnExpression> result = new ArrayList<>();

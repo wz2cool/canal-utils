@@ -1,4 +1,4 @@
-package com.github.wz2cool.canal.utils.converter.mssql;
+package com.github.wz2cool.canal.utils.converter.postgresql;
 
 import com.github.wz2cool.canal.utils.converter.AlterColumnSqlConverterBase;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
@@ -12,9 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MssqlAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
-
-    private final MssqlColDataTypeConverter mssqlColDataTypeConverter = new MssqlColDataTypeConverter();
+public class PostgresqlAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
+    private final PostgresqlColDataTypeConverter postgresqlColDataTypeConverter = new PostgresqlColDataTypeConverter();
 
     @Override
     public List<String> convert(Alter mysqlAlter) {
@@ -48,15 +47,15 @@ public class MssqlAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
             String tableName = addColumnExpression.getTableName();
             String columnName = addColumnExpression.getColumnName();
             ColDataType mysqlColDataType = addColumnExpression.getColDataType();
-            Optional<ColDataType> mssqlColDataTypeOptional = mssqlColDataTypeConverter.convert(mysqlColDataType);
-            if (!mssqlColDataTypeOptional.isPresent()) {
+            Optional<ColDataType> postgresqlColDataTypeOptional = postgresqlColDataTypeConverter.convert(mysqlColDataType);
+            if (!postgresqlColDataTypeOptional.isPresent()) {
                 String errorMsg = String.format("[Add Column] Cannot convert data type: %s", mysqlColDataType.getDataType());
                 throw new NotSupportDataTypeException(errorMsg);
             }
 
-            String mssqlDataTypeString = getDataTypeString(mssqlColDataTypeOptional.get());
+            String postgresqlDataTypeString = getDataTypeString(postgresqlColDataTypeOptional.get());
             String addColumnSql = String.format("ALTER TABLE %s ADD %s %s",
-                    tableName, columnName, mssqlDataTypeString);
+                    tableName, columnName, postgresqlDataTypeString);
             result.add(addColumnSql);
         }
         return result;
@@ -76,14 +75,14 @@ public class MssqlAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
             String columnName = changeColumnTypeExpression.getColumnName();
 
             ColDataType mysqlColDataType = changeColumnTypeExpression.getColDataType();
-            Optional<ColDataType> mssqlColDataTypeOptional = mssqlColDataTypeConverter.convert(mysqlColDataType);
-            if (!mssqlColDataTypeOptional.isPresent()) {
+            Optional<ColDataType> postgresqlColDataTypeOptional = postgresqlColDataTypeConverter.convert(mysqlColDataType);
+            if (!postgresqlColDataTypeOptional.isPresent()) {
                 String errorMsg = String.format("[Change Type] Cannot convert data type: %s", mysqlColDataType.getDataType());
                 throw new NotSupportDataTypeException(errorMsg);
             }
-            String mssqlDataTypeString = getDataTypeString(mssqlColDataTypeOptional.get());
+            String postgresqlDataTypeString = getDataTypeString(postgresqlColDataTypeOptional.get());
             String changeTypeSql = String.format("ALTER TABLE %s ALTER COLUMN %s %s",
-                    tableName, columnName, mssqlDataTypeString);
+                    tableName, columnName, postgresqlDataTypeString);
             result.add(changeTypeSql);
         }
         return result;
