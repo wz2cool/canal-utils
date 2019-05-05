@@ -2,20 +2,11 @@ language: java
 sudo: false
 install: true
 
-env:
-  - DATABASE_TYPE=postgresql
-
-services:
-  - postgresql
-
 before_install:
   - wget http://nexus.saas.hand-china.com/content/repositories/rdc/com/oracle/ojdbc7/12.1.0.2/ojdbc7-12.1.0.2.jar
   - mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2 -Dpackaging=jar -Dfile=ojdbc7-12.1.0.2.jar
   - wget https://artifacts.alfresco.com/nexus/content/repositories/public/com/ibm/db2/jcc/db2jcc4/10.1/db2jcc4-10.1.jar
   - mvn install:install-file -DgroupId=com.ibm.db2.jcc -DartifactId=db2jcc4 -Dversion=10.1 -Dpackaging=jar -Dfile=db2jcc4-10.1.jar
-
-before_script:
-  - psql -c 'create database test;' -U postgres
 
 after_success:
   - mvn clean test
