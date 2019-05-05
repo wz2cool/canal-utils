@@ -1,5 +1,7 @@
 package com.github.wz2cool.canal.utils.helper;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,7 +30,17 @@ public class ConfigHelper {
             try (InputStream inputStream = new FileInputStream(file)) {
                 Properties prop = new Properties();
                 prop.load(inputStream);
-                String databaseType = prop.getProperty("database-type");
+                String databaseTypePlaceholder = prop.getProperty("database-type");
+                String databaseType;
+                if (databaseTypePlaceholder.startsWith("${")) {
+                    databaseType = System.getenv(databaseTypePlaceholder
+                            .replace("${", "")
+                            .replace("}", ""));
+                } else {
+                    databaseType = databaseTypePlaceholder;
+                }
+
+                databaseType = StringUtils.isBlank(databaseType) ? "h2" : databaseType;
                 String dbPropertyFilePath = String.format("database-%s.properties", databaseType);
                 File dbPropertyFile = new File(Objects.requireNonNull(classLoader.getResource(dbPropertyFilePath)).getFile());
                 try (InputStream dbInputStream = new FileInputStream(dbPropertyFile)) {
