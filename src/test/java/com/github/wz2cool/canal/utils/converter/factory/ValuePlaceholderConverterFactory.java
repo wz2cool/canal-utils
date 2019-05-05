@@ -17,6 +17,7 @@ public class ValuePlaceholderConverterFactory {
             case "db2":
                 return new Db2ValuePlaceholderConverter();
             case "postgresql":
+            case "travis":
                 return new PostgresqlValuePlaceholderConverter();
             case "hive":
                 return new HiveValuePlaceholderConverter();

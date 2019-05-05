@@ -17,6 +17,7 @@ public class AlterColumnSqlConverterFactory {
             case "db2":
                 return new Db2AlterColumnSqlConverter();
             case "postgresql":
+            case "travis":
                 return new PostgresqlAlterColumnSqlConverter();
             case "hive":
                 return new HiveAlterColumnSqlConverter();
