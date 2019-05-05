@@ -8,4 +8,4 @@ canal-utils
 
 # 功能
 ## 转化器
-Mysql DDL 转化到不同数据库上，支持：db2, hive, mssql, oracle, postgresql. [wiki 文档](http://www.baidu.com) 
+Mysql DDL 语句转化到不同数据库上，支持：db2, hive, mssql, oracle, postgresql. [wiki 文档](http://www.baidu.com) 
