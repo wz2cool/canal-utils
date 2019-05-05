@@ -6,12 +6,12 @@ services:
   - postgresql
 
 before_script:
-  - psql -c 'create database test;' -U postgres
-
-after_success:
   - mvn clean
   - mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2 -Dpackaging=jar -Dfile=lib/ojdbc7-12.1.0.2.jar
   - mvn install:install-file -Dfile=lib/db2jcc4-10.1.jar -DgroupId=com.ibm.db2.jcc -DartifactId=db2jcc4 -Dversion=10.1 -Dpackaging=jar
+  - psql -c 'create database test;' -U postgres
+
+after_success:
   - mvn test
 
 cache:
