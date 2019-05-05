@@ -6,8 +6,57 @@
 
     <groupId>com.github.wz2cool</groupId>
     <artifactId>canal-utils</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
+
+    <organization>
+        <name>wz2cool</name>
+        <url>https://github.com/wz2cool</url>
+    </organization>
+
+    <!-- issue -->
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/wz2cool/mybatis-dynamic-query/issues</url>
+    </issueManagement>
+
+    <!-- license -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- 开发者 -->
+    <developers>
+        <developer>
+            <id>wz2cool</id>
+            <name>Frank Wang</name>
+            <email>wz2cool@live.cn</email>
+            <roles>
+                <role>creator</role>
+                <role>manager</role>
+                <role>developer</role>
+                <role>committer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- 代码库 -->
+    <scm>
+        <connection>scm:git:git@github.com/wz2cool/canal-utils.git</connection>
+        <developerConnection>scm:git:git@github.com/wz2cool/canal-utils.git</developerConnection>
+        <url>git@github.com/wz2cool/canal-utils.git</url>
+        <tag>master</tag>
+    </scm>
+
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
@@ -93,4 +142,63 @@
             </testResource>
         </testResources>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>
