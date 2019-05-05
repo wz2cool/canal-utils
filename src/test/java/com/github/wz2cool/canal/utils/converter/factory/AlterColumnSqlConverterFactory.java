@@ -2,6 +2,7 @@ package com.github.wz2cool.canal.utils.converter.factory;
 
 import com.github.wz2cool.canal.utils.converter.AlterColumnSqlConverterBase;
 import com.github.wz2cool.canal.utils.converter.db2.Db2AlterColumnSqlConverter;
+import com.github.wz2cool.canal.utils.converter.hive.HiveAlterColumnSqlConverter;
 import com.github.wz2cool.canal.utils.converter.mssql.MssqlAlterColumnSqlConverter;
 import com.github.wz2cool.canal.utils.converter.oracle.OracleAlterColumnSqlConverter;
 import com.github.wz2cool.canal.utils.converter.postgresql.PostgresqlAlterColumnSqlConverter;
@@ -17,6 +18,8 @@ public class AlterColumnSqlConverterFactory {
                 return new Db2AlterColumnSqlConverter();
             case "postgresql":
                 return new PostgresqlAlterColumnSqlConverter();
+            case "hive":
+                return new HiveAlterColumnSqlConverter();
             default:
                 throw new RuntimeException(String.format("not support database type: '%s'", databaseType));
         }

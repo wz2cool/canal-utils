@@ -604,7 +604,7 @@ public class DatabaseTest {
     }
 
     private void createTestTable() throws SQLException {
-        String createTableSQL = String.format("CREATE TABLE %s (USER_ID INT NOT NULL, PRIMARY KEY (USER_ID) )",
+        String createTableSQL = String.format("CREATE TABLE %s (USER_ID INT)",
                 getTestTableName());
 
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
