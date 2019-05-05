@@ -67,7 +67,7 @@ public class OracleColDataTypeConverterTest {
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.NCHAR.getText(), resultValue.getDataType());
+        assertEquals(OracleDataType.NVARCHAR2.getText(), resultValue.getDataType());
         assertEquals("200", resultValue.getArgumentsStringList().get(0));
     }
 
@@ -127,17 +127,6 @@ public class OracleColDataTypeConverterTest {
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.FLOAT.getText(), resultValue.getDataType());
         assertEquals("24", resultValue.getArgumentsStringList().get(0));
-    }
-
-    @Test
-    public void testENUM() {
-        ColDataType colDataType = new ColDataType();
-        colDataType.setDataType("ENUM");
-        Optional<ColDataType> result = converter.convert(colDataType);
-        assertTrue(result.isPresent());
-
-        ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.NVARCHAR2.getText(), resultValue.getDataType());
     }
 
     @Test
@@ -224,40 +213,6 @@ public class OracleColDataTypeConverterTest {
     }
 
     @Test
-    public void testNUMERIC() {
-        ColDataType colDataType = new ColDataType();
-        colDataType.setDataType("NUMERIC");
-        Optional<ColDataType> result = converter.convert(colDataType);
-        assertTrue(result.isPresent());
-
-        ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
-    }
-
-    @Test
-    public void testREAL() {
-        ColDataType colDataType = new ColDataType();
-        colDataType.setDataType("REAL");
-        Optional<ColDataType> result = converter.convert(colDataType);
-        assertTrue(result.isPresent());
-
-        ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.FLOAT.getText(), resultValue.getDataType());
-        assertEquals("24", resultValue.getArgumentsStringList().get(0));
-    }
-
-    @Test
-    public void testSET() {
-        ColDataType colDataType = new ColDataType();
-        colDataType.setDataType("SET");
-        Optional<ColDataType> result = converter.convert(colDataType);
-        assertTrue(result.isPresent());
-
-        ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.NCLOB.getText(), resultValue.getDataType());
-    }
-
-    @Test
     public void testSMALLINT() {
         ColDataType colDataType = new ColDataType();
         colDataType.setDataType("SMALLINT");
@@ -288,7 +243,7 @@ public class OracleColDataTypeConverterTest {
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.DATE.getText(), resultValue.getDataType());
+        assertEquals(OracleDataType.VARCHAR2.getText(), resultValue.getDataType());
     }
 
     @Test
@@ -348,16 +303,5 @@ public class OracleColDataTypeConverterTest {
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.NVARCHAR2.getText(), resultValue.getDataType());
-    }
-
-    @Test
-    public void testYEAR() {
-        ColDataType colDataType = new ColDataType();
-        colDataType.setDataType("YEAR");
-        Optional<ColDataType> result = converter.convert(colDataType);
-        assertTrue(result.isPresent());
-
-        ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
     }
 }
