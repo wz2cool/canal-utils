@@ -139,6 +139,7 @@ public abstract class AlterColumnSqlConverterBase {
             renameColumnExpression.setColumnName(cleanText(columnName));
             renameColumnExpression.setColOldName(cleanText(colOldName));
             renameColumnExpression.setOperation(EnhancedAlterOperation.RENAME_COLUMN);
+            renameColumnExpression.setColDataType(columnDataType.getColDataType());
             result.add(renameColumnExpression);
         }
         return result;

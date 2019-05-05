@@ -9,6 +9,7 @@ import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.alter.Alter;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +17,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.text.ParseException;
@@ -524,6 +528,12 @@ public class DatabaseTest {
 
     @Test
     public void dropColumn() throws SQLException, JSQLParserException {
+        if ("hive".equalsIgnoreCase(databaseInfo.getDatabaseType())) {
+            // current not support drop column for hive.
+            return;
+        }
+
+
         System.out.println("dropColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMTEXT NULL AFTER `assignTo`;", getTestTableName());
@@ -553,12 +563,31 @@ public class DatabaseTest {
     private synchronized void insertData(MysqlDataType mysqlDataType, String value) throws SQLException {
         try (Connection dbConnection = getConnection()) {
             ValuePlaceholder valuePlaceholder = getValuePlaceholderConverter().convert(mysqlDataType, value);
-            String insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)",
-                    getTestTableName(), 1, valuePlaceholder.getPlaceholder());
+
+            String insertSql;
+            if ("hive".equalsIgnoreCase(databaseInfo.getDatabaseType())) {
+                insertSql = String.format("INSERT INTO %S VALUES (%s, %s)",
+                        getTestTableName(), 1, valuePlaceholder.getPlaceholder());
+            } else {
+                insertSql = String.format("INSERT INTO %S (USER_ID, col1) VALUES (%s, %s)",
+                        getTestTableName(), 1, valuePlaceholder.getPlaceholder());
+            }
 
             try (PreparedStatement statement = dbConnection.prepareStatement(insertSql)) {
                 System.out.println(String.format("[%s] insertSql: %s", mysqlDataType.getText(), insertSql));
-                statement.setObject(1, valuePlaceholder.getValue());
+                Object inputValue = valuePlaceholder.getValue();
+                if (inputValue instanceof byte[]) {
+                    try {
+                        try (InputStream targetStream = new ByteArrayInputStream((byte[]) inputValue)) {
+                            statement.setBinaryStream(1, targetStream);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    statement.setObject(1, valuePlaceholder.getValue());
+                }
+
                 statement.execute();
                 System.out.println("execute success");
             }
@@ -586,7 +615,18 @@ public class DatabaseTest {
             // ResultSet
             ResultSet rs = statement.executeQuery(sql);
             if (rs.next()) {
-                return Optional.ofNullable(rs.getBytes(1));
+                if ("hive".equalsIgnoreCase(databaseInfo.getDatabaseType())) {
+                    try {
+                        try (InputStream is = rs.getBinaryStream(1)) {
+                            byte[] bytes = IOUtils.toByteArray(is);
+                            return Optional.of(bytes);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    return Optional.ofNullable(rs.getBytes(1));
+                }
             }
         }
         return Optional.empty();
