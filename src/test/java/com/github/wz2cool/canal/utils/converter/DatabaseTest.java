@@ -651,5 +651,7 @@ public class DatabaseTest {
             statement.execute(createTableSQL);
             System.out.println("create table success");
         }
+
+
     }
 }
