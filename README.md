@@ -2,6 +2,7 @@ canal-utils
 =====================================
 
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Build Status](https://travis-ci.org/wz2cool/canal-utils.svg?branch=master)](https://travis-ci.org/wz2cool/canal-utils)
 
 # 简介
 本项目是服务阿里同步项目 [canal](https://github.com/alibaba/canal) 的一个工具箱帮助类库。
