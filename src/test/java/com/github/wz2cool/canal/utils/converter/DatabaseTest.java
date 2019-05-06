@@ -7,8 +7,6 @@ import com.github.wz2cool.canal.utils.helper.DatabaseInfo;
 import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.alter.Alter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
@@ -70,8 +68,7 @@ public class DatabaseTest {
         System.out.println("addBITColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` BIT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -86,8 +83,7 @@ public class DatabaseTest {
         System.out.println("addTINYINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TINYINT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -102,8 +98,7 @@ public class DatabaseTest {
         System.out.println("addMEDIUMINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMINT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -118,8 +113,7 @@ public class DatabaseTest {
         System.out.println("addSMALLINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` SMALLINT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -134,8 +128,7 @@ public class DatabaseTest {
         System.out.println("addINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` INT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -150,8 +143,7 @@ public class DatabaseTest {
         System.out.println("addINTEGERColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` INTEGER NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -166,8 +158,7 @@ public class DatabaseTest {
         System.out.println("addBIGINTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` BIGINT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -182,8 +173,7 @@ public class DatabaseTest {
         System.out.println("addFLOATColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` FLOAT (18 ,6) NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -198,8 +188,7 @@ public class DatabaseTest {
         System.out.println("addDOUBLEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DOUBLE (18 ,6) NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -214,8 +203,8 @@ public class DatabaseTest {
         System.out.println("addDECIMALColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DECIMAL (18, 6) NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -230,8 +219,8 @@ public class DatabaseTest {
         System.out.println("addDATEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DATE NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -249,8 +238,8 @@ public class DatabaseTest {
         System.out.println("addDATETIMEColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` DATETIME NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -268,8 +257,8 @@ public class DatabaseTest {
         System.out.println("addTIMESTAMPColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TIMESTAMP NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -287,8 +276,8 @@ public class DatabaseTest {
         System.out.println("addTIMESTAMPColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TIME NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -307,8 +296,8 @@ public class DatabaseTest {
         System.out.println("addCHARColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` CHAR (50) NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -323,8 +312,8 @@ public class DatabaseTest {
         System.out.println("addVARCHARColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` VARCHAR (255) NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -339,8 +328,8 @@ public class DatabaseTest {
         System.out.println("addTINYBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TINYBLOB NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -357,8 +346,8 @@ public class DatabaseTest {
         System.out.println("addTINYTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TINYTEXT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -373,8 +362,8 @@ public class DatabaseTest {
         System.out.println("addTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` TEXT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -389,8 +378,8 @@ public class DatabaseTest {
         System.out.println("addTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMTEXT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -405,8 +394,8 @@ public class DatabaseTest {
         System.out.println("addLONGTEXTColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` LONGTEXT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -421,8 +410,8 @@ public class DatabaseTest {
         System.out.println("addBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` BLOB NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -438,8 +427,8 @@ public class DatabaseTest {
         System.out.println("addBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMBLOB NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -455,8 +444,8 @@ public class DatabaseTest {
         System.out.println("addLONGBLOBColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` LONGBLOB NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -473,8 +462,8 @@ public class DatabaseTest {
         String msqlAddColumn = String.format("ALTER TABLE %s\n" +
                 "\tADD COLUMN `col1` DECIMAL(10,0) NOT NULL AFTER `assignTo`,\n" +
                 "\tADD COLUMN `col2` TEXT NOT NULL AFTER `col1`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
@@ -485,16 +474,15 @@ public class DatabaseTest {
         System.out.println("addMultiColumns");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` INTEGER NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
 
         String mysqlChangeColumnType = String.format("ALTER TABLE `%s`\n" +
                 "\tCHANGE COLUMN `col1` `col1` VARCHAR(255) NULL DEFAULT NULL AFTER `assignTo`;", getTestTableName());
-        statement = CCJSqlParserUtil.parse(mysqlChangeColumnType);
-        List<String> changeColumnTypeSqls = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> changeColumnTypeSqls = getAlterColumnSqlConverter().convert(mysqlChangeColumnType);
         for (String sql : changeColumnTypeSqls) {
             executeAlterSql(sql);
         }
@@ -509,16 +497,15 @@ public class DatabaseTest {
         System.out.println("addMultiColumns");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col2` INTEGER NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
 
         String mysqlChangeColumnType = String.format("ALTER TABLE `%s`\n" +
                 "\tCHANGE COLUMN `col2` `col1` INT(11) NULL DEFAULT NULL AFTER `assignTo`;", getTestTableName());
-        statement = CCJSqlParserUtil.parse(mysqlChangeColumnType);
-        List<String> changeColumnTypeSqls = getAlterColumnSqlConverter().convert((Alter) statement);
+        List<String> changeColumnTypeSqls = getAlterColumnSqlConverter().convert(mysqlChangeColumnType);
         for (String sql : changeColumnTypeSqls) {
             executeAlterSql(sql);
         }
@@ -537,15 +524,14 @@ public class DatabaseTest {
         System.out.println("dropColumn");
         String msqlAddColumn = String.format("ALTER TABLE `%s`\n" +
                 "\tADD COLUMN `col1` MEDIUMTEXT NULL AFTER `assignTo`;", getTestTableName());
-        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(msqlAddColumn);
-        List<String> result = getAlterColumnSqlConverter().convert((Alter) statement);
+
+        List<String> result = getAlterColumnSqlConverter().convert(msqlAddColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }
 
         String mysqlDropColumn = String.format("alter table `%s` drop column `%s`;", getTestTableName(), "col1");
-        statement = CCJSqlParserUtil.parse(mysqlDropColumn);
-        result = getAlterColumnSqlConverter().convert((Alter) statement);
+        result = getAlterColumnSqlConverter().convert(mysqlDropColumn);
         for (String sql : result) {
             executeAlterSql(sql);
         }

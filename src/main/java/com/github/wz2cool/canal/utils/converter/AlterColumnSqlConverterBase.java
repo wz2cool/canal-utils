@@ -2,6 +2,9 @@ package com.github.wz2cool.canal.utils.converter;
 
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import com.github.wz2cool.canal.utils.model.EnhancedAlterOperation;
+import com.github.wz2cool.canal.utils.model.exception.NotSupportDataTypeException;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.alter.Alter;
 import net.sf.jsqlparser.statement.alter.AlterExpression;
 import net.sf.jsqlparser.statement.alter.AlterOperation;
@@ -10,9 +13,68 @@ import net.sf.jsqlparser.statement.create.table.ColDataType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class AlterColumnSqlConverterBase {
-    public abstract List<String> convert(Alter mysqlAlter);
+    public List<String> convert(String mysqlAlterSql) throws JSQLParserException {
+        List<String> result = new ArrayList<>();
+        net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(mysqlAlterSql);
+        if (!(statement instanceof Alter)) {
+            return result;
+        }
+
+        Alter mysqlAlter = (Alter) statement;
+        List<AlterColumnExpression> alterColumnExpressions = getAlterColumnExpressions(mysqlAlter);
+        List<String> addColumnSqlList = alterColumnExpressions
+                .stream()
+                .filter(x -> x.getOperation() == EnhancedAlterOperation.ADD_COLUMN)
+                .map(this::convertToAddColumnSql)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        List<String> changeColumnTypeSqlList = alterColumnExpressions
+                .stream()
+                .filter(x -> x.getOperation() == EnhancedAlterOperation.CHANGE_COLUMN_TYPE)
+                .map(this::convertToChangeColumnTypeSql)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        List<String> renameColumnSqlList = alterColumnExpressions
+                .stream()
+                .filter(x -> x.getOperation() == EnhancedAlterOperation.RENAME_COLUMN)
+                .map(this::convertToRenameColumnSql)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        List<String> dropColumnSqlList = alterColumnExpressions
+                .stream()
+                .filter(x -> x.getOperation() == EnhancedAlterOperation.DROP_COLUMN)
+                .map(this::convertToDropColumnSql)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        List<String> otherColumnActionSqlList = convertToOtherColumnActionSqlList(alterColumnExpressions);
+
+        result.addAll(addColumnSqlList);
+        result.addAll(changeColumnTypeSqlList);
+        result.addAll(renameColumnSqlList);
+        result.addAll(dropColumnSqlList);
+        result.addAll(otherColumnActionSqlList);
+        return result;
+    }
+
+    protected abstract IColDataTypeConverter getColDataTypeConverter();
+
+    protected abstract Optional<String> convertToAddColumnSql(AlterColumnExpression alterColumnExpression);
+
+    protected abstract Optional<String> convertToChangeColumnTypeSql(AlterColumnExpression alterColumnExpression);
+
+    protected abstract Optional<String> convertToRenameColumnSql(AlterColumnExpression alterColumnExpression);
+
+    protected abstract Optional<String> convertToDropColumnSql(AlterColumnExpression alterColumnExpression);
+
+    protected abstract List<String> convertToOtherColumnActionSqlList(List<AlterColumnExpression> alterColumnExpressions);
 
     /**
      * Get list of AlterColumnExpression for mysql.
@@ -20,7 +82,7 @@ public abstract class AlterColumnSqlConverterBase {
      * @param mysqlAlter
      * @return
      */
-    protected List<AlterColumnExpression> getMysqlAlterColumnExpressions(Alter mysqlAlter) {
+    protected List<AlterColumnExpression> getAlterColumnExpressions(Alter mysqlAlter) {
         List<AlterColumnExpression> result = new ArrayList<>();
         if (mysqlAlter == null) {
             return result;
@@ -44,7 +106,7 @@ public abstract class AlterColumnSqlConverterBase {
 
         for (AlterExpression alterExpression : alterExpressionsForColumn) {
             List<AlterColumnExpression> alterColumnExpressions =
-                    getMysqlAlterColumnExpressions(tableName, alterExpression);
+                    getAlterColumnExpressions(tableName, alterExpression);
             result.addAll(alterColumnExpressions);
         }
 
@@ -61,7 +123,7 @@ public abstract class AlterColumnSqlConverterBase {
         }
     }
 
-    private List<AlterColumnExpression> getMysqlAlterColumnExpressions(
+    private List<AlterColumnExpression> getAlterColumnExpressions(
             final String tableName, final AlterExpression alterExpression) {
         List<AlterColumnExpression> result = new ArrayList<>();
         if (alterExpression == null) {
@@ -103,11 +165,19 @@ public abstract class AlterColumnSqlConverterBase {
         for (AlterExpression.ColumnDataType columnDataType : columnDataTypes) {
             AlterColumnExpression addColumnExpression = new AlterColumnExpression();
             String columnName = columnDataType.getColumnName();
-            ColDataType colDataType = columnDataType.getColDataType();
+
+            ColDataType mysqlColDataType = columnDataType.getColDataType();
+            Optional<ColDataType> covColDataTypeOptional = getColDataTypeConverter().convert(mysqlColDataType);
+            if (!covColDataTypeOptional.isPresent()) {
+                String errorMsg = String.format("[Add Column] Cannot convert data type: %s",
+                        mysqlColDataType.getDataType());
+                throw new NotSupportDataTypeException(errorMsg);
+            }
+
             addColumnExpression.setTableName(cleanText(tableName));
             addColumnExpression.setColumnName(cleanText(columnName));
             addColumnExpression.setOperation(EnhancedAlterOperation.ADD_COLUMN);
-            addColumnExpression.setColDataType(colDataType);
+            addColumnExpression.setColDataType(covColDataTypeOptional.get());
             result.add(addColumnExpression);
         }
         return result;
@@ -134,12 +204,20 @@ public abstract class AlterColumnSqlConverterBase {
                 continue;
             }
 
+            ColDataType mysqlColDataType = columnDataType.getColDataType();
+            Optional<ColDataType> covColDataTypeOptional = getColDataTypeConverter().convert(mysqlColDataType);
+            if (!covColDataTypeOptional.isPresent()) {
+                String errorMsg = String.format("[Rename Column] Cannot convert data type: %s",
+                        mysqlColDataType.getDataType());
+                throw new NotSupportDataTypeException(errorMsg);
+            }
+
             AlterColumnExpression renameColumnExpression = new AlterColumnExpression();
             renameColumnExpression.setTableName(cleanText(tableName));
             renameColumnExpression.setColumnName(cleanText(columnName));
             renameColumnExpression.setColOldName(cleanText(colOldName));
             renameColumnExpression.setOperation(EnhancedAlterOperation.RENAME_COLUMN);
-            renameColumnExpression.setColDataType(columnDataType.getColDataType());
+            renameColumnExpression.setColDataType(covColDataTypeOptional.get());
             result.add(renameColumnExpression);
         }
         return result;
@@ -163,11 +241,18 @@ public abstract class AlterColumnSqlConverterBase {
                 continue;
             }
 
-            ColDataType colDataType = columnDataType.getColDataType();
+            ColDataType mysqlColDataType = columnDataType.getColDataType();
+            Optional<ColDataType> covColDataTypeOptional = getColDataTypeConverter().convert(mysqlColDataType);
+            if (!covColDataTypeOptional.isPresent()) {
+                String errorMsg = String.format("[Change Column Type] Cannot convert data type: %s",
+                        mysqlColDataType.getDataType());
+                throw new NotSupportDataTypeException(errorMsg);
+            }
+
             changeTypeColumnExpression.setTableName(cleanText(tableName));
             changeTypeColumnExpression.setColumnName(cleanText(columnName));
             changeTypeColumnExpression.setOperation(EnhancedAlterOperation.CHANGE_COLUMN_TYPE);
-            changeTypeColumnExpression.setColDataType(colDataType);
+            changeTypeColumnExpression.setColDataType(covColDataTypeOptional.get());
             result.add(changeTypeColumnExpression);
         }
         return result;
