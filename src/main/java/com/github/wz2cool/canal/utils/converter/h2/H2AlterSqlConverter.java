@@ -1,6 +1,6 @@
-package com.github.wz2cool.canal.utils.converter.hive;
+package com.github.wz2cool.canal.utils.converter.h2;
 
-import com.github.wz2cool.canal.utils.converter.AlterColumnSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
@@ -9,13 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class HiveAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
-    // https://www.cnblogs.com/linn/p/6233776.html
-    private final HiveColDataTypeConverter hiveColDataTypeConverter = new HiveColDataTypeConverter();
+public class H2AlterSqlConverter extends AlterSqlConverterBase {
+    private final H2ColDataTypeConverter h2ColDataTypeConverter = new H2ColDataTypeConverter();
 
     @Override
     protected IColDataTypeConverter getColDataTypeConverter() {
-        return this.hiveColDataTypeConverter;
+        return this.h2ColDataTypeConverter;
     }
 
     @Override
@@ -24,7 +23,7 @@ public class HiveAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
         String columnName = alterColumnExpression.getColumnName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE %s ADD COLUMNS (%s %s)",
+        String sql = String.format("ALTER TABLE %s ADD %s %s",
                 tableName, columnName, dataTypeString);
         return Optional.of(sql);
     }
@@ -33,31 +32,29 @@ public class HiveAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
     protected Optional<String> convertToChangeColumnTypeSql(AlterColumnExpression alterColumnExpression) {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
-        String colOldName = alterColumnExpression.getColOldName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE %s CHANGE %s %s %s",
-                tableName, colOldName, columnName, dataTypeString);
+        String sql = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s",
+                tableName, columnName, dataTypeString);
         return Optional.of(sql);
     }
 
-    @SuppressWarnings("squid:S4144")
     @Override
     protected Optional<String> convertToRenameColumnSql(AlterColumnExpression alterColumnExpression) {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
         String colOldName = alterColumnExpression.getColOldName();
-        ColDataType colDataType = alterColumnExpression.getColDataType();
-        String dataTypeString = getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE %s CHANGE %s %s %s",
-                tableName, colOldName, columnName, dataTypeString);
+        String sql = String.format("ALTER TABLE %s RENAME COLUMN %s TO %s",
+                tableName, colOldName, columnName);
         return Optional.of(sql);
     }
 
-    // hive not support drop keyword. we have use replace, but we don't know table schema.
     @Override
     protected Optional<String> convertToDropColumnSql(AlterColumnExpression alterColumnExpression) {
-        return Optional.empty();
+        String columnName = alterColumnExpression.getColumnName();
+        String tableName = alterColumnExpression.getTableName();
+        String sql = String.format("ALTER TABLE %s DROP COLUMN %s", tableName, columnName);
+        return Optional.of(sql);
     }
 
     @Override

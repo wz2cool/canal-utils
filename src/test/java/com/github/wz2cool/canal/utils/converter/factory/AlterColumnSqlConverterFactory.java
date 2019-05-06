@@ -1,28 +1,28 @@
 package com.github.wz2cool.canal.utils.converter.factory;
 
-import com.github.wz2cool.canal.utils.converter.AlterColumnSqlConverterBase;
-import com.github.wz2cool.canal.utils.converter.db2.Db2AlterColumnSqlConverter;
-import com.github.wz2cool.canal.utils.converter.h2.H2AlterColumnSqlConverter;
-import com.github.wz2cool.canal.utils.converter.hive.HiveAlterColumnSqlConverter;
-import com.github.wz2cool.canal.utils.converter.mssql.MssqlAlterColumnSqlConverter;
-import com.github.wz2cool.canal.utils.converter.oracle.OracleAlterColumnSqlConverter;
-import com.github.wz2cool.canal.utils.converter.postgresql.PostgresqlAlterColumnSqlConverter;
+import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.db2.Db2AlterSqlConverter;
+import com.github.wz2cool.canal.utils.converter.h2.H2AlterSqlConverter;
+import com.github.wz2cool.canal.utils.converter.hive.HiveAlterSqlConverter;
+import com.github.wz2cool.canal.utils.converter.mssql.MssqlAlterSqlConverter;
+import com.github.wz2cool.canal.utils.converter.oracle.OracleAlterSqlConverter;
+import com.github.wz2cool.canal.utils.converter.postgresql.PostgresqlAlterSqlConverter;
 
 public class AlterColumnSqlConverterFactory {
-    public AlterColumnSqlConverterBase create(String databaseType) {
+    public AlterSqlConverterBase create(String databaseType) {
         switch (databaseType) {
             case "oracle":
-                return new OracleAlterColumnSqlConverter();
+                return new OracleAlterSqlConverter();
             case "mssql":
-                return new MssqlAlterColumnSqlConverter();
+                return new MssqlAlterSqlConverter();
             case "db2":
-                return new Db2AlterColumnSqlConverter();
+                return new Db2AlterSqlConverter();
             case "postgresql":
-                return new PostgresqlAlterColumnSqlConverter();
+                return new PostgresqlAlterSqlConverter();
             case "hive":
-                return new HiveAlterColumnSqlConverter();
+                return new HiveAlterSqlConverter();
             case "h2":
-                return new H2AlterColumnSqlConverter();
+                return new H2AlterSqlConverter();
             default:
                 throw new RuntimeException(String.format("not support database type: '%s'", databaseType));
         }

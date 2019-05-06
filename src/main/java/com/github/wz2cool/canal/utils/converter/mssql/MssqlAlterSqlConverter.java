@@ -1,6 +1,6 @@
-package com.github.wz2cool.canal.utils.converter.postgresql;
+package com.github.wz2cool.canal.utils.converter.mssql;
 
-import com.github.wz2cool.canal.utils.converter.AlterColumnSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class PostgresqlAlterColumnSqlConverter extends AlterColumnSqlConverterBase {
-    private final PostgresqlColDataTypeConverter postgresqlColDataTypeConverter = new PostgresqlColDataTypeConverter();
+public class MssqlAlterSqlConverter extends AlterSqlConverterBase {
+    private final MssqlColDataTypeConverter mssqlColDataTypeConverter = new MssqlColDataTypeConverter();
 
     @Override
     protected IColDataTypeConverter getColDataTypeConverter() {
-        return this.postgresqlColDataTypeConverter;
+        return this.mssqlColDataTypeConverter;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class PostgresqlAlterColumnSqlConverter extends AlterColumnSqlConverterBa
         String columnName = alterColumnExpression.getColumnName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE %s ALTER COLUMN %s TYPE %s",
+        String sql = String.format("ALTER TABLE %s ALTER COLUMN %s %s",
                 tableName, columnName, dataTypeString);
         return Optional.of(sql);
     }
@@ -44,7 +44,7 @@ public class PostgresqlAlterColumnSqlConverter extends AlterColumnSqlConverterBa
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
         String colOldName = alterColumnExpression.getColOldName();
-        String sql = String.format("ALTER TABLE %s RENAME COLUMN %s TO %s",
+        String sql = String.format("EXEC sp_RENAME '%s.%s', '%s', 'COLUMN'",
                 tableName, colOldName, columnName);
         return Optional.of(sql);
     }

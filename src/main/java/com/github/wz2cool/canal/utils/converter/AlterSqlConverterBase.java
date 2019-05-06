@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class AlterColumnSqlConverterBase {
+public abstract class AlterSqlConverterBase {
     public List<String> convert(String mysqlAlterSql) throws JSQLParserException {
         List<String> result = new ArrayList<>();
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(mysqlAlterSql);

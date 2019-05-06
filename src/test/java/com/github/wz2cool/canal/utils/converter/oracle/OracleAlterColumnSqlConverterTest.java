@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 
 public class OracleAlterColumnSqlConverterTest {
-    private final OracleAlterColumnSqlConverter oracleAlterColumnSqlConverter = new OracleAlterColumnSqlConverter();
+    private final OracleAlterSqlConverter oracleAlterColumnSqlConverter = new OracleAlterSqlConverter();
 
     @Test
     public void testAddColumn() throws JSQLParserException {

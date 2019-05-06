@@ -41,7 +41,7 @@ public class DatabaseTest {
         return "MY_TEST";
     }
 
-    private AlterColumnSqlConverterBase getAlterColumnSqlConverter() {
+    private AlterSqlConverterBase getAlterColumnSqlConverter() {
         return alterColumnSqlConverterFactory.create(this.databaseInfo.getDatabaseType());
     }
 
