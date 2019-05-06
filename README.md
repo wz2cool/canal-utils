@@ -19,4 +19,4 @@ canal-utils
 
 # 功能
 ## 转化器
-b2, hive, mssql, oracle, postgresql. [wiki文档](https://github.com/wz2cool/canal-utils/wiki/converter)Mysql DDL 语句转化到不同数据库上，支持：d
+Mysql DDL 语句转化到不同数据库上，支持：db2, hive, mssql, oracle, postgresql. [wiki文档](https://github.com/wz2cool/canal-utils/wiki/converter)
