@@ -16,7 +16,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class AlterSqlConverterBase {
-    public List<String> convert(String mysqlAlterSql) throws JSQLParserException {
+    public List<String> convert(String mysqlAlterSqlInput) throws JSQLParserException {
+        String mysqlAlterSql = cleanMysqlAlterSql(mysqlAlterSqlInput);
+
         List<String> result = new ArrayList<>();
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(mysqlAlterSql);
         if (!(statement instanceof Alter)) {
@@ -274,5 +276,10 @@ public abstract class AlterSqlConverterBase {
 
     private String cleanText(String element) {
         return element.replace("`", "");
+    }
+
+    private String cleanMysqlAlterSql(String mysqlAlterSql) {
+        return mysqlAlterSql.replace("COLLATE", "")
+                .replace("collate", "");
     }
 }

@@ -537,6 +537,12 @@ public class DatabaseTest {
         }
     }
 
+    @Test
+    public void sqlCleanTest() throws JSQLParserException {
+        String testSql = "ALTER TABLE canal_test_db.mssql_test MODIFY COLUMN c6 char(11) CHARACTER SET utf8 COLLATE utf8_general_ci";
+        getAlterColumnSqlConverter().convert(testSql);
+    }
+
     private synchronized void executeAlterSql(String sql) throws SQLException {
         try (Connection dbConnection = getConnection(); Statement statement = dbConnection.createStatement()) {
             // execute the SQL statement
