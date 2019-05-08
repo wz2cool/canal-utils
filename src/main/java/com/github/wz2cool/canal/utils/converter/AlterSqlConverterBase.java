@@ -234,7 +234,7 @@ public abstract class AlterSqlConverterBase {
         for (AlterExpression.ColumnDataType columnDataType : columnDataTypes) {
             AlterColumnExpression changeTypeColumnExpression = new AlterColumnExpression();
             String columnName = columnDataType.getColumnName();
-            if (!columnName.equals(colOldName)) {
+            if (alterOperation == AlterOperation.CHANGE && !columnName.equals(colOldName)) {
                 // need check rename
                 continue;
             }
