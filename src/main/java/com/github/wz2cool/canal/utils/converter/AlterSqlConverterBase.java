@@ -76,13 +76,7 @@ public abstract class AlterSqlConverterBase {
 
     protected abstract List<String> convertToOtherColumnActionSqlList(List<AlterColumnExpression> alterColumnExpressions);
 
-    /**
-     * Get list of AlterColumnExpression for mysql.
-     *
-     * @param mysqlAlter
-     * @return
-     */
-    protected List<AlterColumnExpression> getAlterColumnExpressions(Alter mysqlAlter) {
+    private List<AlterColumnExpression> getAlterColumnExpressions(Alter mysqlAlter) {
         List<AlterColumnExpression> result = new ArrayList<>();
         if (mysqlAlter == null) {
             return result;
@@ -229,7 +223,11 @@ public abstract class AlterSqlConverterBase {
             final String colOldName,
             final List<AlterExpression.ColumnDataType> columnDataTypes) {
         List<AlterColumnExpression> result = new ArrayList<>();
-        if (alterOperation != AlterOperation.CHANGE || columnDataTypes == null || columnDataTypes.isEmpty()) {
+        // https://stackoverflow.com/questions/14767174/modify-column-vs-change-column
+        // MODIFY COLUMN This command does everything CHANGE COLUMN can, but without renaming the column.
+        if (!(alterOperation == AlterOperation.CHANGE || alterOperation == AlterOperation.MODIFY)
+                || columnDataTypes == null
+                || columnDataTypes.isEmpty()) {
             return result;
         }
 
