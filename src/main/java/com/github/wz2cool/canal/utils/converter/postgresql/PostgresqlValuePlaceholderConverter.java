@@ -5,6 +5,8 @@ import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import com.github.wz2cool.canal.utils.model.PostgresqlDataType;
 import com.github.wz2cool.canal.utils.model.ValuePlaceholder;
 
+import java.nio.charset.StandardCharsets;
+
 public class PostgresqlValuePlaceholderConverter implements IValuePlaceholderConverter {
     @Override
     public ValuePlaceholder convert(MysqlDataType mysqlDataType, String value) {
@@ -59,7 +61,7 @@ public class PostgresqlValuePlaceholderConverter implements IValuePlaceholderCon
             case BLOB:
             case LONGBLOB:
                 result.setPlaceholder(String.format(commonPlaceholder, PostgresqlDataType.BYTEA.getText()));
-                result.setValue(value);
+                result.setValue(value == null ? null : value.getBytes(StandardCharsets.ISO_8859_1));
                 break;
             case TINYTEXT:
             case TEXT:
