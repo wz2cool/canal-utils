@@ -9,11 +9,12 @@ canal-utils
 本项目是服务阿里同步项目 [canal](https://github.com/alibaba/canal) 的一个工具箱帮助类库。
 
 # Maven
+${version} 占位符可以用上面 maven central 中对应的版本替换
 ```xml
 <dependency>
     <groupId>com.github.wz2cool</groupId>
     <artifactId>canal-utils</artifactId>
-    <version>0.2.0</version>
+    <version>${version}</version>
 </dependency>
 ```
 
