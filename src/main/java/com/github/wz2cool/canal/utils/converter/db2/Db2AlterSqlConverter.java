@@ -1,6 +1,6 @@
 package com.github.wz2cool.canal.utils.converter.db2;
 
-import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import com.github.wz2cool.canal.utils.model.EnhancedAlterOperation;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Db2AlterSqlConverter extends AlterSqlConverterBase {
+public class Db2AlterSqlConverter extends BaseAlterSqlConverter {
     private final Db2ColDataTypeConverter db2ColDataTypeConverter = new Db2ColDataTypeConverter();
 
     @Override

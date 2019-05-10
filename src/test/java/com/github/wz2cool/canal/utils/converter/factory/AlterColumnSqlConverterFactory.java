@@ -1,6 +1,6 @@
 package com.github.wz2cool.canal.utils.converter.factory;
 
-import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.db2.Db2AlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.h2.H2AlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.hive.HiveAlterSqlConverter;
@@ -10,7 +10,7 @@ import com.github.wz2cool.canal.utils.converter.oracle.OracleAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.postgresql.PostgresqlAlterSqlConverter;
 
 public class AlterColumnSqlConverterFactory {
-    public AlterSqlConverterBase create(String databaseType) {
+    public BaseAlterSqlConverter create(String databaseType) {
         switch (databaseType) {
             case "oracle":
                 return new OracleAlterSqlConverter();

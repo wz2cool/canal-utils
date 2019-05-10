@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class AlterSqlConverterBase {
+/**
+ * @author Frank
+ */
+public abstract class BaseAlterSqlConverter {
     public List<String> convert(String mysqlAlterSqlInput) throws JSQLParserException {
         String mysqlAlterSql = cleanMysqlAlterSql(mysqlAlterSqlInput);
 

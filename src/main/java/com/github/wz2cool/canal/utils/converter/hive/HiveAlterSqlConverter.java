@@ -1,6 +1,6 @@
 package com.github.wz2cool.canal.utils.converter.hive;
 
-import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class HiveAlterSqlConverter extends AlterSqlConverterBase {
+public class HiveAlterSqlConverter extends BaseAlterSqlConverter {
     // https://www.cnblogs.com/linn/p/6233776.html
     private final HiveColDataTypeConverter hiveColDataTypeConverter = new HiveColDataTypeConverter();
 

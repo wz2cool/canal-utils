@@ -1,6 +1,6 @@
 package com.github.wz2cool.canal.utils.converter.mysql;
 
-import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MysqlAlterSqlConverter extends AlterSqlConverterBase {
+public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final MysqlColDataTypeConverter mysqlColDataTypeConverter = new MysqlColDataTypeConverter();
 
     @Override

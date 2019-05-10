@@ -1,6 +1,6 @@
 package com.github.wz2cool.canal.utils.converter.oracle;
 
-import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class OracleAlterSqlConverter extends AlterSqlConverterBase {
+public class OracleAlterSqlConverter extends BaseAlterSqlConverter {
     private final OracleColDataTypeConverter oracleColDataTypeConverter = new OracleColDataTypeConverter();
 
     @Override

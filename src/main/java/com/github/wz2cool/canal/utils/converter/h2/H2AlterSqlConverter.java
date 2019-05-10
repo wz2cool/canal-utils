@@ -1,6 +1,6 @@
 package com.github.wz2cool.canal.utils.converter.h2;
 
-import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class H2AlterSqlConverter extends AlterSqlConverterBase {
+public class H2AlterSqlConverter extends BaseAlterSqlConverter {
     private final H2ColDataTypeConverter h2ColDataTypeConverter = new H2ColDataTypeConverter();
 
     @Override

@@ -1,6 +1,6 @@
 package com.github.wz2cool.canal.utils.converter.mssql;
 
-import com.github.wz2cool.canal.utils.converter.AlterSqlConverterBase;
+import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MssqlAlterSqlConverter extends AlterSqlConverterBase {
+/**
+ * @author Frank
+ */
+public class MssqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final MssqlColDataTypeConverter mssqlColDataTypeConverter = new MssqlColDataTypeConverter();
 
     @Override
