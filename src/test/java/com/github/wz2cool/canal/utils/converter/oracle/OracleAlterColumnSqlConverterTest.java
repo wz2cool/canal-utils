@@ -75,7 +75,7 @@ public class OracleAlterColumnSqlConverterTest {
         String testSql = "ALTER TABLE `users`\n" +
                 "\tCHANGE COLUMN `col1` `col1` BIGINT NULL DEFAULT NULL AFTER `password`,\n" +
                 "\tCHANGE COLUMN `col2` `col2` BIGINT NULL DEFAULT NULL AFTER `col1`;";
-        
+
         List<String> result = oracleAlterColumnSqlConverter.convert(testSql);
         assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (20, 0))", result.get(0));
         assertEquals("ALTER TABLE users MODIFY (col2 NUMBER (20, 0))", result.get(1));
