@@ -14,12 +14,9 @@ addons:
     token:
       secure: "mqQo97VdEukJcSy/aKO89sQfU/zwblLfav3lRVgTwe8dLC42GkEy13b7/Apv5sU428ojPnkkcnUII0BMBKzaOMLX+gb4k2Dm++x49HURGisaHLxPGwcFLWpI431bENA9nyVICaZNa4u1G4NzsLoqxfeXEqn66bi5UdpN3yJwMHpcmF5shpSZM+K3UMtU1ShSbBvLiih+oUFrtNmIKNQ6aCV4qqOTpZPal3kWtpRyeBuFMxkia+KKkFTlwvSDE7SZiFZG+T1xsiDnJbb+uz5oWq1a9V/ZOIaAPGSXVSQ1ng3eycM1ZLcpkefuM2JJVH4DqzDFrt3fDXjKtShiD8QMus/tS4qVoFGejmAt+ku1YK8ThrTB9N/7BCazEUY2LIW8EsPGA9m90e7fPRJSRPIdke136Xwe9i977ZnQ7QtaQe8tlULV1hPqMQLFYt+4QoFuYQv8dVRh5WafmrBWIecXlMbiizAile13mwmkVYF8H1AXmA/vviYLD7O02/SgMbuv0VKN/6xBfaElhhD+mlTO+XzNB9QrY8VT9rQlmFXq6UYw+pbf5Td6cLehLLnb/h9AlUFdz3d+65sRpoMntdvVc52KErGL1X2RilP0hOm68QeDcU6x23QjGLKD6Kp0WYA7+xK4gVCb87jhvPfCKNxB7LGoHGBXHCX+uiimAQrRgQc="
 
-
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
-
-  travis encrypt 55ef1535d9c5183a2b75415c04069df49b697e84
 
 after_success:
   - mvn -q clean test jacoco:report coveralls:report
