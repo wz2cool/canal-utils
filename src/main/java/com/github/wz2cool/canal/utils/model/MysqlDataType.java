@@ -48,7 +48,15 @@ public enum MysqlDataType {
 
     public static Optional<MysqlDataType> getDataType(String typeString) {
         try {
-            MysqlDataType mysqlDataType = MysqlDataType.valueOf(typeString.toUpperCase());
+            String[] mysqlTypeMetadatas = typeString.split("\\(");
+            if (mysqlTypeMetadatas.length == 0) {
+                return Optional.empty();
+            }
+            String mysqlTypeStr = mysqlTypeMetadatas[0].toLowerCase()
+                    .replace("unsigned", "")
+                    .replace("numeric", "decimal")
+                    .trim();
+            MysqlDataType mysqlDataType = MysqlDataType.valueOf(mysqlTypeStr);
             return Optional.of(mysqlDataType);
         } catch (IllegalArgumentException e) {
             return Optional.empty();
