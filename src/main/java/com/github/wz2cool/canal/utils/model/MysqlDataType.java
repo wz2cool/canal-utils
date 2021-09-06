@@ -52,9 +52,9 @@ public enum MysqlDataType {
             if (mysqlTypeMetadatas.length == 0) {
                 return Optional.empty();
             }
-            String mysqlTypeStr = mysqlTypeMetadatas[0].toLowerCase()
-                    .replace("unsigned", "")
-                    .replace("numeric", "decimal")
+            String mysqlTypeStr = mysqlTypeMetadatas[0].toUpperCase()
+                    .replace("UNSIGNED", "")
+                    .replace("NUMERIC", "DECIMAL")
                     .trim();
             MysqlDataType mysqlDataType = MysqlDataType.valueOf(mysqlTypeStr);
             return Optional.of(mysqlDataType);
