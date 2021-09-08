@@ -34,7 +34,7 @@ public abstract class AbstractSqlTemplateGenerator {
      * @param canalRowChange canal 行改动
      * @return sql 模板
      */
-    public List<SqlTemplate> getDMLSqlTemplateList(final CanalRowChange canalRowChange) {
+    public List<SqlTemplate> listDMLSqlTemplates(final CanalRowChange canalRowChange) {
         if (Boolean.TRUE.equals(canalRowChange.isDdl()) || CollectionUtils.isEmpty(canalRowChange.getRowDataList())) {
             return new ArrayList<>();
         }
@@ -65,7 +65,7 @@ public abstract class AbstractSqlTemplateGenerator {
      * @return sql 模板
      * @throws JSQLParserException jsql 转化异常
      */
-    public List<SqlTemplate> getDDLSqlTemplateList(final CanalRowChange canalRowChange) throws JSQLParserException {
+    public List<SqlTemplate> listDDLSqlTemplates(final CanalRowChange canalRowChange) throws JSQLParserException {
         List<SqlTemplate> result = new ArrayList<>();
         if (!canalRowChange.isDdl()
                 || StringUtils.isEmpty(canalRowChange.getSql())) {
