@@ -29,6 +29,63 @@ public abstract class AbstractSqlTemplateGenerator {
     public abstract DatabaseDriverType getDatabaseDriverType();
 
     /**
+     * 获取DML sql 模板
+     *
+     * @param canalRowChange canal 行改动
+     * @return sql 模板
+     */
+    public List<SqlTemplate> getDMLSqlTemplateList(final CanalRowChange canalRowChange) {
+        if (Boolean.TRUE.equals(canalRowChange.isDdl()) || CollectionUtils.isEmpty(canalRowChange.getRowDataList())) {
+            return new ArrayList<>();
+        }
+        List<SqlTemplate> result = new ArrayList<>();
+        if ("insert".equalsIgnoreCase(canalRowChange.getType())) {
+            for (CanalRowData canalRowData : canalRowChange.getRowDataList()) {
+                Optional<SqlTemplate> insertTemplateOptional = getInsertSqlTemplate(canalRowData);
+                insertTemplateOptional.ifPresent(result::add);
+            }
+        } else if ("delete".equalsIgnoreCase(canalRowChange.getType())) {
+            for (CanalRowData canalRowData : canalRowChange.getRowDataList()) {
+                Optional<SqlTemplate> insertTemplateOptional = getDeleteSqlTemplate(canalRowData);
+                insertTemplateOptional.ifPresent(result::add);
+            }
+        } else if ("update".equalsIgnoreCase(canalRowChange.getType())) {
+            for (CanalRowData canalRowData : canalRowChange.getRowDataList()) {
+                Optional<SqlTemplate> insertTemplateOptional = getUpdateSqlTemplate(canalRowData);
+                insertTemplateOptional.ifPresent(result::add);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取DDL sql 模板
+     *
+     * @param canalRowChange canal 行改动
+     * @return sql 模板
+     * @throws JSQLParserException jsql 转化异常
+     */
+    public List<SqlTemplate> getDDLSqlTemplateList(final CanalRowChange canalRowChange) throws JSQLParserException {
+        List<SqlTemplate> result = new ArrayList<>();
+        if (!canalRowChange.isDdl()
+                || StringUtils.isEmpty(canalRowChange.getSql())) {
+            return result;
+        }
+
+        Optional<String> alterSqlOptional = getAlterStatement(canalRowChange);
+        if (alterSqlOptional.isPresent()) {
+            String alterSql = alterSqlOptional.get();
+            List<String> alterSqlList = getAlterSqlConverter().convert(alterSql);
+            for (String s : alterSqlList) {
+                SqlTemplate sqlTemplate = new SqlTemplate();
+                sqlTemplate.setExpression(s);
+                result.add(sqlTemplate);
+            }
+        }
+        return result;
+    }
+
+    /**
      * 获取插入sql 模板
      *
      * @param canalRowData canal 行数据
@@ -100,33 +157,6 @@ public abstract class AbstractSqlTemplateGenerator {
         result.setExpression(sql);
         result.setParams(params.toArray());
         return Optional.of(result);
-    }
-
-    /**
-     * 获取DDL sql 模板
-     *
-     * @param canalRowChange canal 行改动
-     * @return sql 模板
-     * @throws JSQLParserException jsql 转化异常
-     */
-    public List<SqlTemplate> getDDLSqlTemplateList(final CanalRowChange canalRowChange) throws JSQLParserException {
-        List<SqlTemplate> result = new ArrayList<>();
-        if (!canalRowChange.isDdl()
-                || StringUtils.isEmpty(canalRowChange.getSql())) {
-            return result;
-        }
-
-        Optional<String> alterSqlOptional = getAlterStatement(canalRowChange);
-        if (alterSqlOptional.isPresent()) {
-            String alterSql = alterSqlOptional.get();
-            List<String> alterSqlList = getAlterSqlConverter().convert(alterSql);
-            for (String s : alterSqlList) {
-                SqlTemplate sqlTemplate = new SqlTemplate();
-                sqlTemplate.setExpression(s);
-                result.add(sqlTemplate);
-            }
-        }
-        return result;
     }
 
     private Optional<String> getAlterStatement(final CanalRowChange canalRowChange) {

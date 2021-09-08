@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
 public class MysqlSqlTemplateGeneratorTest {
 
@@ -23,9 +23,8 @@ public class MysqlSqlTemplateGeneratorTest {
         final FlatMessage flatMessage = objectMapper.readValue(json, FlatMessage.class);
 
         final CanalRowChange rowChange = SqlUtils.getRowChange(flatMessage);
-        final Optional<SqlTemplate> insertSqlTemplateOptional = mysqlSqlTemplateGenerator.getInsertSqlTemplate(rowChange.getRowDataList().get(0));
-        Assert.assertTrue(insertSqlTemplateOptional.isPresent());
-        SqlTemplate sqlTemplate = insertSqlTemplateOptional.get();
+        final List<SqlTemplate> sqlTemplates = mysqlSqlTemplateGenerator.getDMLSqlTemplateList(rowChange);
+        SqlTemplate sqlTemplate = sqlTemplates.get(0);
         String expectedSql = "insert into supervision_org_bulletin_info(`id`, `text_id`, `rec_id`, `sec_code`, `sec_name`, `f001d`, `f002v`, `f003v`, `f004v`, `f005n`, `f006v`, `memo`, `object_id`, `report_date`, `create_time`, `update_time`, `row_key`, `change_code`) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Assert.assertEquals(expectedSql, sqlTemplate.getExpression());
     }
