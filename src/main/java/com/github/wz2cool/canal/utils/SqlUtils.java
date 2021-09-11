@@ -1,9 +1,6 @@
 package com.github.wz2cool.canal.utils;
 
-import com.github.wz2cool.canal.utils.model.CanalColumnData;
-import com.github.wz2cool.canal.utils.model.CanalRowChange;
-import com.github.wz2cool.canal.utils.model.CanalRowData;
-import com.github.wz2cool.canal.utils.model.FlatMessage;
+import com.github.wz2cool.canal.utils.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
