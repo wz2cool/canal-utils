@@ -42,13 +42,13 @@ public class MysqlAlterSqlConverterTest {
     @Test
     public void testRenameMultiColumn() throws JSQLParserException {
         String testSql = "ALTER TABLE `student`\n" +
-                "\tCHANGE COLUMN `Column 5` `Column 1` INT(11) NULL DEFAULT NULL AFTER `name`,\n" +
-                "\tCHANGE COLUMN `Column 4` `Column 2` INT(11) NULL DEFAULT NULL AFTER `Column 1`;\n";
+                "\tCHANGE COLUMN `Column 5` `Column 1` INT(11) UNSIGNED NULL DEFAULT NULL AFTER `name`,\n" +
+                "\tCHANGE COLUMN `Column 4` `Column 2` INT(11) UNSIGNED NULL DEFAULT NULL AFTER `Column 1`;\n";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
 
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 5` `Column 1` INT (11)", result.get(0));
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 2` INT (11)", result.get(1));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 5` `Column 1` INT (11) UNSIGNED", result.get(0));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 2` INT (11) UNSIGNED", result.get(1));
     }
 
     @Test
@@ -74,10 +74,10 @@ public class MysqlAlterSqlConverterTest {
     @Test
     public void testChangeColumnType() throws JSQLParserException {
         String testSql = "ALTER TABLE `student`\n" +
-                "\tCHANGE COLUMN `Column 4` `Column 4` DECIMAL(10,0) NULL DEFAULT NULL AFTER `Column 5`;\n";
+                "\tCHANGE COLUMN `Column 4` `Column 4` INT (11) UNSIGNED NULL DEFAULT NULL AFTER `Column 5`;\n";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 4` DECIMAL (10, 0)", result.get(0));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 4` INT (11) UNSIGNED", result.get(0));
     }
 
     @Test
