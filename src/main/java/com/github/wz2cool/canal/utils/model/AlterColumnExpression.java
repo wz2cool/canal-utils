@@ -8,6 +8,7 @@ public class AlterColumnExpression {
     private String columnName;
     private String colOldName;
     private ColDataType colDataType;
+    private boolean unsignedFlag;
 
     public EnhancedAlterOperation getOperation() {
         return operation;
@@ -47,5 +48,13 @@ public class AlterColumnExpression {
 
     public void setColDataType(ColDataType colDataType) {
         this.colDataType = colDataType;
+    }
+
+    public boolean isUnsignedFlag() {
+        return unsignedFlag;
+    }
+
+    public void setUnsignedFlag(boolean unsignedFlag) {
+        this.unsignedFlag = unsignedFlag;
     }
 }

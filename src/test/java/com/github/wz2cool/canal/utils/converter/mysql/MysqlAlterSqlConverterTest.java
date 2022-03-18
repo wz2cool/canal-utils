@@ -2,7 +2,6 @@ package com.github.wz2cool.canal.utils.converter.mysql;
 
 import net.sf.jsqlparser.JSQLParserException;
 import org.junit.Test;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.List;
 
@@ -14,9 +13,9 @@ public class MysqlAlterSqlConverterTest {
 
     @Test
     public void testAddColumn() throws JSQLParserException {
-        String testSql = "ALTER TABLE `test`.`student` ADD COLUMN `Column 3` INT(11) NULL AFTER `name`;";
+        String testSql = "ALTER TABLE `test`.`student` ADD COLUMN `Column 3` INT(11) UNSIGNED NULL AFTER `name`;";
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        String expectSql = "ALTER TABLE `student` ADD COLUMN `Column 3` INT (11) NULL";
+        String expectSql = "ALTER TABLE `student` ADD COLUMN `Column 3` INT (11) UNSIGNED NULL";
         assertEquals(expectSql, result.get(0));
     }
 

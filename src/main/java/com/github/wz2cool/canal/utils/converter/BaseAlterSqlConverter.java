@@ -173,10 +173,12 @@ public abstract class BaseAlterSqlConverter {
                 throw new NotSupportDataTypeException(errorMsg);
             }
 
+            final boolean unsignedFlag = columnDataType.getColumnSpecs().stream().anyMatch("unsigned"::equalsIgnoreCase);
             addColumnExpression.setTableName(cleanText(tableName));
             addColumnExpression.setColumnName(cleanText(columnName));
             addColumnExpression.setOperation(EnhancedAlterOperation.ADD_COLUMN);
             addColumnExpression.setColDataType(covColDataTypeOptional.get());
+            addColumnExpression.setUnsignedFlag(unsignedFlag);
             result.add(addColumnExpression);
         }
         return result;
@@ -210,13 +212,14 @@ public abstract class BaseAlterSqlConverter {
                         mysqlColDataType.getDataType());
                 throw new NotSupportDataTypeException(errorMsg);
             }
-
+            final boolean unsignedFlag = columnDataType.getColumnSpecs().stream().anyMatch("unsigned"::equalsIgnoreCase);
             AlterColumnExpression renameColumnExpression = new AlterColumnExpression();
             renameColumnExpression.setTableName(cleanText(tableName));
             renameColumnExpression.setColumnName(cleanText(columnName));
             renameColumnExpression.setColOldName(cleanText(colOldName));
             renameColumnExpression.setOperation(EnhancedAlterOperation.RENAME_COLUMN);
             renameColumnExpression.setColDataType(covColDataTypeOptional.get());
+            renameColumnExpression.setUnsignedFlag(unsignedFlag);
             result.add(renameColumnExpression);
         }
         return result;
@@ -251,11 +254,12 @@ public abstract class BaseAlterSqlConverter {
                         mysqlColDataType.getDataType());
                 throw new NotSupportDataTypeException(errorMsg);
             }
-
+            final boolean unsignedFlag = columnDataType.getColumnSpecs().stream().anyMatch("unsigned"::equalsIgnoreCase);
             changeTypeColumnExpression.setTableName(cleanText(tableName));
             changeTypeColumnExpression.setColumnName(cleanText(columnName));
             changeTypeColumnExpression.setOperation(EnhancedAlterOperation.CHANGE_COLUMN_TYPE);
             changeTypeColumnExpression.setColDataType(covColDataTypeOptional.get());
+            changeTypeColumnExpression.setUnsignedFlag(unsignedFlag);
             result.add(changeTypeColumnExpression);
         }
         return result;

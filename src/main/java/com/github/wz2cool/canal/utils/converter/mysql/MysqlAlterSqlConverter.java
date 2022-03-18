@@ -22,7 +22,8 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
-        String dataTypeString = getDataTypeString(colDataType);
+        String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
+                getDataTypeString(colDataType) + " UNSIGNED" : getDataTypeString(colDataType);
         String sql = String.format("ALTER TABLE `%s` ADD COLUMN `%s` %s NULL",
                 tableName, columnName, dataTypeString);
         return Optional.of(sql);
@@ -33,7 +34,8 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
-        String dataTypeString = getDataTypeString(colDataType);
+        String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
+                getDataTypeString(colDataType) + " UNSIGNED" : getDataTypeString(colDataType);
         String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s",
                 tableName, columnName, columnName, dataTypeString);
         return Optional.of(sql);
@@ -45,7 +47,8 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         String columnName = alterColumnExpression.getColumnName();
         String colOldName = alterColumnExpression.getColOldName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
-        String dataTypeString = getDataTypeString(colDataType);
+        String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
+                getDataTypeString(colDataType) + " UNSIGNED" : getDataTypeString(colDataType);
         String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s",
                 tableName, colOldName, columnName, dataTypeString);
         return Optional.of(sql);
