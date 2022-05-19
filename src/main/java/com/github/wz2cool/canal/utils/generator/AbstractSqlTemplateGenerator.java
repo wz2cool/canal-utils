@@ -35,23 +35,34 @@ public abstract class AbstractSqlTemplateGenerator {
      * @return sql 模板
      */
     public List<SqlTemplate> listDMLSqlTemplates(final CanalRowChange canalRowChange) {
+        return listDMLSqlTemplates(canalRowChange, true);
+    }
+
+    /**
+     * 获取DML sql 模板
+     *
+     * @param canalRowChange canal 行改动
+     * @return sql 模板
+     * @[param ignoreDatabase  忽略数据库
+     */
+    public List<SqlTemplate> listDMLSqlTemplates(final CanalRowChange canalRowChange, boolean ignoreDatabase) {
         if (Boolean.TRUE.equals(canalRowChange.isDdl()) || CollectionUtils.isEmpty(canalRowChange.getRowDataList())) {
             return new ArrayList<>();
         }
         List<SqlTemplate> result = new ArrayList<>();
         if ("insert".equalsIgnoreCase(canalRowChange.getType())) {
             for (CanalRowData canalRowData : canalRowChange.getRowDataList()) {
-                Optional<SqlTemplate> insertTemplateOptional = getInsertSqlTemplate(canalRowData);
+                Optional<SqlTemplate> insertTemplateOptional = getInsertSqlTemplate(canalRowData, ignoreDatabase);
                 insertTemplateOptional.ifPresent(result::add);
             }
         } else if ("delete".equalsIgnoreCase(canalRowChange.getType())) {
             for (CanalRowData canalRowData : canalRowChange.getRowDataList()) {
-                Optional<SqlTemplate> insertTemplateOptional = getDeleteSqlTemplate(canalRowData);
+                Optional<SqlTemplate> insertTemplateOptional = getDeleteSqlTemplate(canalRowData, ignoreDatabase);
                 insertTemplateOptional.ifPresent(result::add);
             }
         } else if ("update".equalsIgnoreCase(canalRowChange.getType())) {
             for (CanalRowData canalRowData : canalRowChange.getRowDataList()) {
-                Optional<SqlTemplate> insertTemplateOptional = getUpdateSqlTemplate(canalRowData);
+                Optional<SqlTemplate> insertTemplateOptional = getUpdateSqlTemplate(canalRowData, ignoreDatabase);
                 insertTemplateOptional.ifPresent(result::add);
             }
         }
@@ -88,17 +99,24 @@ public abstract class AbstractSqlTemplateGenerator {
     /**
      * 获取插入sql 模板
      *
-     * @param canalRowData canal 行数据
+     * @param canalRowData   canal 行数据
+     * @param ignoreDatabase 是否忽略database
      * @return sql 模板
      */
-    public Optional<SqlTemplate> getInsertSqlTemplate(final CanalRowData canalRowData) {
+    public Optional<SqlTemplate> getInsertSqlTemplate(final CanalRowData canalRowData, boolean ignoreDatabase) {
         if (CollectionUtils.isEmpty(canalRowData.getColumnList())) {
             return Optional.empty();
         }
         ColumnsParserInfo columnsParserInfo = getColumnsParserInfo(canalRowData.getColumnList());
         String columnString = String.join(", ", columnsParserInfo.getColumnNameList());
         String placeholderString = String.join(", ", columnsParserInfo.getPlaceholderList());
-        String sql = String.format("insert into %s(%s) values (%s)", canalRowData.getTable(), columnString, placeholderString);
+        String sql;
+        if (ignoreDatabase) {
+            sql = String.format("insert into %s(%s) values (%s)", canalRowData.getTable(), columnString, placeholderString);
+        } else {
+            sql = String.format("insert into %s.%s(%s) values (%s)",
+                    canalRowData.getDatabase(), canalRowData.getTable(), columnString, placeholderString);
+        }
         SqlTemplate result = new SqlTemplate();
         result.setExpression(sql);
         result.setParams(columnsParserInfo.getValueList().toArray());
@@ -108,18 +126,24 @@ public abstract class AbstractSqlTemplateGenerator {
     /**
      * 获取删除模板
      *
-     * @param canalRowData canal 行数据
+     * @param ignoreDatabase 忽略数据库
+     * @param canalRowData   canal 行数据
      * @return sql 模板
      */
-    public Optional<SqlTemplate> getDeleteSqlTemplate(final CanalRowData canalRowData) {
+    public Optional<SqlTemplate> getDeleteSqlTemplate(final CanalRowData canalRowData, boolean ignoreDatabase) {
         if (CollectionUtils.isEmpty(canalRowData.getColumnList())) {
             return Optional.empty();
         }
-
         List<CanalColumnData> whereColumns = getWhereColumns(canalRowData.getColumnList());
         ColumnsParserInfo whereColumnsParserInfo = getColumnsParserInfo(whereColumns);
         String appendWhereColumnEqualsString = getAppendColumnEquals(whereColumnsParserInfo, "and");
-        String sql = String.format("delete from %s where %s", canalRowData.getTable(), appendWhereColumnEqualsString);
+        String sql;
+        if (ignoreDatabase) {
+            sql = String.format("delete from %s where %s", canalRowData.getTable(), appendWhereColumnEqualsString);
+        } else {
+            sql = String.format("delete from %s.%s where %s",
+                    canalRowData.getDatabase(), canalRowData.getTable(), appendWhereColumnEqualsString);
+        }
         SqlTemplate result = new SqlTemplate();
         result.setExpression(sql);
         result.setParams(whereColumnsParserInfo.getValueList().toArray());
@@ -129,10 +153,11 @@ public abstract class AbstractSqlTemplateGenerator {
     /**
      * 获取更新sql 模板
      *
-     * @param canalRowData canal 行数据
+     * @param canalRowData   canal 行数据
+     * @param ignoreDatabase 忽略数据库
      * @return sql 模板
      */
-    public Optional<SqlTemplate> getUpdateSqlTemplate(final CanalRowData canalRowData) {
+    public Optional<SqlTemplate> getUpdateSqlTemplate(final CanalRowData canalRowData, boolean ignoreDatabase) {
         // 为了防止洗数据，我们全量更新
         List<CanalColumnData> updateColumns = canalRowData.getColumnList();
         if (CollectionUtils.isEmpty(updateColumns)) {
@@ -142,8 +167,12 @@ public abstract class AbstractSqlTemplateGenerator {
         ColumnsParserInfo updateColumnsParserInfo = getColumnsParserInfo(updateColumns);
         String appendUpdateColumnEqualsString = getAppendColumnEquals(updateColumnsParserInfo, ", ");
         List<CanalColumnData> whereColumns = getWhereColumns(canalRowData.getColumnList());
-
-        String sql = String.format("update %s set %s", canalRowData.getTable(), appendUpdateColumnEqualsString);
+        String sql;
+        if (ignoreDatabase) {
+            sql = String.format("update %s set %s", canalRowData.getTable(), appendUpdateColumnEqualsString);
+        } else {
+            sql = String.format("update %s.%s set %s", canalRowData.getDatabase(), canalRowData.getTable(), appendUpdateColumnEqualsString);
+        }
         List<Object> params = new ArrayList<>(updateColumnsParserInfo.getValueList());
         // append where sql if has
         if (!whereColumns.isEmpty()) {
