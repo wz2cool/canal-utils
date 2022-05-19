@@ -42,8 +42,8 @@ public abstract class AbstractSqlTemplateGenerator {
      * 获取DML sql 模板
      *
      * @param canalRowChange canal 行改动
+     * @param ignoreDatabase 忽略数据库
      * @return sql 模板
-     * @[param ignoreDatabase  忽略数据库
      */
     public List<SqlTemplate> listDMLSqlTemplates(final CanalRowChange canalRowChange, boolean ignoreDatabase) {
         if (Boolean.TRUE.equals(canalRowChange.isDdl()) || CollectionUtils.isEmpty(canalRowChange.getRowDataList())) {
