@@ -125,23 +125,36 @@ public class OracleColDataTypeConverterTest {
     public void testDOUBLE() {
         ColDataType colDataType = new ColDataType();
         colDataType.setDataType("DOUBLE");
+        List<String> args = new ArrayList<>();
+        args.add("10");
+        args.add("4");
+        colDataType.setArgumentsStringList(args);
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.FLOAT.getText(), resultValue.getDataType());
-        assertEquals("24", resultValue.getArgumentsStringList().get(0));
+
+        assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
+        assertEquals("10", resultValue.getArgumentsStringList().get(0));
+        assertEquals("4", resultValue.getArgumentsStringList().get(1));
     }
 
     @Test
     public void testFLOAT() {
         ColDataType colDataType = new ColDataType();
         colDataType.setDataType("FLOAT");
+        List<String> args = new ArrayList<>();
+        args.add("8");
+        args.add("2");
+        colDataType.setArgumentsStringList(args);
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.FLOAT.getText(), resultValue.getDataType());
+
+        assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
+        assertEquals("8", resultValue.getArgumentsStringList().get(0));
+        assertEquals("2", resultValue.getArgumentsStringList().get(1));
     }
 
     @Test
