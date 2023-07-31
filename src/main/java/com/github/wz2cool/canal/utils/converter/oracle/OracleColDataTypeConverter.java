@@ -61,8 +61,8 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             case DECIMAL:
             case DOUBLE:
             case FLOAT:
-                result.setDataType(OracleDataType.FLOAT.getText());
-                argStrings.add("24");
+                result.setDataType(OracleDataType.NUMBER.getText());
+                argStrings.addAll(useArgumentsStringList);
                 break;
             case INT:
             case INTEGER:

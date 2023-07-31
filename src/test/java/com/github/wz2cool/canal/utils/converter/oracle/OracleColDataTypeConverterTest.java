@@ -107,12 +107,18 @@ public class OracleColDataTypeConverterTest {
     public void testDECIMAL() {
         ColDataType colDataType = new ColDataType();
         colDataType.setDataType("DECIMAL");
+        List<String> args = new ArrayList<>();
+        args.add("20");
+        args.add("3");
+        colDataType.setArgumentsStringList(args);
         Optional<ColDataType> result = converter.convert(colDataType);
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.FLOAT.getText(), resultValue.getDataType());
-        assertEquals("24", resultValue.getArgumentsStringList().get(0));
+
+        assertEquals(OracleDataType.NUMBER.getText(), resultValue.getDataType());
+        assertEquals("20", resultValue.getArgumentsStringList().get(0));
+        assertEquals("3", resultValue.getArgumentsStringList().get(1));
     }
 
     @Test
