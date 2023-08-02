@@ -21,10 +21,12 @@ public class OracleAlterSqlConverter extends BaseAlterSqlConverter {
     protected Optional<String> convertToAddColumnSql(AlterColumnExpression alterColumnExpression) {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
+        String commentText = alterColumnExpression.getCommentText();
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE %s ADD (%s %s)",
-                tableName, columnName, dataTypeString);
+        String sql = String.format("ALTER TABLE %s ADD (%s %s);\n" +
+                        "COMMENT ON COLUMN %s.%s IS '%s';",
+                tableName, columnName, dataTypeString, tableName, columnName, commentText);
         return Optional.of(sql);
     }
 
