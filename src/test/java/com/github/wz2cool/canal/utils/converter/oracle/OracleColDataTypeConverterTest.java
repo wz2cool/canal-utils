@@ -88,7 +88,7 @@ public class OracleColDataTypeConverterTest {
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.DATE.getText(), resultValue.getDataType());
+        assertEquals(OracleDataType.TIMESTAMP.getText(), resultValue.getDataType());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class OracleColDataTypeConverterTest {
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.DATE.getText(), resultValue.getDataType());
+        assertEquals(OracleDataType.TIMESTAMP.getText(), resultValue.getDataType());
     }
 
 

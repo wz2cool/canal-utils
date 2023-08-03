@@ -10,6 +10,7 @@ public enum OracleDataType {
     LONG("LONG"),
     NUMBER("NUMBER"),
     DATE("DATE"),
+    TIMESTAMP("TIMESTAMP"),
     FLOAT("FLOAT"),
     BLOB("BLOB"),
     BFILE("BFILE"),

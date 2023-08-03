@@ -52,7 +52,7 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             case DATE:
             case DATETIME:
             case TIMESTAMP:
-                result.setDataType(OracleDataType.DATE.getText());
+                result.setDataType(OracleDataType.TIMESTAMP.getText());
                 break;
             case TIME:
                 result.setDataType(OracleDataType.VARCHAR2.getText());
@@ -94,7 +94,7 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             case VARCHAR:
             case CHAR:
                 result.setDataType(OracleDataType.NVARCHAR2.getText());
-                argStrings.addAll(useArgumentsStringList);
+                argStrings.addAll(argumentsStringList);
                 break;
         }
 
