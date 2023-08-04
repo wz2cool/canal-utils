@@ -32,10 +32,10 @@ public class MssqlAlterSqlConverter extends BaseAlterSqlConverter {
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = getDataTypeString(colDataType);
         String comment = String.format("EXEC sp_addextendedproperty\n" +
-                "'MS_Description', N%s,\n" +
-                "'SCHEMA', N'dbo',\n" +
-                "'TABLE', N'%s',\n" +
-                "'COLUMN', N'%s'\n"
+                        "'MS_Description', N%s,\n" +
+                        "'SCHEMA', N'dbo',\n" +
+                        "'TABLE', N'%s',\n" +
+                        "'COLUMN', N'%s'\n"
                 , commentText, tableName, columnName);
         String sql = String.format("ALTER TABLE %s ADD %s %s %s %s;%s",
                 tableName, columnName, dataTypeString, nullAble, defaultValue, comment);
@@ -50,7 +50,7 @@ public class MssqlAlterSqlConverter extends BaseAlterSqlConverter {
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = getDataTypeString(colDataType);
         String sql = String.format("ALTER TABLE %s ALTER COLUMN %s %s %s",
-                tableName, columnName, dataTypeString,nullAble);
+                tableName, columnName, dataTypeString, nullAble);
         return Optional.of(sql);
     }
 
