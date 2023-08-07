@@ -1,8 +1,8 @@
 package com.github.wz2cool.canal.utils.converter.mssql;
 
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
-import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import com.github.wz2cool.canal.utils.model.MssqlDataType;
+import com.github.wz2cool.canal.utils.model.MysqlDataType;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 
 import java.util.ArrayList;
@@ -62,7 +62,8 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
                 break;
             case DATETIME:
             case TIMESTAMP:
-                result.setDataType(MssqlDataType.DATETIME.getText());
+                result.setDataType(MssqlDataType.DATETIME2.getText());
+                argStrings.add("0");
                 break;
             case TIME:
                 result.setDataType(MssqlDataType.TIME.getText());

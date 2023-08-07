@@ -9,6 +9,10 @@ public class AlterColumnExpression {
     private String colOldName;
     private ColDataType colDataType;
     private boolean unsignedFlag;
+    private String commentText;
+    private String nullAble;
+    private String defaultValue;
+
 
     public EnhancedAlterOperation getOperation() {
         return operation;
@@ -56,5 +60,29 @@ public class AlterColumnExpression {
 
     public void setUnsignedFlag(boolean unsignedFlag) {
         this.unsignedFlag = unsignedFlag;
+    }
+
+    public String getCommentText() {
+        return commentText;
+    }
+
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
+    }
+
+    public String getNullAble() {
+        return nullAble;
+    }
+
+    public void setNullAble(String nullAble) {
+        this.nullAble = nullAble;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

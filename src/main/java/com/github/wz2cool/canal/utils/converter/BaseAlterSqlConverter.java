@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * @author Frank
  */
 public abstract class BaseAlterSqlConverter {
+
     public List<String> convert(String mysqlAlterSqlInput) throws JSQLParserException {
         String mysqlAlterSql = cleanMysqlAlterSql(mysqlAlterSqlInput);
 
@@ -29,6 +30,7 @@ public abstract class BaseAlterSqlConverter {
         }
 
         Alter mysqlAlter = (Alter) statement;
+
         List<AlterColumnExpression> alterColumnExpressions = getAlterColumnExpressions(mysqlAlter);
         List<String> addColumnSqlList = alterColumnExpressions
                 .stream()
@@ -131,7 +133,7 @@ public abstract class BaseAlterSqlConverter {
 
         AlterOperation operation = alterExpression.getOperation();
         String columnName = alterExpression.getColumnName();
-        String colOldName = alterExpression.getColOldName();
+        String colOldName = alterExpression.getColumnOldName();
         List<AlterExpression.ColumnDataType> colDataTypeList = alterExpression.getColDataTypeList();
 
         Optional<AlterColumnExpression> dropColumnExpression =
@@ -179,6 +181,9 @@ public abstract class BaseAlterSqlConverter {
             addColumnExpression.setOperation(EnhancedAlterOperation.ADD_COLUMN);
             addColumnExpression.setColDataType(covColDataTypeOptional.get());
             addColumnExpression.setUnsignedFlag(unsignedFlag);
+            // 说明
+            List<String> columnSpecs = columnDataType.getColumnSpecs();
+            setColumnSpecs(addColumnExpression, columnSpecs);
             result.add(addColumnExpression);
         }
         return result;
@@ -220,6 +225,9 @@ public abstract class BaseAlterSqlConverter {
             renameColumnExpression.setOperation(EnhancedAlterOperation.RENAME_COLUMN);
             renameColumnExpression.setColDataType(covColDataTypeOptional.get());
             renameColumnExpression.setUnsignedFlag(unsignedFlag);
+            // 说明
+            List<String> columnSpecs = columnDataType.getColumnSpecs();
+            setColumnSpecs(renameColumnExpression, columnSpecs);
             result.add(renameColumnExpression);
         }
         return result;
@@ -260,8 +268,11 @@ public abstract class BaseAlterSqlConverter {
             changeTypeColumnExpression.setOperation(EnhancedAlterOperation.CHANGE_COLUMN_TYPE);
             changeTypeColumnExpression.setColDataType(covColDataTypeOptional.get());
             changeTypeColumnExpression.setUnsignedFlag(unsignedFlag);
+            List<String> columnSpecs = columnDataType.getColumnSpecs();
+            setColumnSpecs(changeTypeColumnExpression, columnSpecs);
             result.add(changeTypeColumnExpression);
         }
+
         return result;
     }
 
@@ -288,5 +299,25 @@ public abstract class BaseAlterSqlConverter {
     private String cleanMysqlAlterSql(String mysqlAlterSql) {
         return mysqlAlterSql.replace("COLLATE", "")
                 .replace("collate", "");
+    }
+
+    private AlterColumnExpression setColumnSpecs(AlterColumnExpression columnExpression, List<String> columnSpecs) {
+        columnExpression.setCommentText("");
+        columnExpression.setNullAble("NULL");
+        columnExpression.setDefaultValue("");
+        for (int i = 0; i < columnSpecs.size(); i++) {
+            if ("COMMENT".equalsIgnoreCase(columnSpecs.get(i))) {
+                columnExpression.setCommentText(columnSpecs.get(i + 1));
+            }
+            if ("NULL".equalsIgnoreCase(columnSpecs.get(i)) && i != 0) {
+                if (columnSpecs.get(i - 1).equalsIgnoreCase("NOT")) {
+                    columnExpression.setNullAble("NOT NULL");
+                }
+            }
+            if ("DEFAULT".equalsIgnoreCase(columnSpecs.get(i))) {
+                columnExpression.setDefaultValue(columnSpecs.get(i + 1));
+            }
+        }
+        return columnExpression;
     }
 }
