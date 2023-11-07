@@ -131,7 +131,7 @@ public abstract class BaseAlterSqlConverter {
 
         AlterOperation operation = alterExpression.getOperation();
         String columnName = alterExpression.getColumnName();
-        String colOldName = alterExpression.getColOldName();
+        String colOldName = alterExpression.getColumnOldName();
         List<AlterExpression.ColumnDataType> colDataTypeList = alterExpression.getColDataTypeList();
 
         Optional<AlterColumnExpression> dropColumnExpression =
@@ -179,6 +179,9 @@ public abstract class BaseAlterSqlConverter {
             addColumnExpression.setOperation(EnhancedAlterOperation.ADD_COLUMN);
             addColumnExpression.setColDataType(covColDataTypeOptional.get());
             addColumnExpression.setUnsignedFlag(unsignedFlag);
+            // 说明
+            List<String> columnSpecs = columnDataType.getColumnSpecs();
+            addColumnExpression = setColumnSpecs(addColumnExpression, columnSpecs);
             result.add(addColumnExpression);
         }
         return result;
@@ -220,6 +223,9 @@ public abstract class BaseAlterSqlConverter {
             renameColumnExpression.setOperation(EnhancedAlterOperation.RENAME_COLUMN);
             renameColumnExpression.setColDataType(covColDataTypeOptional.get());
             renameColumnExpression.setUnsignedFlag(unsignedFlag);
+            // 说明
+            List<String> columnSpecs = columnDataType.getColumnSpecs();
+            renameColumnExpression = setColumnSpecs(renameColumnExpression, columnSpecs);
             result.add(renameColumnExpression);
         }
         return result;
@@ -260,10 +266,41 @@ public abstract class BaseAlterSqlConverter {
             changeTypeColumnExpression.setOperation(EnhancedAlterOperation.CHANGE_COLUMN_TYPE);
             changeTypeColumnExpression.setColDataType(covColDataTypeOptional.get());
             changeTypeColumnExpression.setUnsignedFlag(unsignedFlag);
+            List<String> columnSpecs = columnDataType.getColumnSpecs();
+            changeTypeColumnExpression = setColumnSpecs(changeTypeColumnExpression, columnSpecs);
             result.add(changeTypeColumnExpression);
         }
         return result;
     }
+
+    private AlterColumnExpression setColumnSpecs(AlterColumnExpression columnExpression, List<String> columnSpecs) {
+
+        AlterColumnExpression useColumnExpression = new AlterColumnExpression();
+        useColumnExpression.setOperation(columnExpression.getOperation());
+        useColumnExpression.setTableName(columnExpression.getTableName());
+        useColumnExpression.setColumnName(columnExpression.getColumnName());
+        useColumnExpression.setColOldName(columnExpression.getColOldName());
+        useColumnExpression.setColDataType(columnExpression.getColDataType());
+        useColumnExpression.setUnsignedFlag(columnExpression.isUnsignedFlag());
+        useColumnExpression.setCommentText("");
+        useColumnExpression.setNullAble("NULL");
+        useColumnExpression.setDefaultValue("");
+        for (int i = 0; i < columnSpecs.size(); i++) {
+            if ("COMMENT".equalsIgnoreCase(columnSpecs.get(i))) {
+                useColumnExpression.setCommentText(columnSpecs.get(i + 1));
+            }
+            if ("NULL".equalsIgnoreCase(columnSpecs.get(i)) && i != 0) {
+                if (columnSpecs.get(i - 1).equalsIgnoreCase("NOT")) {
+                    useColumnExpression.setNullAble("NOT NULL");
+                }
+            }
+            if ("DEFAULT".equalsIgnoreCase(columnSpecs.get(i))) {
+                useColumnExpression.setDefaultValue(columnSpecs.get(i + 1));
+            }
+        }
+        return useColumnExpression;
+    }
+
 
     private Optional<AlterColumnExpression> getDropColumnExpression(
             final AlterOperation alterOperation,
