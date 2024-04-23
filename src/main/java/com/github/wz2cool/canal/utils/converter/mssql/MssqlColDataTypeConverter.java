@@ -76,7 +76,6 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
             case BLOB:
             case MEDIUMBLOB:
             case LONGBLOB:
-            case JSON:
                 result.setDataType(MssqlDataType.VARBINARY.getText());
                 argStrings.add("MAX");
                 break;
@@ -85,6 +84,9 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
             case MEDIUMTEXT:
             case LONGTEXT:
                 result.setDataType(MssqlDataType.NTEXT.getText());
+            case JSON:
+                result.setDataType(MssqlDataType.NVARCHAR.getText());
+                argStrings.add("MAX");
                 break;
         }
 
