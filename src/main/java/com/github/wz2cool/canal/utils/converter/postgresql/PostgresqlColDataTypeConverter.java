@@ -79,11 +79,11 @@ public class PostgresqlColDataTypeConverter implements IColDataTypeConverter {
             case MEDIUMTEXT:
             case LONGTEXT:
                 result.setDataType(PostgresqlDataType.TEXT.getText());
+            case JSON:
+                result.setDataType(PostgresqlDataType.JSON.getText());
                 break;
         }
-
         result.setArgumentsStringList(argStrings);
         return result;
     }
-
 }
