@@ -18,7 +18,8 @@ public enum PostgresqlDataType {
     DATE("DATE"),
     TIMESTAMP("TIMESTAMP"),
     TIME("TIME"),
-    BYTEA("BYTEA");
+    BYTEA("BYTEA"),
+    JSON("JSON");
 
     private String text;
 

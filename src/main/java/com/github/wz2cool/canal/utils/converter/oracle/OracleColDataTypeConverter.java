@@ -89,6 +89,7 @@ public class OracleColDataTypeConverter implements IColDataTypeConverter {
             case LONGTEXT:
             case TINYTEXT:
             case MEDIUMTEXT:
+            case JSON:
                 result.setDataType(OracleDataType.NCLOB.getText());
                 break;
             case VARCHAR:
