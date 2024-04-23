@@ -26,7 +26,8 @@ public enum MysqlDataType {
     TINYTEXT("TINYTEXT"),
     TEXT("TEXT"),
     MEDIUMTEXT("MEDIUMTEXT"),
-    LONGTEXT("LONGTEXT");
+    LONGTEXT("LONGTEXT"),
+    JSON("JSON");
 
    /* ENUM("ENUM"),
     REAL("REAL"),
