@@ -62,7 +62,8 @@ public class MssqlColDataTypeConverter implements IColDataTypeConverter {
                 break;
             case DATETIME:
             case TIMESTAMP:
-                result.setDataType(MssqlDataType.DATETIME.getText());
+                result.setDataType(MssqlDataType.DATETIME2.getText());
+                argStrings.add("0");
                 break;
             case TIME:
                 result.setDataType(MssqlDataType.TIME.getText());
