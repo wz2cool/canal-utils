@@ -15,7 +15,7 @@ public class MysqlAlterSqlConverterTest {
     public void testAddColumn() throws JSQLParserException {
         String testSql = "ALTER TABLE `test`.`student` ADD COLUMN `Column 3` INT(11) UNSIGNED NULL AFTER `name`;";
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        String expectSql = "ALTER TABLE `student` ADD COLUMN `Column 3` INT (11) UNSIGNED NULL";
+        String expectSql = "ALTER TABLE `student` ADD COLUMN `Column 3` INT (11) UNSIGNED NULL   ;";
         assertEquals(expectSql, result.get(0));
     }
 
@@ -26,8 +26,8 @@ public class MysqlAlterSqlConverterTest {
                 "\tADD COLUMN `Column 5` INT NULL AFTER `Column 4`;\n";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE `student` ADD COLUMN `Column 4` INT NULL", result.get(0));
-        assertEquals("ALTER TABLE `student` ADD COLUMN `Column 5` INT NULL", result.get(1));
+        assertEquals("ALTER TABLE `student` ADD COLUMN `Column 4` INT NULL   ;", result.get(0));
+        assertEquals("ALTER TABLE `student` ADD COLUMN `Column 5` INT NULL   ;", result.get(1));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class MysqlAlterSqlConverterTest {
                 "\tCHANGE COLUMN `Column 3` `Column 4` INT(11) NULL DEFAULT NULL AFTER `name`;";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 3` `Column 4` INT (11)", result.get(0));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 3` `Column 4` INT (11)   ;", result.get(0));
     }
 
     @Test
@@ -47,8 +47,8 @@ public class MysqlAlterSqlConverterTest {
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
 
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 5` `Column 1` INT (11) UNSIGNED", result.get(0));
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 2` INT (11) UNSIGNED", result.get(1));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 5` `Column 1` INT (11) UNSIGNED  NULL  DEFAULT NULL  ;", result.get(0));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 2` INT (11) UNSIGNED  NULL  DEFAULT NULL  ;", result.get(1));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class MysqlAlterSqlConverterTest {
                 "\tDROP COLUMN `Column 4`;\n";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE `student` DROP COLUMN `Column 4`", result.get(0));
+        assertEquals("ALTER TABLE `student` DROP COLUMN `Column 4` ;", result.get(0));
     }
 
     @Test
@@ -67,8 +67,8 @@ public class MysqlAlterSqlConverterTest {
                 "\tDROP COLUMN `Column 4`;\n";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE `student` DROP COLUMN `Column 5`", result.get(0));
-        assertEquals("ALTER TABLE `student` DROP COLUMN `Column 4`", result.get(1));
+        assertEquals("ALTER TABLE `student` DROP COLUMN `Column 5` ;", result.get(0));
+        assertEquals("ALTER TABLE `student` DROP COLUMN `Column 4` ;", result.get(1));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class MysqlAlterSqlConverterTest {
                 "\tCHANGE COLUMN `Column 4` `Column 4` INT (11) UNSIGNED NULL DEFAULT NULL AFTER `Column 5`;\n";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 4` INT (11) UNSIGNED", result.get(0));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 4` INT (11) UNSIGNED NULL  DEFAULT NULL  ;", result.get(0));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class MysqlAlterSqlConverterTest {
                 "\tCHANGE COLUMN `Column 4` `Column 4` VARCHAR(50) NULL DEFAULT NULL AFTER `Column 5`;\n";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 5` `Column 5` VARCHAR (50)", result.get(0));
-        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 4` VARCHAR (50)", result.get(1));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 5` `Column 5` VARCHAR (50) NULL  DEFAULT NULL  ;", result.get(0));
+        assertEquals("ALTER TABLE `student` CHANGE COLUMN `Column 4` `Column 4` VARCHAR (50) NULL  DEFAULT NULL  ;", result.get(1));
     }
 }

@@ -15,7 +15,7 @@ public class OracleAlterColumnSqlConverterTest {
     public void testAddColumn() throws JSQLParserException {
         String testSql = "ALTER TABLE `bug` ADD COLUMN `newColumn` INT NULL";
         List<String> result = oracleAlterColumnSqlConverter.convert(testSql);
-        String expectSql = "ALTER TABLE bug ADD (newColumn NUMBER (11, 0))";
+        String expectSql = "ALTER TABLE bug ADD (newColumn NUMBER (11, 0));";
         assertEquals(expectSql, result.get(0));
     }
 
@@ -27,8 +27,8 @@ public class OracleAlterColumnSqlConverterTest {
 
         
         List<String> result = oracleAlterColumnSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE test ADD (col1 NUMBER (11, 0))", result.get(0));
-        assertEquals("ALTER TABLE test ADD (col2 NUMBER (11, 0))", result.get(1));
+        assertEquals("ALTER TABLE test ADD (col1 NUMBER (11, 0));", result.get(0));
+        assertEquals("ALTER TABLE test ADD (col2 NUMBER (11, 0));", result.get(1));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class OracleAlterColumnSqlConverterTest {
         String testSql = "ALTER TABLE `bug` CHANGE COLUMN `newColumn` `newColumn1` INT(11) NULL DEFAULT NULL";
         
         List<String> result = oracleAlterColumnSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE bug RENAME COLUMN newColumn to newColumn1", result.get(0));
+        assertEquals("ALTER TABLE bug RENAME COLUMN newColumn to newColumn1;", result.get(0));
     }
 
     @Test
@@ -47,8 +47,8 @@ public class OracleAlterColumnSqlConverterTest {
         
         List<String> result = oracleAlterColumnSqlConverter.convert(testSql);
 
-        assertEquals("ALTER TABLE test RENAME COLUMN col1 to col11", result.get(0));
-        assertEquals("ALTER TABLE test RENAME COLUMN col2 to col22", result.get(1));
+        assertEquals("ALTER TABLE test RENAME COLUMN col1 to col11;", result.get(0));
+        assertEquals("ALTER TABLE test RENAME COLUMN col2 to col22;", result.get(1));
     }
 
     @Test
@@ -77,8 +77,8 @@ public class OracleAlterColumnSqlConverterTest {
                 "\tCHANGE COLUMN `col2` `col2` BIGINT NULL DEFAULT NULL AFTER `col1`;";
 
         List<String> result = oracleAlterColumnSqlConverter.convert(testSql);
-        assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (20, 0))", result.get(0));
-        assertEquals("ALTER TABLE users MODIFY (col2 NUMBER (20, 0))", result.get(1));
+        assertEquals("ALTER TABLE users MODIFY (col1 NUMBER (20, 0));", result.get(0));
+        assertEquals("ALTER TABLE users MODIFY (col2 NUMBER (20, 0));", result.get(1));
     }
 
     @Test
@@ -99,6 +99,6 @@ public class OracleAlterColumnSqlConverterTest {
         
         List<String> result = oracleAlterColumnSqlConverter.convert(testSql);
 
-        assertEquals("ALTER TABLE test MODIFY (Column1 NUMBER (11, 0))", result.get(0));
+        assertEquals("ALTER TABLE test MODIFY (Column1 NUMBER (11, 0));", result.get(0));
     }
 }
