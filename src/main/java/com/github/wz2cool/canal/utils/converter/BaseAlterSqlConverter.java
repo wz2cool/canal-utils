@@ -289,10 +289,8 @@ public abstract class BaseAlterSqlConverter {
             if ("COMMENT".equalsIgnoreCase(columnSpecs.get(i))) {
                 useColumnExpression.setCommentText(columnSpecs.get(i + 1));
             }
-            if ("NULL".equalsIgnoreCase(columnSpecs.get(i)) && i != 0) {
-                if (columnSpecs.get(i - 1).equalsIgnoreCase("NOT")) {
-                    useColumnExpression.setNullAble("NOT NULL");
-                }
+            if ("NULL".equalsIgnoreCase(columnSpecs.get(i)) && i != 0 && columnSpecs.get(i - 1).equalsIgnoreCase("NOT")) {
+                useColumnExpression.setNullAble("NOT NULL");
             }
             if ("DEFAULT".equalsIgnoreCase(columnSpecs.get(i))) {
                 useColumnExpression.setDefaultValue(columnSpecs.get(i + 1));

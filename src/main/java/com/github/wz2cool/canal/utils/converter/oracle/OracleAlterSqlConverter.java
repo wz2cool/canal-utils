@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public class OracleAlterSqlConverter extends BaseAlterSqlConverter {
     private final OracleColDataTypeConverter oracleColDataTypeConverter = new OracleColDataTypeConverter();
+    private static final String COMMENT_FORMAT = "COMMENT ON COLUMN %s.%s IS %s";
 
     @Override
     protected IColDataTypeConverter getColDataTypeConverter() {
@@ -22,7 +23,7 @@ public class OracleAlterSqlConverter extends BaseAlterSqlConverter {
     protected Optional<String> convertToAddColumnSql(AlterColumnExpression alterColumnExpression) {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
-        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : String.format("COMMENT ON COLUMN %s.%s IS %s", tableName, columnName, alterColumnExpression.getCommentText());
+        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : String.format(COMMENT_FORMAT, tableName, columnName, alterColumnExpression.getCommentText());
 
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = getDataTypeString(colDataType);
@@ -36,7 +37,7 @@ public class OracleAlterSqlConverter extends BaseAlterSqlConverter {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
-        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : String.format("COMMENT ON COLUMN %s.%s IS %s", tableName, columnName, alterColumnExpression.getCommentText());
+        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : String.format(COMMENT_FORMAT, tableName, columnName, alterColumnExpression.getCommentText());
         String dataTypeString = getDataTypeString(colDataType);
         String sql = String.format("ALTER TABLE %s MODIFY (%s %s);%s",
                 tableName, columnName, dataTypeString, commentText);
@@ -48,7 +49,7 @@ public class OracleAlterSqlConverter extends BaseAlterSqlConverter {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
         String colOldName = alterColumnExpression.getColOldName();
-        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : String.format("COMMENT ON COLUMN %s.%s IS %s", tableName, columnName, alterColumnExpression.getCommentText());
+        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : String.format(COMMENT_FORMAT, tableName, columnName, alterColumnExpression.getCommentText());
         String sql = String.format("ALTER TABLE %s RENAME COLUMN %s to %s;%s",
                 tableName, colOldName, columnName, commentText);
         return Optional.of(sql);
