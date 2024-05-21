@@ -69,6 +69,7 @@ public class PostgresqlValuePlaceholderConverter implements IValuePlaceholderCon
             case LONGTEXT:
                 result.setPlaceholder(String.format(commonPlaceholder, MysqlDataType.TEXT.getText()));
                 result.setValue(value);
+                break;
             case JSON:
                 result.setPlaceholder(String.format(commonPlaceholder, PostgresqlDataType.JSON.getText()));
                 result.setValue(value);
