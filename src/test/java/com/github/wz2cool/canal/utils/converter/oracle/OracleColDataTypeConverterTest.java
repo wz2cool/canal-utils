@@ -92,14 +92,31 @@ public class OracleColDataTypeConverterTest {
     }
 
     @Test
-    public void testDATETIME() {
-        ColDataType colDataType = new ColDataType();
-        colDataType.setDataType("DATETIME");
-        Optional<ColDataType> result = converter.convert(colDataType);
+    public void testTIMESTAMP() {
+        ColDataType timestamp = new ColDataType();
+        timestamp.setDataType("TIMESTAMP");
+        Optional<ColDataType> result = converter.convert(timestamp);
         assertTrue(result.isPresent());
 
         ColDataType resultValue = result.orElse(null);
         assertEquals(OracleDataType.TIMESTAMP.getText(), resultValue.getDataType());
+
+        ColDataType datetime = new ColDataType();
+        datetime.setDataType("DATETIME");
+        Optional<ColDataType> result2 = converter.convert(datetime);
+        assertTrue(result2.isPresent());
+
+        ColDataType result2Value = result2.orElse(null);
+        assertEquals(OracleDataType.TIMESTAMP.getText(), result2Value.getDataType());
+
+        ColDataType date = new ColDataType();
+        date.setDataType("DATE");
+        Optional<ColDataType> result3 = converter.convert(date);
+        assertTrue(result3.isPresent());
+
+        ColDataType result3Value = result3.orElse(null);
+        assertEquals(OracleDataType.TIMESTAMP.getText(), result3Value.getDataType());
+
     }
 
 
@@ -260,16 +277,7 @@ public class OracleColDataTypeConverterTest {
         assertEquals(OracleDataType.VARCHAR2.getText(), resultValue.getDataType());
     }
 
-    @Test
-    public void testTIMESTAMP() {
-        ColDataType colDataType = new ColDataType();
-        colDataType.setDataType("TIMESTAMP");
-        Optional<ColDataType> result = converter.convert(colDataType);
-        assertTrue(result.isPresent());
 
-        ColDataType resultValue = result.orElse(null);
-        assertEquals(OracleDataType.TIMESTAMP.getText(), resultValue.getDataType());
-    }
 
     @Test
     public void testTINYBLOB() {
