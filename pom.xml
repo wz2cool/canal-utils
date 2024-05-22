@@ -158,14 +158,15 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.3.0</version>
-                <configuration>
-                    <repoToken>7YfmV5PG6QzktH9QpYpfiMRJAyP53srJL</repoToken>
-                </configuration>
-            </plugin>
+            
+           <plugin>
+             <groupId>com.github.hazendaz.maven</groupId>
+             <artifactId>coveralls-maven-plugin</artifactId>
+             <version>4.5.0-M2</version>
+             <configuration>
+                 <repoToken>7YfmV5PG6QzktH9QpYpfiMRJAyP53srJL</repoToken>
+             </configuration>
+         </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
