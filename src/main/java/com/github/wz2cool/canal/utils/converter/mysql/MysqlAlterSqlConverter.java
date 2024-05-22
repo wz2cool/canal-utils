@@ -15,6 +15,7 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     private static final String COMMENT = "COMMENT ";
     private static final String UNSIGNED = " UNSIGNED";
     private static final String DEFAULT = " DEFAULT ";
+    private static final String END_SIGN = ";";
 
     @Override
     protected IColDataTypeConverter getColDataTypeConverter() {
@@ -31,8 +32,8 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
                 getDataTypeString(colDataType) + UNSIGNED : getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE `%s` ADD COLUMN `%s` %s %s %s %s ;",
-                tableName, columnName, dataTypeString, nullAble, defaultValue, commentText);
+        String sql = String.format("ALTER TABLE `%s` ADD COLUMN `%s` %s %s %s %s",
+                tableName, columnName, dataTypeString, nullAble, defaultValue, commentText).trim() + END_SIGN;
         return Optional.of(sql);
     }
 
@@ -46,8 +47,8 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
                 getDataTypeString(colDataType) + " UNSIGNED" : getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s %s %s ;",
-                tableName, columnName, columnName, dataTypeString, nullAble, defaultValue, commentText);
+        String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s %s %s",
+                tableName, columnName, columnName, dataTypeString, nullAble, defaultValue, commentText).trim() + END_SIGN;
         return Optional.of(sql);
     }
 
@@ -62,8 +63,8 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
                 getDataTypeString(colDataType) + UNSIGNED : getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s %s %s ;",
-                tableName, colOldName, columnName, dataTypeString, nullAble, defaultValue, commentText);
+        String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s %s %s",
+                tableName, colOldName, columnName, dataTypeString, nullAble, defaultValue, commentText).trim() + END_SIGN;
         return Optional.of(sql);
     }
 
@@ -71,7 +72,7 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     protected Optional<String> convertToDropColumnSql(AlterColumnExpression alterColumnExpression) {
         String columnName = alterColumnExpression.getColumnName();
         String tableName = alterColumnExpression.getTableName();
-        String sql = String.format("ALTER TABLE `%s` DROP COLUMN `%s` ;", tableName, columnName);
+        String sql = String.format("ALTER TABLE `%s` DROP COLUMN `%s`", tableName, columnName).trim() + END_SIGN;
         return Optional.of(sql);
     }
 
