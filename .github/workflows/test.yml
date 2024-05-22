@@ -26,7 +26,7 @@ jobs:
       run: mvn clean verify org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report -B
       
     - name: Coveralls
-      uses: coverallsapp/github-action@master
+      uses: coverallsapp/github-action@v2.3.0
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           format: jacoco
