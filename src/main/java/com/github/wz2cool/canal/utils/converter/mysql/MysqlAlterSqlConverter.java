@@ -14,7 +14,8 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final MysqlColDataTypeConverter mysqlColDataTypeConverter = new MysqlColDataTypeConverter();
     private static final String COMMENT = "COMMENT ";
     private static final String UNSIGNED = " UNSIGNED";
-    private static final String DEFAULT = " DEFAULT ";
+    private static final String DEFAULT = "DEFAULT ";
+    private static final String END_SIGN = ";";
 
     @Override
     protected IColDataTypeConverter getColDataTypeConverter() {
@@ -25,29 +26,29 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     protected Optional<String> convertToAddColumnSql(AlterColumnExpression alterColumnExpression) {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
-        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : COMMENT + alterColumnExpression.getCommentText();
-        String nullAble = StringUtils.isBlank(alterColumnExpression.getNullAble()) ? "" : alterColumnExpression.getNullAble();
-        String defaultValue = StringUtils.isBlank(alterColumnExpression.getDefaultValue()) ? "" : DEFAULT + alterColumnExpression.getDefaultValue();
+        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : " " + COMMENT + alterColumnExpression.getCommentText();
+        String nullAble = StringUtils.isBlank(alterColumnExpression.getNullAble()) ? "" : " " + alterColumnExpression.getNullAble();
+        String defaultValue = StringUtils.isBlank(alterColumnExpression.getDefaultValue()) ? "" : " " + DEFAULT + alterColumnExpression.getDefaultValue();
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
                 getDataTypeString(colDataType) + UNSIGNED : getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE `%s` ADD COLUMN `%s` %s %s %s %s ;",
-                tableName, columnName, dataTypeString, nullAble, defaultValue, commentText);
+        String sql = String.format("ALTER TABLE `%s` ADD COLUMN `%s` %s%s%s%s",
+                tableName, columnName, dataTypeString, nullAble, defaultValue, commentText).trim() + END_SIGN;
         return Optional.of(sql);
     }
 
     @Override
     protected Optional<String> convertToChangeColumnTypeSql(AlterColumnExpression alterColumnExpression) {
         String tableName = alterColumnExpression.getTableName();
-        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : COMMENT + alterColumnExpression.getCommentText();
-        String nullAble = StringUtils.isBlank(alterColumnExpression.getNullAble()) ? "" : alterColumnExpression.getNullAble();
-        String defaultValue = StringUtils.isBlank(alterColumnExpression.getDefaultValue()) ? "" : DEFAULT + alterColumnExpression.getDefaultValue();
+        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : " " + COMMENT + alterColumnExpression.getCommentText();
+        String nullAble = StringUtils.isBlank(alterColumnExpression.getNullAble()) ? "" : " " + alterColumnExpression.getNullAble();
+        String defaultValue = StringUtils.isBlank(alterColumnExpression.getDefaultValue()) ? "" : " " + DEFAULT + alterColumnExpression.getDefaultValue();
         String columnName = alterColumnExpression.getColumnName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
                 getDataTypeString(colDataType) + " UNSIGNED" : getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s %s %s ;",
-                tableName, columnName, columnName, dataTypeString, nullAble, defaultValue, commentText);
+        String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s%s%s%s",
+                tableName, columnName, columnName, dataTypeString, nullAble, defaultValue, commentText).trim() + END_SIGN;
         return Optional.of(sql);
     }
 
@@ -55,15 +56,15 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     protected Optional<String> convertToRenameColumnSql(AlterColumnExpression alterColumnExpression) {
         String tableName = alterColumnExpression.getTableName();
         String columnName = alterColumnExpression.getColumnName();
-        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : COMMENT + alterColumnExpression.getCommentText();
-        String nullAble = StringUtils.isBlank(alterColumnExpression.getNullAble()) ? "" : alterColumnExpression.getNullAble();
-        String defaultValue = StringUtils.isBlank(alterColumnExpression.getDefaultValue()) ? "" : DEFAULT + alterColumnExpression.getDefaultValue();
+        String commentText = StringUtils.isBlank(alterColumnExpression.getCommentText()) ? "" : " " + COMMENT + alterColumnExpression.getCommentText();
+        String nullAble = StringUtils.isBlank(alterColumnExpression.getNullAble()) ? "" : " " + alterColumnExpression.getNullAble();
+        String defaultValue = StringUtils.isBlank(alterColumnExpression.getDefaultValue()) ? "" : " " + DEFAULT + alterColumnExpression.getDefaultValue();
         String colOldName = alterColumnExpression.getColOldName();
         ColDataType colDataType = alterColumnExpression.getColDataType();
         String dataTypeString = alterColumnExpression.isUnsignedFlag() ?
                 getDataTypeString(colDataType) + UNSIGNED : getDataTypeString(colDataType);
-        String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s %s %s %s ;",
-                tableName, colOldName, columnName, dataTypeString, nullAble, defaultValue, commentText);
+        String sql = String.format("ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s%s%s%s",
+                tableName, colOldName, columnName, dataTypeString, nullAble, defaultValue, commentText).trim() + END_SIGN;
         return Optional.of(sql);
     }
 
@@ -71,7 +72,7 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     protected Optional<String> convertToDropColumnSql(AlterColumnExpression alterColumnExpression) {
         String columnName = alterColumnExpression.getColumnName();
         String tableName = alterColumnExpression.getTableName();
-        String sql = String.format("ALTER TABLE `%s` DROP COLUMN `%s` ;", tableName, columnName);
+        String sql = String.format("ALTER TABLE `%s` DROP COLUMN `%s`", tableName, columnName).trim() + END_SIGN;
         return Optional.of(sql);
     }
 
