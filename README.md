@@ -3,6 +3,7 @@ canal-utils
 
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Build Status](https://github.com/wz2cool/canal-utils/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/wz2cool/canal-utils/actions/workflows/test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/wz2cool/canal-utils/badge.svg?branch=master)](https://coveralls.io/github/wz2cool/canal-utils?branch=master)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.github.wz2cool/canal-utils/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.wz2cool/canal-utils)
 
 # 简介
