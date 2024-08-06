@@ -78,10 +78,10 @@ public final class DateHelper {
     }
 
     /**
-     * 获取干净的时间 (删除毫秒)
+     * 获取带毫秒的时间
      *
      * @param dateTimeString 全时间字符串
-     * @return 干净的时间 (删除毫秒)
+     * @return 获取带毫秒的时间
      */
     public static String getDatetime(String dateTimeString) {
         try {
