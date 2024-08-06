@@ -16,7 +16,14 @@ import com.github.wz2cool.canal.utils.model.DatabaseDriverType;
 public class MysqlSqlTemplateGenerator extends AbstractSqlTemplateGenerator {
     private final MysqlAlterSqlConverter mysqlAlterSqlConverter = new MysqlAlterSqlConverter();
     private final MysqlValuePlaceholderConverter mysqlValuePlaceholderConverter = new MysqlValuePlaceholderConverter();
-    private final TimestampConverter mysqlTimestampConverter = (mysqlDataType, value) -> DateHelper.getDatetime(value);
+
+    /**
+     * 构造函数
+     */
+    public MysqlSqlTemplateGenerator() {
+        TimestampConverter mysqlTimestampConverter = (mysqlDataType, value) -> DateHelper.getDatetime(value);
+        this.timestampConverter = mysqlTimestampConverter;
+    }
 
     @Override
     protected BaseAlterSqlConverter getAlterSqlConverter() {
@@ -38,8 +45,4 @@ public class MysqlSqlTemplateGenerator extends AbstractSqlTemplateGenerator {
         return String.format("`%s`", columnName);
     }
 
-    @Override
-    public void setTimestampConverter(TimestampConverter timestampConverter) {
-        super.setTimestampConverter(mysqlTimestampConverter);
-    }
 }

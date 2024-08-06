@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @author Frank
  */
 public abstract class AbstractSqlTemplateGenerator {
-    private TimestampConverter timestampConverter = new DefaultTimestampConverter();
+    protected TimestampConverter timestampConverter = new DefaultTimestampConverter();
 
     protected abstract IValuePlaceholderConverter getValuePlaceholderConverter();
 
