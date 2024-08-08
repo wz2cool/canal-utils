@@ -1,7 +1,9 @@
 package com.github.wz2cool.canal.utils.generator;
 
 import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
+import com.github.wz2cool.canal.utils.converter.DefaultTimestampConverter;
 import com.github.wz2cool.canal.utils.converter.IValuePlaceholderConverter;
+import com.github.wz2cool.canal.utils.converter.TimestampConverter;
 import com.github.wz2cool.canal.utils.helper.DateHelper;
 import com.github.wz2cool.canal.utils.model.*;
 import com.github.wz2cool.canal.utils.model.exception.NotSupportDataTypeException;
@@ -21,12 +23,17 @@ import java.util.stream.Collectors;
  * @author Frank
  */
 public abstract class AbstractSqlTemplateGenerator {
+    protected TimestampConverter timestampConverter = new DefaultTimestampConverter();
 
     protected abstract IValuePlaceholderConverter getValuePlaceholderConverter();
 
     protected abstract BaseAlterSqlConverter getAlterSqlConverter();
 
     public abstract DatabaseDriverType getDatabaseDriverType();
+
+    public void setTimestampConverter(TimestampConverter timestampConverter) {
+        this.timestampConverter = timestampConverter;
+    }
 
     /**
      * 获取DML sql 模板
@@ -229,8 +236,7 @@ public abstract class AbstractSqlTemplateGenerator {
                     && Objects.nonNull(valuePlaceholder.getValue())) {
                 MysqlDataType mysqlDataType = mysqlDataTypeOptional.get();
                 if (mysqlDataType == MysqlDataType.TIMESTAMP || mysqlDataType == MysqlDataType.DATETIME) {
-                    String cleanDateTime = DateHelper.getCleanDateTime(valuePlaceholder.getValue().toString());
-                    values.add(cleanDateTime);
+                    values.add(timestampConverter.convert(mysqlDataType, valuePlaceholder.getValue().toString()));
                 } else if (mysqlDataType == MysqlDataType.DATE) {
                     String cleanDate = DateHelper.getCleanDate(valuePlaceholder.getValue().toString());
                     values.add(cleanDate);

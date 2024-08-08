@@ -76,6 +76,21 @@ public final class DateHelper {
             return dateTimeString;
         }
     }
+
+    /**
+     * 获取带毫秒的时间
+     *
+     * @param dateTimeString 全时间字符串
+     * @return 获取带毫秒的时间
+     */
+    public static String getDatetime(String dateTimeString) {
+        try {
+            Timestamp timestamp = getTimestamp(dateTimeString);
+            return DateFormatUtils.format(timestamp, DATE_TIME_SSS);
+        } catch (Exception ex) {
+            return dateTimeString;
+        }
+    }
 }
 
 
