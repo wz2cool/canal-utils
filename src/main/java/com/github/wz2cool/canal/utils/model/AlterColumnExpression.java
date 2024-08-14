@@ -4,6 +4,7 @@ import net.sf.jsqlparser.statement.create.table.ColDataType;
 
 public class AlterColumnExpression {
     private EnhancedAlterOperation operation;
+    private String schemaName;
     private String tableName;
     private String columnName;
     private String colOldName;
@@ -83,5 +84,13 @@ public class AlterColumnExpression {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public String getSchemaName() {
+        return schemaName;
+    }
+
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 }
