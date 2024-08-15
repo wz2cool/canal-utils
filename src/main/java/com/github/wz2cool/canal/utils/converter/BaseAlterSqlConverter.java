@@ -30,6 +30,9 @@ public abstract class BaseAlterSqlConverter {
 
         Alter mysqlAlter = (Alter) statement;
         List<AlterColumnExpression> alterColumnExpressions = getAlterColumnExpressions(mysqlAlter);
+        for (AlterColumnExpression alterColumnExpression : alterColumnExpressions) {
+            alterColumnExpression.setSchemaName(mysqlAlter.getTable().getSchemaName());
+        }
         List<String> addColumnSqlList = alterColumnExpressions
                 .stream()
                 .filter(x -> x.getOperation() == EnhancedAlterOperation.ADD_COLUMN)
