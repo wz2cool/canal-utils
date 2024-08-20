@@ -22,7 +22,7 @@ public class DefaultValueDecorator implements AlterSqlConverterDecorator {
                 sqlContext.commentText
         );
         if (StringUtils.isNotBlank(alterColumnExpression.getDefaultValue())) {
-            sqlContext.defaultValue = DEFAULT + alterColumnExpression.getDefaultValue();
+            newSqlContext.defaultValue = DEFAULT + alterColumnExpression.getDefaultValue();
         }
         return newSqlContext;
     }
