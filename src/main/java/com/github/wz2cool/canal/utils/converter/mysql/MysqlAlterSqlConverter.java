@@ -2,7 +2,9 @@ package com.github.wz2cool.canal.utils.converter.mysql;
 
 import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.converter.IColDataTypeConverter;
+import com.github.wz2cool.canal.utils.converter.mysql.decorator.AlterSqlConverterDecorator;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
+import com.github.wz2cool.canal.utils.model.SqlContext;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,13 +13,24 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * mysql alter sql converter without DEFAULT functionality.
- * @author penghai
+ * MySQL alter SQL converter.
+ * Handles ALTER operations with optional decorators.
+ *
+ * @autor penghai
  */
 public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final MysqlColDataTypeConverter mysqlColDataTypeConverter = new MysqlColDataTypeConverter();
     private static final String UNSIGNED = " UNSIGNED";
     private static final String COMMENT = "COMMENT ";
+    private final List<AlterSqlConverterDecorator> decorators;
+
+    public MysqlAlterSqlConverter() {
+        this.decorators = new ArrayList<>();
+    }
+
+    public MysqlAlterSqlConverter(List<AlterSqlConverterDecorator> decorators) {
+        this.decorators = decorators;
+    }
 
     @Override
     protected IColDataTypeConverter getColDataTypeConverter() {
@@ -26,38 +39,28 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
 
     @Override
     protected Optional<String> convertToAddColumnSql(AlterColumnExpression alterColumnExpression) {
-        return Optional.of(generateColumnSql(
-                "ADD",
-                "",
-                alterColumnExpression.getTableName(),
-                "",
-                alterColumnExpression.getColumnName(),
-                getFormattedDataType(alterColumnExpression),
-                alterColumnExpression.getNullAble(),
-                "",
-                alterColumnExpression.getCommentText()
-        ));
+        return generateSql("ADD", alterColumnExpression);
     }
 
     @Override
     protected Optional<String> convertToChangeColumnTypeSql(AlterColumnExpression alterColumnExpression) {
-        return Optional.of(generateColumnSql(
-                "CHANGE",
-                "",
-                alterColumnExpression.getTableName(),
-                alterColumnExpression.getColumnName(),
-                alterColumnExpression.getColumnName(),
-                getFormattedDataType(alterColumnExpression),
-                alterColumnExpression.getNullAble(),
-                "",
-                alterColumnExpression.getCommentText())
-        );
+        alterColumnExpression.setColOldName(alterColumnExpression.getColumnName());
+        return generateSql("CHANGE", alterColumnExpression);
     }
 
     @Override
     protected Optional<String> convertToRenameColumnSql(AlterColumnExpression alterColumnExpression) {
-        return Optional.of(generateColumnSql(
-                "CHANGE",
+        return generateSql("CHANGE", alterColumnExpression);
+    }
+
+    @Override
+    protected Optional<String> convertToDropColumnSql(AlterColumnExpression alterColumnExpression) {
+        return generateDropColumnSql(alterColumnExpression);
+    }
+
+    private Optional<String> generateSql(String action, AlterColumnExpression alterColumnExpression) {
+        SqlContext sqlContext = new SqlContext(
+                action,
                 "",
                 alterColumnExpression.getTableName(),
                 alterColumnExpression.getColOldName(),
@@ -66,13 +69,44 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
                 alterColumnExpression.getNullAble(),
                 "",
                 alterColumnExpression.getCommentText()
+        );
+
+        for (AlterSqlConverterDecorator decorator : decorators) {
+            sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
+        }
+
+        return Optional.of(generateColumnSql(
+                sqlContext.action,
+                sqlContext.schemaName,
+                sqlContext.tableName,
+                sqlContext.oldColumnName,
+                sqlContext.newColumnName,
+                sqlContext.dataTypeString,
+                sqlContext.nullAble,
+                sqlContext.defaultValue,
+                sqlContext.commentText
         ));
     }
 
-    @Override
-    protected Optional<String> convertToDropColumnSql(AlterColumnExpression alterColumnExpression) {
-        String qualifiedTableName = getQualifiedTableName("", alterColumnExpression.getTableName());
-        String formattedColumnName = getFormattedColumnNameOrEmpty(alterColumnExpression.getColumnName());
+    private Optional<String> generateDropColumnSql(AlterColumnExpression alterColumnExpression) {
+        SqlContext sqlContext = new SqlContext(
+                "DROP",
+                "",
+                alterColumnExpression.getTableName(),
+                alterColumnExpression.getColumnName(),
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        for (AlterSqlConverterDecorator decorator : decorators) {
+            sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
+        }
+
+        String qualifiedTableName = getQualifiedTableName(sqlContext.schemaName, sqlContext.tableName);
+        String formattedColumnName = getFormattedColumnNameOrEmpty(sqlContext.oldColumnName);
         String sql = String.format("ALTER TABLE %s DROP COLUMN %s;", qualifiedTableName, formattedColumnName).trim();
         return Optional.of(sql);
     }
@@ -113,15 +147,8 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
                 : (COMMENT + commentText);
     }
 
-    /**
-     * 生成包含库名的表名字符串（如果库名不为空）
-     *
-     * @param schemaName 库名
-     * @param tableName  表名
-     * @return 完整的表名字符串，如 "`schemaName`.`tableName`"，如果库名为空则返回 "`tableName`"
-     */
     protected String getQualifiedTableName(String schemaName, String tableName) {
-        return (schemaName != null && !schemaName.isEmpty())
+        return (StringUtils.isNotEmpty(schemaName))
                 ? (schemaName + ".`" + tableName + "`")
                 : ("`" + tableName + "`");
     }
@@ -129,6 +156,4 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     protected String getFormattedColumnNameOrEmpty(String columnName) {
         return (StringUtils.isNotEmpty(columnName)) ? ("`" + columnName + "`") : "";
     }
-
-
 }

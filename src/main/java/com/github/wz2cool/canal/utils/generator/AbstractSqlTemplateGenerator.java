@@ -7,6 +7,8 @@ import com.github.wz2cool.canal.utils.converter.TimestampConverter;
 import com.github.wz2cool.canal.utils.helper.DateHelper;
 import com.github.wz2cool.canal.utils.model.*;
 import com.github.wz2cool.canal.utils.model.exception.NotSupportDataTypeException;
+import com.github.wz2cool.canal.utils.provider.AlterStatementProvider;
+import com.github.wz2cool.canal.utils.provider.DefaultAlterStatementProvider;
 import net.sf.jsqlparser.JSQLParserException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractSqlTemplateGenerator {
     protected TimestampConverter timestampConverter = new DefaultTimestampConverter();
+    protected AlterStatementProvider alterStatementProvider = new DefaultAlterStatementProvider();
 
     protected abstract IValuePlaceholderConverter getValuePlaceholderConverter();
 
@@ -33,6 +36,10 @@ public abstract class AbstractSqlTemplateGenerator {
 
     public void setTimestampConverter(TimestampConverter timestampConverter) {
         this.timestampConverter = timestampConverter;
+    }
+
+    public void setAlterStatementProvider(AlterStatementProvider alterStatementProvider) {
+        this.alterStatementProvider = alterStatementProvider;
     }
 
     /**
@@ -90,7 +97,7 @@ public abstract class AbstractSqlTemplateGenerator {
             return result;
         }
 
-        Optional<String> alterSqlOptional = getAlterStatement(canalRowChange);
+        Optional<String> alterSqlOptional = alterStatementProvider.getAlterStatement(canalRowChange);
         if (alterSqlOptional.isPresent()) {
             String alterSql = alterSqlOptional.get();
             List<String> alterSqlList = getAlterSqlConverter().convert(alterSql);
@@ -193,15 +200,6 @@ public abstract class AbstractSqlTemplateGenerator {
         result.setExpression(sql);
         result.setParams(params.toArray());
         return Optional.of(result);
-    }
-
-    private Optional<String> getAlterStatement(final CanalRowChange canalRowChange) {
-        // 目前我们只要alter 语句 比如create 语句我们会扔掉
-        if ("alter".equalsIgnoreCase(canalRowChange.getType())) {
-            return Optional.ofNullable(canalRowChange.getSql());
-        } else {
-            return Optional.empty();
-        }
     }
 
     private String getAppendColumnEquals(final ColumnsParserInfo columnsParserInfo, final String separator) {
