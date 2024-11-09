@@ -16,7 +16,7 @@ import java.util.Optional;
  * MySQL alter SQL converter.
  * Handles ALTER operations with optional decorators.
  *
- * @autor penghai
+ * @author penghai
  */
 public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final MysqlColDataTypeConverter mysqlColDataTypeConverter = new MysqlColDataTypeConverter();
