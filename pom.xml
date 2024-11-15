@@ -6,7 +6,7 @@
 
     <groupId>com.github.wz2cool</groupId>
     <artifactId>canal-utils</artifactId>
-    <version>0.2.16</version>
+    <version>0.2.17</version>
     <packaging>jar</packaging>
 
     <organization>
@@ -158,7 +158,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            
+
            <plugin>
              <groupId>com.github.hazendaz.maven</groupId>
              <artifactId>coveralls-maven-plugin</artifactId>

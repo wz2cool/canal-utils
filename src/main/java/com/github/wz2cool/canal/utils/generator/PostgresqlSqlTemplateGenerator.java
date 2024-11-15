@@ -12,8 +12,23 @@ import com.github.wz2cool.canal.utils.model.DatabaseDriverType;
  * @author Frank
  */
 public class PostgresqlSqlTemplateGenerator extends AbstractSqlTemplateGenerator {
-    private final PostgresqlAlterSqlConverter postgresqlAlterSqlConverter = new PostgresqlAlterSqlConverter();
+    private final BaseAlterSqlConverter alterSqlConverter;
     private final PostgresqlValuePlaceholderConverter postgresqlValuePlaceholderConverter = new PostgresqlValuePlaceholderConverter();
+
+    /**
+     * 默认构造函数，使用默认的MysqlAlterSqlConverter
+     */
+    public PostgresqlSqlTemplateGenerator() {
+        alterSqlConverter = new PostgresqlAlterSqlConverter();
+    }
+
+    /**
+     * 构造函数，使用自定义的MysqlAlterSqlConverter
+     * @param alterSqlConverter
+     */
+    public PostgresqlSqlTemplateGenerator(BaseAlterSqlConverter alterSqlConverter) {
+        this.alterSqlConverter = alterSqlConverter;
+    }
 
     @Override
     protected IValuePlaceholderConverter getValuePlaceholderConverter() {
@@ -22,7 +37,7 @@ public class PostgresqlSqlTemplateGenerator extends AbstractSqlTemplateGenerator
 
     @Override
     protected BaseAlterSqlConverter getAlterSqlConverter() {
-        return this.postgresqlAlterSqlConverter;
+        return this.alterSqlConverter;
     }
 
     @Override
