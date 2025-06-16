@@ -210,11 +210,25 @@ public abstract class BaseAlterSqlConverter {
         // 移除 ADD CONSTRAINT
         result = ADD_CONSTRAINT_PATTERN.matcher(result).replaceAll("");
         
-        // 清理多余的逗号和空格
-        result = result.replaceAll(",\\s*,", ",")
-                      .replaceAll(",\\s*;", ";")
-                      .replaceAll("\\s+", " ")
-                      .trim();
+        // 更精确的逗号清理逻辑
+        // 1. 清理连续的逗号
+        result = result.replaceAll(",\\s*,", ",");
+        
+        // 2. 清理表名后直接跟逗号的情况（如：alter table xxx, drop column yyy）
+        result = result.replaceAll("(?i)(alter\\s+table\\s+\\S+)\\s*,\\s*", "$1 ");
+        
+        // 3. 清理逗号后直接跟分号的情况
+        result = result.replaceAll(",\\s*;", ";");
+        
+        // 4. 清理开头的逗号
+        result = result.replaceAll("^\\s*,\\s*", "");
+        
+        // 5. 清理结尾的逗号
+        result = result.replaceAll(",\\s*$", "");
+        
+        // 6. 规范化空格
+        result = result.replaceAll("\\s+", " ").trim();
+        
         return result;
     }
 
