@@ -84,16 +84,4 @@ public class MssqlAlterSqlConverter extends BaseAlterSqlConverter {
         String sql = String.format("DROP INDEX %s ON %s;", indexName, tableName);
         return Optional.of(sql);
     }
-
-    @Override
-    protected Optional<String> convertToAddIndexSql(AlterColumnExpression alterColumnExpression) {
-        String tableName = alterColumnExpression.getTableName();
-        String constraintName = alterColumnExpression.getColumnName();
-        String constraintType = alterColumnExpression.getColOldName();
-        String columns = alterColumnExpression.getCommentText();
-        
-        String sql = String.format("ALTER TABLE %s ADD CONSTRAINT %s %s (%s);", 
-                tableName, constraintName, constraintType, columns);
-        return Optional.of(sql);
-    }
 }

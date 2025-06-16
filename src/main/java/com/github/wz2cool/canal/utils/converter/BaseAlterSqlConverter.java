@@ -126,18 +126,33 @@ public abstract class BaseAlterSqlConverter {
     protected abstract List<String> convertToOtherColumnActionSqlList(List<AlterColumnExpression> alterColumnExpressions);
     
     /**
-     * 转换 DROP INDEX 操作的 SQL
-     * @param alterColumnExpression 包含索引信息的表达式
-     * @return 转换后的 SQL
+     * 转换为删除索引的SQL语句
+     * 默认实现适用于大多数数据库，子类可以根据需要重写
+     * @param alterColumnExpression 索引操作表达式
+     * @return 删除索引的SQL语句
      */
-    protected abstract Optional<String> convertToDropIndexSql(AlterColumnExpression alterColumnExpression);
+    protected Optional<String> convertToDropIndexSql(AlterColumnExpression alterColumnExpression) {
+        String indexName = alterColumnExpression.getColumnName();
+        String sql = String.format("DROP INDEX %s;", indexName);
+        return Optional.of(sql);
+    }
     
     /**
-     * 转换 ADD INDEX 操作的 SQL
-     * @param alterColumnExpression 包含索引信息的表达式
-     * @return 转换后的 SQL
+     * 转换为添加索引的SQL语句
+     * 默认实现适用于大多数数据库，子类可以根据需要重写
+     * @param alterColumnExpression 索引操作表达式
+     * @return 添加索引的SQL语句
      */
-    protected abstract Optional<String> convertToAddIndexSql(AlterColumnExpression alterColumnExpression);
+    protected Optional<String> convertToAddIndexSql(AlterColumnExpression alterColumnExpression) {
+        String tableName = alterColumnExpression.getTableName();
+        String constraintName = alterColumnExpression.getColumnName();
+        String constraintType = alterColumnExpression.getColOldName();
+        String columns = alterColumnExpression.getCommentText();
+        
+        String sql = String.format("ALTER TABLE %s ADD CONSTRAINT %s %s (%s);", 
+                tableName, constraintName, constraintType, columns);
+        return Optional.of(sql);
+    }
 
     /**
      * 提取索引操作并创建对应的AlterColumnExpression
