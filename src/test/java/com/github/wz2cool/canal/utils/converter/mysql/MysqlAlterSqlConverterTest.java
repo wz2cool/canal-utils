@@ -197,4 +197,59 @@ public class MysqlAlterSqlConverterTest {
         assertEquals(1, result.size());
         assertEquals("ALTER TABLE `com_related_party` ADD CONSTRAINT `uk_business` unique (com_uni_code, report_date, related_party_code, relation_type, related_party_full_name);", result.get(0));
     }
+
+    @Test
+    public void testDropIndex() throws JSQLParserException {
+        String testSql = "alter table  com_related_party\n" +
+                "    drop index uk_business";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(1, result.size());
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `uk_business`;", result.get(0));
+    }
+
+    @Test
+    public void testDropIndexWithSemicolon() throws JSQLParserException {
+        String testSql = "alter table com_related_party drop index uk_business;";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(1, result.size());
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `uk_business`;", result.get(0));
+    }
+
+    @Test
+    public void testDropMultipleIndexes() throws JSQLParserException {
+        String testSql = "alter table com_related_party\n" +
+                "    drop index uk_business,\n" +
+                "    drop index idx_name";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(2, result.size());
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `uk_business`;", result.get(0));
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `idx_name`;", result.get(1));
+    }
+
+    @Test
+    public void testMixedDropIndexAndColumn() throws JSQLParserException {
+        String testSql = "alter table com_related_party\n" +
+                "    drop index uk_business,\n" +
+                "    drop column old_column";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(2, result.size());
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `uk_business`;", result.get(0));
+        assertEquals("ALTER TABLE `com_related_party` DROP COLUMN `old_column`;", result.get(1));
+    }
+
+    @Test
+    public void testMixedDropKeyAndDropIndex() throws JSQLParserException {
+        String testSql = "alter table com_related_party\n" +
+                "    drop key uk_business,\n" +
+                "    drop index idx_name";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(2, result.size());
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `uk_business`;", result.get(0));
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `idx_name`;", result.get(1));
+    }
 }

@@ -161,6 +161,18 @@ public abstract class BaseAlterSqlConverter {
             result.add(expression);
         }
         
+        // 处理 DROP INDEX
+        Matcher dropIndexMatcher = SqlPatterns.getDropIndexMatcher(mysqlAlterSql);
+        while (dropIndexMatcher.find()) {
+            String indexName = dropIndexMatcher.group(1);
+            AlterColumnExpression expression = new AlterColumnExpression();
+            expression.setTableName(SqlCleaner.cleanBackticks(tableName));
+            // 使用columnName存储索引名
+            expression.setColumnName(SqlCleaner.cleanBackticks(indexName));
+            expression.setOperation(EnhancedAlterOperation.DROP_INDEX);
+            result.add(expression);
+        }
+        
         // 处理 ADD CONSTRAINT
         Matcher addConstraintMatcher = SqlPatterns.getAddConstraintMatcher(mysqlAlterSql);
         while (addConstraintMatcher.find()) {
@@ -189,8 +201,9 @@ public abstract class BaseAlterSqlConverter {
     private String removeIndexOperationsFromSql(String mysqlAlterSql) {
         String result = mysqlAlterSql;
         
-        // 移除 DROP KEY 和 ADD CONSTRAINT 操作
+        // 移除 DROP KEY、DROP INDEX 和 ADD CONSTRAINT 操作
         result = SqlPatterns.removeDropKey(result);
+        result = SqlPatterns.removeDropIndex(result);
         result = SqlPatterns.removeAddConstraint(result);
         
         // 清理逗号问题

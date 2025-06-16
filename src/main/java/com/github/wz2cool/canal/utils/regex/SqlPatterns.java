@@ -21,6 +21,15 @@ public class SqlPatterns {
     );
     
     /**
+     * DROP INDEX 语法匹配
+     * 匹配: drop index index_name
+     */
+    private static final Pattern DROP_INDEX_PATTERN = Pattern.compile(
+            "\\s*drop\\s+index\\s+([^\\s,;]+)", 
+            Pattern.CASE_INSENSITIVE
+    );
+    
+    /**
      * ADD CONSTRAINT 语法匹配
      * 匹配: add constraint constraint_name unique|primary key|foreign key (columns)
      */
@@ -62,6 +71,15 @@ public class SqlPatterns {
     }
     
     /**
+     * 获取 DROP INDEX 的匹配器
+     * @param sql SQL 语句
+     * @return Matcher 对象
+     */
+    public static Matcher getDropIndexMatcher(String sql) {
+        return DROP_INDEX_PATTERN.matcher(sql);
+    }
+    
+    /**
      * 获取 ADD CONSTRAINT 的匹配器
      * @param sql SQL 语句
      * @return Matcher 对象
@@ -96,6 +114,15 @@ public class SqlPatterns {
      */
     public static String removeDropKey(String sql) {
         return DROP_KEY_PATTERN.matcher(sql).replaceAll("");
+    }
+    
+    /**
+     * 移除 DROP INDEX 操作
+     * @param sql 原始 SQL
+     * @return 移除 DROP INDEX 后的 SQL
+     */
+    public static String removeDropIndex(String sql) {
+        return DROP_INDEX_PATTERN.matcher(sql).replaceAll("");
     }
     
     /**
