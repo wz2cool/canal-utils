@@ -3,6 +3,8 @@ package com.github.wz2cool.canal.utils.converter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import com.github.wz2cool.canal.utils.model.EnhancedAlterOperation;
 import com.github.wz2cool.canal.utils.model.exception.NotSupportDataTypeException;
+import com.github.wz2cool.canal.utils.regex.SqlCleaner;
+import com.github.wz2cool.canal.utils.regex.SqlPatterns;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.alter.Alter;
@@ -14,29 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * @author Frank
  */
 public abstract class BaseAlterSqlConverter {
-    // 用于匹配 DROP KEY 语法的正则表达式
-    private static final Pattern DROP_KEY_PATTERN = Pattern.compile(
-            "(?i)\\s*drop\\s+key\\s+([^\\s,;]+)", Pattern.CASE_INSENSITIVE);
-    
-    // 用于匹配 ADD CONSTRAINT 语法的正则表达式
-    private static final Pattern ADD_CONSTRAINT_PATTERN = Pattern.compile(
-            "(?i)\\s*add\\s+constraint\\s+([^\\s]+)\\s+(unique|primary\\s+key|foreign\\s+key)\\s*\\(([^)]+)\\)", 
-            Pattern.CASE_INSENSITIVE);
     
     public List<String> convert(String mysqlAlterSqlInput) throws JSQLParserException {
-        String mysqlAlterSql = cleanMysqlAlterSql(mysqlAlterSqlInput);
+        String mysqlAlterSql = SqlCleaner.cleanMysqlAlterSql(mysqlAlterSqlInput);
 
         List<String> result = new ArrayList<>();
         
         // 提取表名
-        String tableName = extractTableName(mysqlAlterSql);
+        String tableName = SqlPatterns.extractTableName(mysqlAlterSql);
         
         // 检查是否包含索引操作语法
         List<AlterColumnExpression> indexExpressions = extractIndexOperations(mysqlAlterSql, tableName);
@@ -66,7 +59,7 @@ public abstract class BaseAlterSqlConverter {
             mysqlAlterSql = removeIndexOperationsFromSql(mysqlAlterSql);
             
             // 如果只有索引操作，直接返回结果
-            if (mysqlAlterSql.trim().matches("(?i)alter\\s+table\\s+\\S+\\s*;?\\s*")) {
+            if (SqlPatterns.isOnlyTableName(mysqlAlterSql)) {
                 return result;
             }
         }
@@ -157,28 +150,32 @@ public abstract class BaseAlterSqlConverter {
         }
         
         // 处理 DROP KEY
-        Matcher dropKeyMatcher = DROP_KEY_PATTERN.matcher(mysqlAlterSql);
+        Matcher dropKeyMatcher = SqlPatterns.getDropKeyMatcher(mysqlAlterSql);
         while (dropKeyMatcher.find()) {
             String indexName = dropKeyMatcher.group(1);
             AlterColumnExpression expression = new AlterColumnExpression();
-            expression.setTableName(cleanText(tableName));
-            expression.setColumnName(cleanText(indexName)); // 使用columnName存储索引名
+            expression.setTableName(SqlCleaner.cleanBackticks(tableName));
+            // 使用columnName存储索引名
+            expression.setColumnName(SqlCleaner.cleanBackticks(indexName));
             expression.setOperation(EnhancedAlterOperation.DROP_INDEX);
             result.add(expression);
         }
         
         // 处理 ADD CONSTRAINT
-        Matcher addConstraintMatcher = ADD_CONSTRAINT_PATTERN.matcher(mysqlAlterSql);
+        Matcher addConstraintMatcher = SqlPatterns.getAddConstraintMatcher(mysqlAlterSql);
         while (addConstraintMatcher.find()) {
             String constraintName = addConstraintMatcher.group(1);
             String constraintType = addConstraintMatcher.group(2);
             String columns = addConstraintMatcher.group(3);
             
             AlterColumnExpression expression = new AlterColumnExpression();
-            expression.setTableName(cleanText(tableName));
-            expression.setColumnName(cleanText(constraintName)); // 使用columnName存储约束名
-            expression.setColOldName(constraintType.trim()); // 使用colOldName存储约束类型
-            expression.setCommentText(columns.trim()); // 使用commentText存储列信息
+            expression.setTableName(SqlCleaner.cleanBackticks(tableName));
+            // 使用columnName存储约束名
+            expression.setColumnName(SqlCleaner.cleanBackticks(constraintName));
+            // 使用colOldName存储约束类型
+            expression.setColOldName(constraintType.trim());
+            // 使用commentText存储列信息
+            expression.setCommentText(columns.trim());
             expression.setOperation(EnhancedAlterOperation.ADD_INDEX);
             result.add(expression);
         }
@@ -187,47 +184,17 @@ public abstract class BaseAlterSqlConverter {
     }
     
     /**
-     * 从 ALTER 语句中提取表名
-     */
-    private String extractTableName(String mysqlAlterSql) {
-        Pattern tablePattern = Pattern.compile("(?i)alter\\s+table\\s+([^\\s]+)", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = tablePattern.matcher(mysqlAlterSql);
-        if (matcher.find()) {
-            return cleanText(matcher.group(1));
-        }
-        return null;
-    }
-    
-    /**
      * 从 SQL 中移除索引操作部分
      */
     private String removeIndexOperationsFromSql(String mysqlAlterSql) {
         String result = mysqlAlterSql;
         
-        // 移除 DROP KEY
-        result = DROP_KEY_PATTERN.matcher(result).replaceAll("");
+        // 移除 DROP KEY 和 ADD CONSTRAINT 操作
+        result = SqlPatterns.removeDropKey(result);
+        result = SqlPatterns.removeAddConstraint(result);
         
-        // 移除 ADD CONSTRAINT
-        result = ADD_CONSTRAINT_PATTERN.matcher(result).replaceAll("");
-        
-        // 更精确的逗号清理逻辑
-        // 1. 清理连续的逗号
-        result = result.replaceAll(",\\s*,", ",");
-        
-        // 2. 清理表名后直接跟逗号的情况（如：alter table xxx, drop column yyy）
-        result = result.replaceAll("(?i)(alter\\s+table\\s+\\S+)\\s*,\\s*", "$1 ");
-        
-        // 3. 清理逗号后直接跟分号的情况
-        result = result.replaceAll(",\\s*;", ";");
-        
-        // 4. 清理开头的逗号
-        result = result.replaceAll("^\\s*,\\s*", "");
-        
-        // 5. 清理结尾的逗号
-        result = result.replaceAll(",\\s*$", "");
-        
-        // 6. 规范化空格
-        result = result.replaceAll("\\s+", " ").trim();
+        // 清理逗号问题
+        result = SqlCleaner.cleanCommas(result);
         
         return result;
     }
@@ -240,7 +207,7 @@ public abstract class BaseAlterSqlConverter {
 
         List<AlterExpression> alterExpressions = mysqlAlter.getAlterExpressions();
         List<AlterExpression> alterExpressionsForColumn = new ArrayList<>();
-        String tableName = cleanText(mysqlAlter.getTable().getName());
+        String tableName = SqlCleaner.cleanBackticks(mysqlAlter.getTable().getName());
         for (AlterExpression alterExpression : alterExpressions) {
             String optionalSpecifier = alterExpression.getOptionalSpecifier();
             if ("COLUMN".equalsIgnoreCase(optionalSpecifier)
@@ -325,8 +292,8 @@ public abstract class BaseAlterSqlConverter {
             }
 
             final boolean unsignedFlag = columnDataType.getColumnSpecs().stream().anyMatch("unsigned"::equalsIgnoreCase);
-            addColumnExpression.setTableName(cleanText(tableName));
-            addColumnExpression.setColumnName(cleanText(columnName));
+            addColumnExpression.setTableName(SqlCleaner.cleanBackticks(tableName));
+            addColumnExpression.setColumnName(SqlCleaner.cleanBackticks(columnName));
             addColumnExpression.setOperation(EnhancedAlterOperation.ADD_COLUMN);
             addColumnExpression.setColDataType(covColDataTypeOptional.get());
             addColumnExpression.setUnsignedFlag(unsignedFlag);
@@ -368,9 +335,9 @@ public abstract class BaseAlterSqlConverter {
             }
             final boolean unsignedFlag = columnDataType.getColumnSpecs().stream().anyMatch("unsigned"::equalsIgnoreCase);
             AlterColumnExpression renameColumnExpression = new AlterColumnExpression();
-            renameColumnExpression.setTableName(cleanText(tableName));
-            renameColumnExpression.setColumnName(cleanText(columnName));
-            renameColumnExpression.setColOldName(cleanText(colOldName));
+            renameColumnExpression.setTableName(SqlCleaner.cleanBackticks(tableName));
+            renameColumnExpression.setColumnName(SqlCleaner.cleanBackticks(columnName));
+            renameColumnExpression.setColOldName(SqlCleaner.cleanBackticks(colOldName));
             renameColumnExpression.setOperation(EnhancedAlterOperation.RENAME_COLUMN);
             renameColumnExpression.setColDataType(covColDataTypeOptional.get());
             renameColumnExpression.setUnsignedFlag(unsignedFlag);
@@ -412,8 +379,8 @@ public abstract class BaseAlterSqlConverter {
                 throw new NotSupportDataTypeException(errorMsg);
             }
             final boolean unsignedFlag = columnDataType.getColumnSpecs().stream().anyMatch("unsigned"::equalsIgnoreCase);
-            changeTypeColumnExpression.setTableName(cleanText(tableName));
-            changeTypeColumnExpression.setColumnName(cleanText(columnName));
+            changeTypeColumnExpression.setTableName(SqlCleaner.cleanBackticks(tableName));
+            changeTypeColumnExpression.setColumnName(SqlCleaner.cleanBackticks(columnName));
             changeTypeColumnExpression.setOperation(EnhancedAlterOperation.CHANGE_COLUMN_TYPE);
             changeTypeColumnExpression.setColDataType(covColDataTypeOptional.get());
             changeTypeColumnExpression.setUnsignedFlag(unsignedFlag);
@@ -461,18 +428,9 @@ public abstract class BaseAlterSqlConverter {
         }
 
         AlterColumnExpression dropColumnExpression = new AlterColumnExpression();
-        dropColumnExpression.setTableName(cleanText(tableName));
-        dropColumnExpression.setColumnName(cleanText(columnName));
+        dropColumnExpression.setTableName(SqlCleaner.cleanBackticks(tableName));
+        dropColumnExpression.setColumnName(SqlCleaner.cleanBackticks(columnName));
         dropColumnExpression.setOperation(EnhancedAlterOperation.DROP_COLUMN);
         return Optional.of(dropColumnExpression);
-    }
-
-    private String cleanText(String element) {
-        return element.replace("`", "");
-    }
-
-    private String cleanMysqlAlterSql(String mysqlAlterSql) {
-        return mysqlAlterSql.replace("COLLATE", "")
-                .replace("collate", "");
     }
 }

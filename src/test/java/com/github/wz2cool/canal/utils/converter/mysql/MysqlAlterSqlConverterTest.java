@@ -93,8 +93,10 @@ public class MysqlAlterSqlConverterTest {
 
     @Test
     public void testDropKey() throws JSQLParserException {
+//        String testSql = "alter table com_related_party\n" +
+//                "    drop key uk_business";
         String testSql = "alter table com_related_party\n" +
-                "    drop key uk_business";
+                "    drop index uk_business";
 
         List<String> result = mysqlAlterSqlConverter.convert(testSql);
         assertEquals(1, result.size());
