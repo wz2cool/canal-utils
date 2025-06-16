@@ -21,13 +21,14 @@ import static org.junit.Assert.assertEquals;
 public class CustomMysqlAlterSqlConverterTest {
     private AbstractSqlTemplateGenerator sqlTemplateGenerator;
     private CanalRowChange canalRowChange;
+    private MysqlAlterSqlConverter mysqlAlterSqlConverter;
 
     @Before
     public void init() {
         List<AlterSqlConverterDecorator> decorators = Lists.newArrayList();
         decorators.add(new DefaultValueDecorator());
         decorators.add(new ReplaceNameDecorator("qa_penghai", "t_com_info"));
-        MysqlAlterSqlConverter mysqlAlterSqlConverter = new MysqlAlterSqlConverter(decorators);
+        mysqlAlterSqlConverter = new MysqlAlterSqlConverter(decorators);
         sqlTemplateGenerator = new MysqlSqlTemplateGenerator(mysqlAlterSqlConverter);
         canalRowChange = new CanalRowChange();
         canalRowChange.setId(1L);
@@ -50,6 +51,17 @@ public class CustomMysqlAlterSqlConverterTest {
                 "MODIFY COLUMN `com_eng_short_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司英文简称' AFTER `com_eng_name`");
         List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
         assertEquals(5, sqlTemplates.size());
+    }
+
+    @org.junit.Test
+    public void testDropKey() throws JSQLParserException {
+        String testSql = "alter table com_related_party\n" +
+                "    drop key uk_business";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("ALTER TABLE qa_penghai.`t_com_info` DROP INDEX `uk_business`;", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
     }
 
 }

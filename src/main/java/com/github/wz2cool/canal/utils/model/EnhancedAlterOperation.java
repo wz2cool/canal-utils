@@ -19,5 +19,13 @@ public enum EnhancedAlterOperation {
     /**
      * The operation of drop column.
      */
-    DROP_COLUMN
+    DROP_COLUMN,
+    /**
+     * The operation of drop index.
+     */
+    DROP_INDEX,
+    /**
+     * The operation of add index.
+     */
+    ADD_INDEX
 }

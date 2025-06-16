@@ -63,4 +63,16 @@ public class HiveAlterSqlConverter extends BaseAlterSqlConverter {
     protected List<String> convertToOtherColumnActionSqlList(List<AlterColumnExpression> alterColumnExpressions) {
         return new ArrayList<>();
     }
+
+    @Override
+    protected Optional<String> convertToDropIndexSql(AlterColumnExpression alterColumnExpression) {
+        // Hive 不支持索引操作，返回空
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> convertToAddIndexSql(AlterColumnExpression alterColumnExpression) {
+        // Hive 不支持索引操作，返回空
+        return Optional.empty();
+    }
 }

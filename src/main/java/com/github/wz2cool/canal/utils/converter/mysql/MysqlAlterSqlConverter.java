@@ -58,6 +58,21 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         return generateDropColumnSql(alterColumnExpression);
     }
 
+    @Override
+    protected List<String> convertToOtherColumnActionSqlList(List<AlterColumnExpression> alterColumnExpressions) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    protected Optional<String> convertToDropIndexSql(AlterColumnExpression alterColumnExpression) {
+        return generateDropIndexSql(alterColumnExpression);
+    }
+
+    @Override
+    protected Optional<String> convertToAddIndexSql(AlterColumnExpression alterColumnExpression) {
+        return generateAddIndexSql(alterColumnExpression);
+    }
+
     private Optional<String> generateSql(String action, AlterColumnExpression alterColumnExpression) {
         SqlContext sqlContext = new SqlContext(
                 action,
@@ -111,9 +126,54 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         return Optional.of(sql);
     }
 
-    @Override
-    protected List<String> convertToOtherColumnActionSqlList(List<AlterColumnExpression> alterColumnExpressions) {
-        return new ArrayList<>();
+    private Optional<String> generateDropIndexSql(AlterColumnExpression alterColumnExpression) {
+        SqlContext sqlContext = new SqlContext(
+                "DROP INDEX",
+                "",
+                alterColumnExpression.getTableName(),
+                alterColumnExpression.getColumnName(),
+                null,
+                null,
+                null,
+                "",
+                ""
+        );
+
+        for (AlterSqlConverterDecorator decorator : decorators) {
+            sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
+        }
+
+        String qualifiedTableName = getQualifiedTableName(sqlContext.schemaName, sqlContext.tableName);
+        String formattedIndexName = getFormattedColumnNameOrEmpty(sqlContext.oldColumnName);
+        String sql = String.format("ALTER TABLE %s DROP INDEX %s;", qualifiedTableName, formattedIndexName).trim();
+        return Optional.of(sql);
+    }
+
+    private Optional<String> generateAddIndexSql(AlterColumnExpression alterColumnExpression) {
+        SqlContext sqlContext = new SqlContext(
+                "ADD CONSTRAINT",
+                "",
+                alterColumnExpression.getTableName(),
+                alterColumnExpression.getColumnName(),
+                alterColumnExpression.getColOldName(),
+                null,
+                null,
+                "",
+                alterColumnExpression.getCommentText()
+        );
+
+        for (AlterSqlConverterDecorator decorator : decorators) {
+            sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
+        }
+
+        String qualifiedTableName = getQualifiedTableName(sqlContext.schemaName, sqlContext.tableName);
+        String formattedConstraintName = getFormattedColumnNameOrEmpty(sqlContext.oldColumnName);
+        String constraintType = sqlContext.newColumnName;
+        String columns = sqlContext.commentText;
+        
+        String sql = String.format("ALTER TABLE %s ADD CONSTRAINT %s %s (%s);", 
+                qualifiedTableName, formattedConstraintName, constraintType, columns).trim();
+        return Optional.of(sql);
     }
 
     protected String generateColumnSql(String action, String schemaName, String tableName, String oldColumnName, String newColumnName,

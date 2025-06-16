@@ -13,16 +13,64 @@ import net.sf.jsqlparser.statement.create.table.ColDataType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * @author Frank
  */
 public abstract class BaseAlterSqlConverter {
+    // 用于匹配 DROP KEY 语法的正则表达式
+    private static final Pattern DROP_KEY_PATTERN = Pattern.compile(
+            "(?i)\\s*drop\\s+key\\s+([^\\s,;]+)", Pattern.CASE_INSENSITIVE);
+    
+    // 用于匹配 ADD CONSTRAINT 语法的正则表达式
+    private static final Pattern ADD_CONSTRAINT_PATTERN = Pattern.compile(
+            "(?i)\\s*add\\s+constraint\\s+([^\\s]+)\\s+(unique|primary\\s+key|foreign\\s+key)\\s*\\(([^)]+)\\)", 
+            Pattern.CASE_INSENSITIVE);
+    
     public List<String> convert(String mysqlAlterSqlInput) throws JSQLParserException {
         String mysqlAlterSql = cleanMysqlAlterSql(mysqlAlterSqlInput);
 
         List<String> result = new ArrayList<>();
+        
+        // 提取表名
+        String tableName = extractTableName(mysqlAlterSql);
+        
+        // 检查是否包含索引操作语法
+        List<AlterColumnExpression> indexExpressions = extractIndexOperations(mysqlAlterSql, tableName);
+        
+        // 如果有索引操作，先处理它们
+        if (!indexExpressions.isEmpty()) {
+            List<String> dropIndexSqlList = indexExpressions
+                    .stream()
+                    .filter(x -> x.getOperation() == EnhancedAlterOperation.DROP_INDEX)
+                    .map(this::convertToDropIndexSql)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+            
+            List<String> addIndexSqlList = indexExpressions
+                    .stream()
+                    .filter(x -> x.getOperation() == EnhancedAlterOperation.ADD_INDEX)
+                    .map(this::convertToAddIndexSql)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+            
+            result.addAll(dropIndexSqlList);
+            result.addAll(addIndexSqlList);
+            
+            // 从SQL中移除索引操作
+            mysqlAlterSql = removeIndexOperationsFromSql(mysqlAlterSql);
+            
+            // 如果只有索引操作，直接返回结果
+            if (mysqlAlterSql.trim().matches("(?i)alter\\s+table\\s+\\S+\\s*;?\\s*")) {
+                return result;
+            }
+        }
+        
         net.sf.jsqlparser.statement.Statement statement = CCJSqlParserUtil.parse(mysqlAlterSql);
         if (!(statement instanceof Alter)) {
             return result;
@@ -83,6 +131,92 @@ public abstract class BaseAlterSqlConverter {
     protected abstract Optional<String> convertToDropColumnSql(AlterColumnExpression alterColumnExpression);
 
     protected abstract List<String> convertToOtherColumnActionSqlList(List<AlterColumnExpression> alterColumnExpressions);
+    
+    /**
+     * 转换 DROP INDEX 操作的 SQL
+     * @param alterColumnExpression 包含索引信息的表达式
+     * @return 转换后的 SQL
+     */
+    protected abstract Optional<String> convertToDropIndexSql(AlterColumnExpression alterColumnExpression);
+    
+    /**
+     * 转换 ADD INDEX 操作的 SQL
+     * @param alterColumnExpression 包含索引信息的表达式
+     * @return 转换后的 SQL
+     */
+    protected abstract Optional<String> convertToAddIndexSql(AlterColumnExpression alterColumnExpression);
+
+    /**
+     * 提取索引操作并创建对应的AlterColumnExpression
+     */
+    private List<AlterColumnExpression> extractIndexOperations(String mysqlAlterSql, String tableName) {
+        List<AlterColumnExpression> result = new ArrayList<>();
+        
+        if (tableName == null) {
+            return result;
+        }
+        
+        // 处理 DROP KEY
+        Matcher dropKeyMatcher = DROP_KEY_PATTERN.matcher(mysqlAlterSql);
+        while (dropKeyMatcher.find()) {
+            String indexName = dropKeyMatcher.group(1);
+            AlterColumnExpression expression = new AlterColumnExpression();
+            expression.setTableName(cleanText(tableName));
+            expression.setColumnName(cleanText(indexName)); // 使用columnName存储索引名
+            expression.setOperation(EnhancedAlterOperation.DROP_INDEX);
+            result.add(expression);
+        }
+        
+        // 处理 ADD CONSTRAINT
+        Matcher addConstraintMatcher = ADD_CONSTRAINT_PATTERN.matcher(mysqlAlterSql);
+        while (addConstraintMatcher.find()) {
+            String constraintName = addConstraintMatcher.group(1);
+            String constraintType = addConstraintMatcher.group(2);
+            String columns = addConstraintMatcher.group(3);
+            
+            AlterColumnExpression expression = new AlterColumnExpression();
+            expression.setTableName(cleanText(tableName));
+            expression.setColumnName(cleanText(constraintName)); // 使用columnName存储约束名
+            expression.setColOldName(constraintType.trim()); // 使用colOldName存储约束类型
+            expression.setCommentText(columns.trim()); // 使用commentText存储列信息
+            expression.setOperation(EnhancedAlterOperation.ADD_INDEX);
+            result.add(expression);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 从 ALTER 语句中提取表名
+     */
+    private String extractTableName(String mysqlAlterSql) {
+        Pattern tablePattern = Pattern.compile("(?i)alter\\s+table\\s+([^\\s]+)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = tablePattern.matcher(mysqlAlterSql);
+        if (matcher.find()) {
+            return cleanText(matcher.group(1));
+        }
+        return null;
+    }
+    
+    /**
+     * 从 SQL 中移除索引操作部分
+     */
+    private String removeIndexOperationsFromSql(String mysqlAlterSql) {
+        String result = mysqlAlterSql;
+        
+        // 移除 DROP KEY
+        result = DROP_KEY_PATTERN.matcher(result).replaceAll("");
+        
+        // 移除 ADD CONSTRAINT
+        result = ADD_CONSTRAINT_PATTERN.matcher(result).replaceAll("");
+        
+        // 清理多余的逗号和空格
+        result = result.replaceAll(",\\s*,", ",")
+                      .replaceAll(",\\s*;", ";")
+                      .replaceAll("\\s+", " ")
+                      .trim();
+        return result;
+    }
 
     private List<AlterColumnExpression> getAlterColumnExpressions(Alter mysqlAlter) {
         List<AlterColumnExpression> result = new ArrayList<>();
