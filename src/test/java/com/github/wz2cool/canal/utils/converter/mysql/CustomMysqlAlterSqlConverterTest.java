@@ -64,4 +64,54 @@ public class CustomMysqlAlterSqlConverterTest {
         assertEquals(1, sqlTemplates.size());
     }
 
+    @org.junit.Test
+    public void testCreateIndexSimple() throws JSQLParserException {
+        String testSql = "create index idx_com_uni_code on com_related_party (com_uni_code)";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("CREATE INDEX `idx_com_uni_code` ON qa_penghai.`t_com_info` (com_uni_code);", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
+    @org.junit.Test
+    public void testCreateIndexWithComment() throws JSQLParserException {
+        String testSql = "/* ApplicationName=DataGrip 2024.3.5 */ create index idx_business_info on com_related_party (com_uni_code, report_date)";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("CREATE INDEX `idx_business_info` ON qa_penghai.`t_com_info` (com_uni_code, report_date);", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
+    @org.junit.Test
+    public void testCreateIndexMultipleColumns() throws JSQLParserException {
+        String testSql = "CREATE INDEX idx_multiple_cols ON com_related_party (com_uni_code, report_date, relation_type)";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("CREATE INDEX `idx_multiple_cols` ON qa_penghai.`t_com_info` (com_uni_code, report_date, relation_type);", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
+    @org.junit.Test
+    public void testCreateIndexWithBackticks() throws JSQLParserException {
+        String testSql = "create index `idx_party_info` on `com_related_party` (`com_uni_code`, `related_party_code`)";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("CREATE INDEX `idx_party_info` ON qa_penghai.`t_com_info` (`com_uni_code`, `related_party_code`);", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
+    @org.junit.Test
+    public void testCreateIndexCaseInsensitive() throws JSQLParserException {
+        String testSql = "CREATE INDEX IDX_UPPER_CASE ON COM_RELATED_PARTY (COM_UNI_CODE)";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("CREATE INDEX `IDX_UPPER_CASE` ON qa_penghai.`t_com_info` (COM_UNI_CODE);", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
 }
