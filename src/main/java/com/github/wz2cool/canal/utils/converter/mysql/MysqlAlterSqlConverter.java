@@ -73,6 +73,11 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         return generateAddIndexSql(alterColumnExpression);
     }
 
+    @Override
+    protected Optional<String> convertToCreateIndexSql(AlterColumnExpression alterColumnExpression) {
+        return generateCreateIndexSql(alterColumnExpression);
+    }
+
     private Optional<String> generateSql(String action, AlterColumnExpression alterColumnExpression) {
         SqlContext sqlContext = new SqlContext(
                 action,
@@ -173,6 +178,32 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         
         String sql = String.format("ALTER TABLE %s ADD CONSTRAINT %s %s (%s);", 
                 qualifiedTableName, formattedConstraintName, constraintType, columns).trim();
+        return Optional.of(sql);
+    }
+
+    private Optional<String> generateCreateIndexSql(AlterColumnExpression alterColumnExpression) {
+        SqlContext sqlContext = new SqlContext(
+                "CREATE INDEX",
+                "",
+                alterColumnExpression.getTableName(),
+                alterColumnExpression.getColumnName(),
+                null,
+                null,
+                null,
+                "",
+                alterColumnExpression.getCommentText()
+        );
+
+        for (AlterSqlConverterDecorator decorator : decorators) {
+            sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
+        }
+
+        String qualifiedTableName = getQualifiedTableName(sqlContext.schemaName, sqlContext.tableName);
+        String formattedIndexName = getFormattedColumnNameOrEmpty(sqlContext.oldColumnName);
+        String columns = sqlContext.commentText;
+        
+        String sql = String.format("CREATE INDEX %s ON %s (%s);", 
+                formattedIndexName, qualifiedTableName, columns).trim();
         return Optional.of(sql);
     }
 

@@ -28,6 +28,21 @@ public abstract class BaseAlterSqlConverter {
 
         List<String> result = new ArrayList<>();
         
+        // 检查是否为 CREATE INDEX 语句
+        if (SqlPatterns.isCreateIndexStatement(mysqlAlterSql)) {
+            // 处理 CREATE INDEX 语句
+            List<AlterColumnExpression> createIndexExpressions = extractCreateIndexOperations(mysqlAlterSql);
+            List<String> createIndexSqlList = createIndexExpressions
+                    .stream()
+                    .map(this::convertToCreateIndexSql)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+            
+            result.addAll(createIndexSqlList);
+            return result;
+        }
+        
         // 提取表名
         String tableName = SqlPatterns.extractTableName(mysqlAlterSql);
         
@@ -155,6 +170,22 @@ public abstract class BaseAlterSqlConverter {
     }
 
     /**
+     * 转换为创建索引的SQL语句
+     * 默认实现适用于大多数数据库，子类可以根据需要重写
+     * @param alterColumnExpression 索引操作表达式
+     * @return 创建索引的SQL语句
+     */
+    protected Optional<String> convertToCreateIndexSql(AlterColumnExpression alterColumnExpression) {
+        String tableName = alterColumnExpression.getTableName();
+        String indexName = alterColumnExpression.getColumnName();
+        String columns = alterColumnExpression.getCommentText();
+        
+        String sql = String.format("CREATE INDEX %s ON %s (%s);", 
+                indexName, tableName, columns);
+        return Optional.of(sql);
+    }
+
+    /**
      * 提取索引操作并创建对应的AlterColumnExpression
      */
     private List<AlterColumnExpression> extractIndexOperations(String mysqlAlterSql, String tableName) {
@@ -204,6 +235,29 @@ public abstract class BaseAlterSqlConverter {
             // 使用commentText存储列信息
             expression.setCommentText(columns.trim());
             expression.setOperation(EnhancedAlterOperation.ADD_INDEX);
+            result.add(expression);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 提取 CREATE INDEX 操作并创建对应的AlterColumnExpression
+     */
+    private List<AlterColumnExpression> extractCreateIndexOperations(String createIndexSql) {
+        List<AlterColumnExpression> result = new ArrayList<>();
+        
+        Matcher createIndexMatcher = SqlPatterns.getCreateIndexMatcher(createIndexSql);
+        while (createIndexMatcher.find()) {
+            String indexName = createIndexMatcher.group(1);
+            String tableName = createIndexMatcher.group(2);
+            String columns = createIndexMatcher.group(3);
+            
+            AlterColumnExpression expression = new AlterColumnExpression();
+            expression.setTableName(SqlCleaner.cleanBackticks(tableName));
+            expression.setColumnName(SqlCleaner.cleanBackticks(indexName));
+            expression.setCommentText(columns.trim());
+            expression.setOperation(EnhancedAlterOperation.CREATE_INDEX);
             result.add(expression);
         }
         

@@ -27,5 +27,9 @@ public enum EnhancedAlterOperation {
     /**
      * The operation of add index.
      */
-    ADD_INDEX
+    ADD_INDEX,
+    /**
+     * The operation of create index.
+     */
+    CREATE_INDEX
 }

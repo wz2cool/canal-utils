@@ -39,12 +39,30 @@ public class SqlPatterns {
     );
     
     /**
+     * CREATE INDEX 语法匹配，支持注释
+     *
+     */
+    private static final Pattern CREATE_INDEX_PATTERN = Pattern.compile(
+            "(?:/\\*.*?\\*/\\s*)?create\\s+index\\s+([^\\s]+)\\s+on\\s+([^\\s\\(]+)\\s*\\(([^)]+)\\)", 
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL
+    );
+    
+    /**
      * ALTER TABLE 表名提取
      * 匹配: alter table table_name
      */
     private static final Pattern ALTER_TABLE_PATTERN = Pattern.compile(
             "alter\\s+table\\s+([^\\s]+)", 
             Pattern.CASE_INSENSITIVE
+    );
+    
+    /**
+     * CREATE INDEX 表名提取
+     * 匹配: create index index_name on table_name
+     */
+    private static final Pattern CREATE_INDEX_TABLE_PATTERN = Pattern.compile(
+            "(?:/\\*.*?\\*/\\s*)?create\\s+index\\s+[^\\s]+\\s+on\\s+([^\\s\\(]+)", 
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL
     );
     
     /**
@@ -89,13 +107,42 @@ public class SqlPatterns {
     }
     
     /**
+     * 获取 CREATE INDEX 的匹配器
+     * @param sql SQL 语句
+     * @return Matcher 对象
+     */
+    public static Matcher getCreateIndexMatcher(String sql) {
+        return CREATE_INDEX_PATTERN.matcher(sql);
+    }
+    
+    /**
+     * 检查是否为 CREATE INDEX 语句
+     * @param sql SQL 语句
+     * @return true 如果是 CREATE INDEX 语句
+     */
+    public static boolean isCreateIndexStatement(String sql) {
+        return CREATE_INDEX_PATTERN.matcher(sql.trim()).find();
+    }
+    
+    /**
      * 从 SQL 中提取表名
-     * @param sql ALTER TABLE 语句
+     * @param sql ALTER TABLE 或 CREATE INDEX 语句
      * @return 表名，如果未找到返回 null
      */
     public static String extractTableName(String sql) {
-        Matcher matcher = ALTER_TABLE_PATTERN.matcher(sql);
-        return matcher.find() ? matcher.group(1) : null;
+        // 先尝试匹配 ALTER TABLE
+        Matcher alterMatcher = ALTER_TABLE_PATTERN.matcher(sql);
+        if (alterMatcher.find()) {
+            return alterMatcher.group(1);
+        }
+        
+        // 再尝试匹配 CREATE INDEX
+        Matcher createIndexMatcher = CREATE_INDEX_TABLE_PATTERN.matcher(sql);
+        if (createIndexMatcher.find()) {
+            return createIndexMatcher.group(1);
+        }
+        
+        return null;
     }
     
     /**
