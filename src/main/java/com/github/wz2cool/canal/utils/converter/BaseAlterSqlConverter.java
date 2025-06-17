@@ -43,6 +43,21 @@ public abstract class BaseAlterSqlConverter {
             return result;
         }
         
+        // 检查是否为独立 DROP INDEX 语句
+        if (SqlPatterns.isStandaloneDropIndexStatement(mysqlAlterSql)) {
+            // 处理独立 DROP INDEX 语句
+            List<AlterColumnExpression> dropIndexExpressions = extractStandaloneDropIndexOperations(mysqlAlterSql);
+            List<String> dropIndexSqlList = dropIndexExpressions
+                    .stream()
+                    .map(this::convertToDropIndexSql)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+            
+            result.addAll(dropIndexSqlList);
+            return result;
+        }
+        
         // 提取表名
         String tableName = SqlPatterns.extractTableName(mysqlAlterSql);
         
@@ -258,6 +273,27 @@ public abstract class BaseAlterSqlConverter {
             expression.setColumnName(SqlCleaner.cleanBackticks(indexName));
             expression.setCommentText(columns.trim());
             expression.setOperation(EnhancedAlterOperation.CREATE_INDEX);
+            result.add(expression);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 提取独立 DROP INDEX 操作并创建对应的AlterColumnExpression
+     */
+    private List<AlterColumnExpression> extractStandaloneDropIndexOperations(String dropIndexSql) {
+        List<AlterColumnExpression> result = new ArrayList<>();
+        
+        Matcher dropIndexMatcher = SqlPatterns.getStandaloneDropIndexMatcher(dropIndexSql);
+        while (dropIndexMatcher.find()) {
+            String indexName = dropIndexMatcher.group(1);
+            String tableName = dropIndexMatcher.group(2);
+            
+            AlterColumnExpression expression = new AlterColumnExpression();
+            expression.setTableName(SqlCleaner.cleanBackticks(tableName));
+            expression.setColumnName(SqlCleaner.cleanBackticks(indexName));
+            expression.setOperation(EnhancedAlterOperation.DROP_INDEX);
             result.add(expression);
         }
         

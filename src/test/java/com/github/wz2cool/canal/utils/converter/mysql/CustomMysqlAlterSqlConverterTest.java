@@ -114,4 +114,44 @@ public class CustomMysqlAlterSqlConverterTest {
         assertEquals(1, sqlTemplates.size());
     }
 
+    @org.junit.Test
+    public void testStandaloneDropIndexSimple() throws JSQLParserException {
+        String testSql = "drop index com_related_party_publish_date_index on com_related_party";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("ALTER TABLE qa_penghai.`t_com_info` DROP INDEX `com_related_party_publish_date_index`;", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
+    @org.junit.Test
+    public void testStandaloneDropIndexWithComment() throws JSQLParserException {
+        String testSql = "/* ApplicationName=DataGrip 2024.3.5 */ drop index com_related_party_publish_date_index on com_related_party";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("ALTER TABLE qa_penghai.`t_com_info` DROP INDEX `com_related_party_publish_date_index`;", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
+    @org.junit.Test
+    public void testStandaloneDropIndexWithBackticks() throws JSQLParserException {
+        String testSql = "drop index `idx_test_index` on `com_related_party`";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("ALTER TABLE qa_penghai.`t_com_info` DROP INDEX `idx_test_index`;", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
+    @org.junit.Test
+    public void testStandaloneDropIndexCaseInsensitive() throws JSQLParserException {
+        String testSql = "DROP INDEX IDX_UPPER_CASE ON COM_RELATED_PARTY";
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals("ALTER TABLE qa_penghai.`t_com_info` DROP INDEX `IDX_UPPER_CASE`;", result.get(0));
+        canalRowChange.setSql(testSql);
+        List<SqlTemplate> sqlTemplates = sqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        assertEquals(1, sqlTemplates.size());
+    }
+
 }

@@ -252,4 +252,40 @@ public class MysqlAlterSqlConverterTest {
         assertEquals("ALTER TABLE `com_related_party` DROP INDEX `uk_business`;", result.get(0));
         assertEquals("ALTER TABLE `com_related_party` DROP INDEX `idx_name`;", result.get(1));
     }
+
+    @Test
+    public void testStandaloneDropIndexSimple() throws JSQLParserException {
+        String testSql = "drop index com_related_party_publish_date_index on com_related_party";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(1, result.size());
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `com_related_party_publish_date_index`;", result.get(0));
+    }
+
+    @Test
+    public void testStandaloneDropIndexWithComment() throws JSQLParserException {
+        String testSql = "/* ApplicationName=DataGrip 2024.3.5 */ drop index com_related_party_publish_date_index on com_related_party";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(1, result.size());
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `com_related_party_publish_date_index`;", result.get(0));
+    }
+
+    @Test
+    public void testStandaloneDropIndexWithBackticks() throws JSQLParserException {
+        String testSql = "drop index `idx_test_index` on `com_related_party`";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(1, result.size());
+        assertEquals("ALTER TABLE `com_related_party` DROP INDEX `idx_test_index`;", result.get(0));
+    }
+
+    @Test
+    public void testStandaloneDropIndexCaseInsensitive() throws JSQLParserException {
+        String testSql = "DROP INDEX IDX_UPPER_CASE ON COM_RELATED_PARTY";
+
+        List<String> result = mysqlAlterSqlConverter.convert(testSql);
+        assertEquals(1, result.size());
+        assertEquals("ALTER TABLE `COM_RELATED_PARTY` DROP INDEX `IDX_UPPER_CASE`;", result.get(0));
+    }
 }

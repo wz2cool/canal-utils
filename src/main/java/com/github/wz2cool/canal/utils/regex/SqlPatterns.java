@@ -48,6 +48,14 @@ public class SqlPatterns {
     );
     
     /**
+     * 独立 DROP INDEX 语法匹配，支持注释
+     */
+    private static final Pattern STANDALONE_DROP_INDEX_PATTERN = Pattern.compile(
+            "(?:/\\*.*?\\*/\\s*)?drop\\s+index\\s+([^\\s]+)\\s+on\\s+([^\\s;]+)", 
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL
+    );
+    
+    /**
      * ALTER TABLE 表名提取
      * 匹配: alter table table_name
      */
@@ -116,6 +124,15 @@ public class SqlPatterns {
     }
     
     /**
+     * 获取独立 DROP INDEX 的匹配器
+     * @param sql SQL 语句
+     * @return Matcher 对象
+     */
+    public static Matcher getStandaloneDropIndexMatcher(String sql) {
+        return STANDALONE_DROP_INDEX_PATTERN.matcher(sql);
+    }
+    
+    /**
      * 检查是否为 CREATE INDEX 语句
      * @param sql SQL 语句
      * @return true 如果是 CREATE INDEX 语句
@@ -125,8 +142,17 @@ public class SqlPatterns {
     }
     
     /**
+     * 检查是否为独立 DROP INDEX 语句
+     * @param sql SQL 语句
+     * @return true 如果是独立 DROP INDEX 语句
+     */
+    public static boolean isStandaloneDropIndexStatement(String sql) {
+        return STANDALONE_DROP_INDEX_PATTERN.matcher(sql.trim()).find();
+    }
+    
+    /**
      * 从 SQL 中提取表名
-     * @param sql ALTER TABLE 或 CREATE INDEX 语句
+     * @param sql ALTER TABLE、CREATE INDEX 或 DROP INDEX 语句
      * @return 表名，如果未找到返回 null
      */
     public static String extractTableName(String sql) {
@@ -140,6 +166,12 @@ public class SqlPatterns {
         Matcher createIndexMatcher = CREATE_INDEX_TABLE_PATTERN.matcher(sql);
         if (createIndexMatcher.find()) {
             return createIndexMatcher.group(1);
+        }
+        
+        // 最后尝试匹配独立 DROP INDEX
+        Matcher dropIndexMatcher = STANDALONE_DROP_INDEX_PATTERN.matcher(sql);
+        if (dropIndexMatcher.find()) {
+            return dropIndexMatcher.group(2);
         }
         
         return null;
