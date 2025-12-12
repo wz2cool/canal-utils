@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class FlatMessage implements Serializable {
     private static final long serialVersionUID = -3386650678735860050L;
+    private String gtid;
     private long id;
     private String database;
     private String table;
@@ -34,6 +35,14 @@ public class FlatMessage implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getGtid() {
+        return gtid;
+    }
+
+    public void setGtid(String gtid) {
+        this.gtid = gtid;
     }
 
     public String getDatabase() {
@@ -141,6 +150,6 @@ public class FlatMessage implements Serializable {
     }
 
     public String toString() {
-        return "FlatMessage [id=" + this.id + ", database=" + this.database + ", table=" + this.table + ", isDdl=" + this.isDdl + ", type=" + this.type + ", es=" + this.es + ", ts=" + this.ts + ", sql=" + this.sql + ", sqlType=" + this.sqlType + ", mysqlType=" + this.mysqlType + ", data=" + this.data + ", old=" + this.old + "]";
+        return "FlatMessage [id=" + this.id + ", gtid=" + this.gtid + ", database=" + this.database + ", table=" + this.table + ", isDdl=" + this.isDdl + ", type=" + this.type + ", es=" + this.es + ", ts=" + this.ts + ", sql=" + this.sql + ", sqlType=" + this.sqlType + ", mysqlType=" + this.mysqlType + ", data=" + this.data + ", old=" + this.old + "]";
     }
 }

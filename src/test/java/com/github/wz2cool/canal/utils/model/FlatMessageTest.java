@@ -15,4 +15,27 @@ public class FlatMessageTest {
         final FlatMessage flatMessage = objectMapper.readValue(json, FlatMessage.class);
         Assert.assertFalse(flatMessage.getIsDdl());
     }
+
+    @Test
+    public void testJsonToObject2() throws IOException {
+        String json = "{\n" +
+                "\t\"data\": null,\n" +
+                "\t\"database\": \"mytest2\",\n" +
+                "\t\"es\": 1730970788000,\n" +
+                "\t\"gtid\": \"123\",\n" +
+                "\t\"id\": 1,\n" +
+                "\t\"isDdl\": true,\n" +
+                "\t\"mysqlType\": null,\n" +
+                "\t\"old\": null,\n" +
+                "\t\"pkNames\": null,\n" +
+                "\t\"sql\": \"CREATE TABLE `stuff` (\\n    id INT PRIMARY KEY,\\n    name VARCHAR(50)\\n)\",\n" +
+                "\t\"sqlType\": null,\n" +
+                "\t\"table\": \"stuff\",\n" +
+                "\t\"ts\": 1730970825886,\n" +
+                "\t\"type\": \"CREATE\"\n" +
+                "}";
+        ObjectMapper objectMapper = new ObjectMapper();
+        final FlatMessage flatMessage = objectMapper.readValue(json, FlatMessage.class);
+
+    }
 }
