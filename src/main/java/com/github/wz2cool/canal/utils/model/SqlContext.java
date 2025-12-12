@@ -1,5 +1,9 @@
 package com.github.wz2cool.canal.utils.model;
 
+/**
+ * sql context
+ * @author YinPengHai
+ **/
 public class SqlContext {
     public String schemaName;
     public String tableName;

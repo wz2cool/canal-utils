@@ -1,12 +1,12 @@
 package com.github.wz2cool.canal.utils.converter.mysql.decorator;
 
-import com.github.wz2cool.canal.utils.converter.mysql.MysqlAlterSqlConverter;
+import com.github.wz2cool.canal.utils.converter.BaseAlterSqlConverter;
 import com.github.wz2cool.canal.utils.model.AlterColumnExpression;
 import com.github.wz2cool.canal.utils.model.SqlContext;
 
 /**
- * 替换表名和schema
- * @author penghai
+ * 替换表名和库名
+ * @author YinPengHai
  */
 public class ReplaceNameDecorator implements AlterSqlConverterDecorator {
     private final String targetSchemaName;
@@ -18,7 +18,7 @@ public class ReplaceNameDecorator implements AlterSqlConverterDecorator {
     }
 
     @Override
-    public SqlContext apply(MysqlAlterSqlConverter converter, AlterColumnExpression alterColumnExpression, SqlContext sqlContext) {
+    public SqlContext apply(BaseAlterSqlConverter converter, AlterColumnExpression alterColumnExpression, SqlContext sqlContext) {
         return new SqlContext(
                 sqlContext.action,
                 targetSchemaName,
