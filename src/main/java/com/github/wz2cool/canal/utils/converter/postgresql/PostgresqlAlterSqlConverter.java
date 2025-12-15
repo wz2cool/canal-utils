@@ -98,19 +98,16 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
                     newColumnName,
                     dataTypeString);
         } else if ("ALTER".equals(action)) {
-            return String.format("ALTER TABLE %s %s COLUMN %s TYPE %s USING %s::%s",
-                    qualifiedTableName,
-                    action,
-                    newColumnName,
-                    dataTypeString,
-                    newColumnName,
-                    dataTypeString);
+            return alterColumnType(action, newColumnName, dataTypeString, qualifiedTableName);
         } else if ("RENAME".equals(action)) {
-            return String.format("ALTER TABLE %s %s COLUMN %s TO %s",
+            // mysql可以一行sql完成字段名和类型的修改，postgresql需要分开，我们用__SPLIT__拼接
+            String renameSql = String.format("ALTER TABLE %s %s COLUMN %s TO %s",
                     qualifiedTableName,
                     action,
                     oldColumnName,
                     newColumnName);
+            String alterColumnTypeSql = alterColumnType(action, newColumnName, dataTypeString, qualifiedTableName);
+            return String.format("%s__SPLIT__%s", renameSql, alterColumnTypeSql);
         } else if ("DROP".equals(action)) {
             return String.format("ALTER TABLE %s %s COLUMN %s",
                     qualifiedTableName,
@@ -118,6 +115,16 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
                     newColumnName);
         }
         return "";
+    }
+
+    private String alterColumnType(String action, String newColumnName, String dataTypeString, String qualifiedTableName) {
+        return String.format("ALTER TABLE %s %s COLUMN %s TYPE %s USING %s::%s",
+                qualifiedTableName,
+                action,
+                newColumnName,
+                dataTypeString,
+                newColumnName,
+                dataTypeString);
     }
 
     protected String getQualifiedTableName(String schemaName, String tableName) {
