@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * PostgreSQL alter 语句转换器
  *
- *@author YinPenghai
+ * @author YinPenghai
  **/
 public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final PostgresqlColDataTypeConverter postgresqlColDataTypeConverter = new PostgresqlColDataTypeConverter();
@@ -61,7 +61,7 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
 
     private Optional<String> generateSql(String action, AlterColumnExpression alterColumnExpression) {
         SqlContext sqlContext = new SqlContext.Builder()
-                .action( action)
+                .action(action)
                 .schemaName("")
                 .tableName(alterColumnExpression.getTableName())
                 .oldColumnName(alterColumnExpression.getColOldName())
@@ -70,7 +70,9 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
                 .nullAble(alterColumnExpression.getNullAble())
                 .defaultValue(alterColumnExpression.getDefaultValue())
                 .commentText(alterColumnExpression.getCommentText())
+                .unsignedFlag(alterColumnExpression.isUnsignedFlag())
                 .build();
+
         for (AlterSqlConverterDecorator decorator : decorators) {
             sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
         }
@@ -87,13 +89,9 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
         final String dataTypeString = sqlContext.getDataTypeString();
         final String qualifiedTableName = getQualifiedTableName(schemaName, tableName);
         if ("ADD".equals(action)) {
-            return String.format("ALTER TABLE %s %s %s %s",
-                    qualifiedTableName,
-                    action,
-                    newColumnName,
-                    dataTypeString);
+            return addColumn(qualifiedTableName, sqlContext);
         } else if ("ALTER".equals(action)) {
-            return alterColumnType(action, newColumnName, dataTypeString, qualifiedTableName);
+            return alterColumnType(qualifiedTableName, sqlContext);
         } else if ("RENAME".equals(action)) {
             // mysql可以一行sql完成字段名和类型的修改，postgresql需要分开，我们用__SPLIT__拼接
             String renameSql = String.format("ALTER TABLE %s %s COLUMN %s TO %s",
@@ -101,7 +99,7 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
                     action,
                     oldColumnName,
                     newColumnName);
-            String alterColumnTypeSql = alterColumnType(action, newColumnName, dataTypeString, qualifiedTableName);
+            String alterColumnTypeSql = alterColumnType(qualifiedTableName, sqlContext);
             return String.format("%s__SPLIT__%s", renameSql, alterColumnTypeSql);
         } else if ("DROP".equals(action)) {
             return String.format("ALTER TABLE %s %s COLUMN %s",
@@ -112,7 +110,33 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
         return "";
     }
 
-    private String alterColumnType(String action, String newColumnName, String dataTypeString, String qualifiedTableName) {
+    private String addColumn(String qualifiedTableName, SqlContext sqlContext) {
+        final String action = sqlContext.getAction();
+        final String newColumnName = sqlContext.getNewColumnName();
+        final String dataTypeString = dataTypeConvert(sqlContext.getUnsignedFlag(), sqlContext.getDataTypeString());
+        return String.format("ALTER TABLE %s %s %s %s",
+                qualifiedTableName,
+                action,
+                newColumnName,
+                dataTypeString);
+    }
+
+    private String dataTypeConvert(Boolean unsignedFlag, String dataTypeString) {
+        if (Boolean.TRUE.equals(unsignedFlag)) {
+            if (dataTypeString.equalsIgnoreCase("int")) {
+                return "bigint";
+            } else if (dataTypeString.equalsIgnoreCase("small")) {
+                return "int";
+            }
+        }
+        return dataTypeString;
+    }
+
+    private String alterColumnType(String qualifiedTableName, SqlContext sqlContext) {
+        final String action = sqlContext.getAction();
+        final String newColumnName = sqlContext.getNewColumnName();
+        final String dataTypeString = dataTypeConvert(sqlContext.getUnsignedFlag(), sqlContext.getDataTypeString());
+
         return String.format("ALTER TABLE %s %s COLUMN %s TYPE %s USING %s::%s",
                 qualifiedTableName,
                 action,
