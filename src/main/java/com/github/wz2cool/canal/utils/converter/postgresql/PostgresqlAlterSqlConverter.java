@@ -86,7 +86,6 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
         final String tableName = sqlContext.getTableName();
         final String oldColumnName = sqlContext.getOldColumnName();
         final String newColumnName = sqlContext.getNewColumnName();
-        final String dataTypeString = sqlContext.getDataTypeString();
         final String qualifiedTableName = getQualifiedTableName(schemaName, tableName);
         if ("ADD".equals(action)) {
             return addColumn(qualifiedTableName, sqlContext);
