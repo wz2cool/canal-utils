@@ -60,37 +60,32 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
     }
 
     private Optional<String> generateSql(String action, AlterColumnExpression alterColumnExpression) {
-        SqlContext sqlContext = new SqlContext(
-                action,
-                "",
-                alterColumnExpression.getTableName(),
-                alterColumnExpression.getColOldName(),
-                alterColumnExpression.getColumnName(),
-                alterColumnExpression.getColDataType() != null ? getDataTypeString(alterColumnExpression.getColDataType()) : "",
-                alterColumnExpression.getNullAble(),
-                alterColumnExpression.getDefaultValue(),
-                alterColumnExpression.getCommentText());
-
+        SqlContext sqlContext = new SqlContext.Builder()
+                .action( action)
+                .schemaName("")
+                .tableName(alterColumnExpression.getTableName())
+                .oldColumnName(alterColumnExpression.getColOldName())
+                .newColumnName(alterColumnExpression.getColumnName())
+                .dataTypeString(alterColumnExpression.getColDataType() != null ? getDataTypeString(alterColumnExpression.getColDataType()) : "")
+                .nullAble(alterColumnExpression.getNullAble())
+                .defaultValue(alterColumnExpression.getDefaultValue())
+                .commentText(alterColumnExpression.getCommentText())
+                .build();
         for (AlterSqlConverterDecorator decorator : decorators) {
             sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
         }
 
-        return Optional.of(generateColumnSql(
-                sqlContext.action,
-                sqlContext.schemaName,
-                sqlContext.tableName,
-                sqlContext.oldColumnName,
-                sqlContext.newColumnName,
-                sqlContext.dataTypeString,
-                sqlContext.nullAble,
-                sqlContext.defaultValue,
-                sqlContext.commentText));
+        return Optional.of(generateColumnSql(sqlContext));
     }
 
-    protected String generateColumnSql(String action, String schemaName, String tableName, String oldColumnName, String newColumnName,
-                                       String dataTypeString,
-                                       String nullAble, String defaultValue, String usingGrammar) {
-        String qualifiedTableName = getQualifiedTableName(schemaName, tableName);
+    protected String generateColumnSql(SqlContext sqlContext) {
+        final String action = sqlContext.getAction();
+        final String schemaName = sqlContext.getSchemaName();
+        final String tableName = sqlContext.getTableName();
+        final String oldColumnName = sqlContext.getOldColumnName();
+        final String newColumnName = sqlContext.getNewColumnName();
+        final String dataTypeString = sqlContext.getDataTypeString();
+        final String qualifiedTableName = getQualifiedTableName(schemaName, tableName);
         if ("ADD".equals(action)) {
             return String.format("ALTER TABLE %s %s %s %s",
                     qualifiedTableName,

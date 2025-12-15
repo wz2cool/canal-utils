@@ -19,16 +19,9 @@ public class ReplaceNameDecorator implements AlterSqlConverterDecorator {
 
     @Override
     public SqlContext apply(BaseAlterSqlConverter converter, AlterColumnExpression alterColumnExpression, SqlContext sqlContext) {
-        return new SqlContext(
-                sqlContext.action,
-                targetSchemaName,
-                targetTableName,
-                sqlContext.oldColumnName,
-                sqlContext.newColumnName,
-                sqlContext.dataTypeString,
-                sqlContext.nullAble,
-                sqlContext.defaultValue,
-                sqlContext.commentText
-        );
+       return SqlContext.from(sqlContext)
+                .schemaName(targetSchemaName)
+                .tableName(targetTableName)
+                .build();
     }
 }
