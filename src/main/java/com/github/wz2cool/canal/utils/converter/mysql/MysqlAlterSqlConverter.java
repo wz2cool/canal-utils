@@ -13,10 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * MySQL alter SQL converter.
- * Handles ALTER operations with optional decorators.
+ * MySQL alter 语句转换装饰器
  *
- * @author penghai
+ * @author YinPenghai
  */
 public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final MysqlColDataTypeConverter mysqlColDataTypeConverter = new MysqlColDataTypeConverter();

@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * PostgreSQL alter sql converter.
+ * PostgreSQL alter 语句转换器
  *
- * @author YinPengHai
+ *@author YinPenghai
  **/
 public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final PostgresqlColDataTypeConverter postgresqlColDataTypeConverter = new PostgresqlColDataTypeConverter();
