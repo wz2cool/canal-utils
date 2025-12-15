@@ -45,5 +45,18 @@ public class PostgresqlSqlTemplateGeneratorTest {
         Assert.assertEquals(expectedSql, sqlTemplate.getExpression());
     }
 
+    @Test
+    public void testAlterColumnWithUnsigned() throws JSQLParserException {
+        canalRowChange.setSql("ALTER TABLE `penghai_test`.`bank_product_site_config` change test4 test6 int(11) unsigned null");
+        final List<SqlTemplate> sqlTemplates = postgresqlSqlTemplateGenerator.listDDLSqlTemplates(canalRowChange);
+        SqlTemplate sqlTemplate = sqlTemplates.get(0);
+        String expectedSql = "ALTER TABLE hermes_test.\"test_bond_quote_best_price_broker\" RENAME COLUMN test4 TO test6";
+        Assert.assertEquals(expectedSql, sqlTemplate.getExpression());
+
+        SqlTemplate sqlTemplate2 = sqlTemplates.get(1);
+        String expectedSql2 = "ALTER TABLE hermes_test.\"test_bond_quote_best_price_broker\" ALTER COLUMN test6 TYPE bigint USING test6::bigint";
+        Assert.assertEquals(expectedSql2, sqlTemplate2.getExpression());
+    }
+
 
 }
