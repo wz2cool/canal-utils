@@ -98,7 +98,10 @@ public class PostgresqlAlterSqlConverter extends BaseAlterSqlConverter {
                     action,
                     oldColumnName,
                     newColumnName);
-            String alterColumnTypeSql = alterColumnType(qualifiedTableName, sqlContext);
+            SqlContext sqlContextCopy = SqlContext.from(sqlContext)
+                    .action("ALTER")
+                    .build();
+            String alterColumnTypeSql = alterColumnType(qualifiedTableName, sqlContextCopy);
             return String.format("%s__SPLIT__%s", renameSql, alterColumnTypeSql);
         } else if ("DROP".equals(action)) {
             return String.format("ALTER TABLE %s %s COLUMN %s",
