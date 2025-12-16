@@ -13,20 +13,11 @@ public class DefaultValueDecorator implements AlterSqlConverterDecorator {
 
     @Override
     public SqlContext apply(BaseAlterSqlConverter converter, AlterColumnExpression alterColumnExpression, SqlContext sqlContext) {
-        SqlContext newSqlContext = new SqlContext(
-                sqlContext.action,
-                sqlContext.schemaName,
-                sqlContext.tableName,
-                sqlContext.oldColumnName,
-                sqlContext.newColumnName,
-                sqlContext.dataTypeString,
-                sqlContext.nullAble,
-                sqlContext.defaultValue,
-                sqlContext.commentText
-        );
         if (StringUtils.isNotBlank(alterColumnExpression.getDefaultValue())) {
-            newSqlContext.defaultValue = DEFAULT + alterColumnExpression.getDefaultValue();
+            return SqlContext.from(sqlContext)
+                    .defaultValue(DEFAULT + alterColumnExpression.getDefaultValue())
+                    .build();
         }
-        return newSqlContext;
+        return sqlContext;
     }
 }

@@ -102,12 +102,19 @@ public abstract class AbstractSqlTemplateGenerator {
             String alterSql = alterSqlOptional.get();
             List<String> alterSqlList = getAlterSqlConverter().convert(alterSql);
             for (String s : alterSqlList) {
-                SqlTemplate sqlTemplate = new SqlTemplate();
-                sqlTemplate.setExpression(s);
-                result.add(sqlTemplate);
+                String[] sqlArray = splitSqlIfNecessary(s);
+                for (String sql : sqlArray) {
+                    SqlTemplate sqlTemplate = new SqlTemplate();
+                    sqlTemplate.setExpression(sql);
+                    result.add(sqlTemplate);
+                }
             }
         }
         return result;
+    }
+
+    private String[] splitSqlIfNecessary(String s) {
+        return s.split("__SPLIT__");
     }
 
     /**
