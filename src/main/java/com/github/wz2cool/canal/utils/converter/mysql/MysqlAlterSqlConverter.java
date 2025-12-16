@@ -13,10 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * MySQL alter SQL converter.
- * Handles ALTER operations with optional decorators.
+ * MySQL alter 语句转换装饰器
  *
- * @author penghai
+ * @author YinPenghai
  */
 public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     private final MysqlColDataTypeConverter mysqlColDataTypeConverter = new MysqlColDataTypeConverter();
@@ -59,54 +58,44 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
     }
 
     private Optional<String> generateSql(String action, AlterColumnExpression alterColumnExpression) {
-        SqlContext sqlContext = new SqlContext(
-                action,
-                "",
-                alterColumnExpression.getTableName(),
-                alterColumnExpression.getColOldName(),
-                alterColumnExpression.getColumnName(),
-                getFormattedDataType(alterColumnExpression),
-                alterColumnExpression.getNullAble(),
-                "",
-                alterColumnExpression.getCommentText()
-        );
+        SqlContext sqlContext = new SqlContext.Builder()
+                .action(action)
+                .schemaName("")
+                .tableName(alterColumnExpression.getTableName())
+                .oldColumnName(alterColumnExpression.getColOldName())
+                .newColumnName(alterColumnExpression.getColumnName())
+                .dataTypeString(getFormattedDataType(alterColumnExpression))
+                .nullAble(alterColumnExpression.getNullAble())
+                .defaultValue("")
+                .commentText(alterColumnExpression.getCommentText())
+                .build();
 
         for (AlterSqlConverterDecorator decorator : decorators) {
             sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
         }
 
-        return Optional.of(generateColumnSql(
-                sqlContext.action,
-                sqlContext.schemaName,
-                sqlContext.tableName,
-                sqlContext.oldColumnName,
-                sqlContext.newColumnName,
-                sqlContext.dataTypeString,
-                sqlContext.nullAble,
-                sqlContext.defaultValue,
-                sqlContext.commentText
-        ));
+        return Optional.of(generateColumnSql(sqlContext));
     }
 
     private Optional<String> generateDropColumnSql(AlterColumnExpression alterColumnExpression) {
-        SqlContext sqlContext = new SqlContext(
-                "DROP",
-                "",
-                alterColumnExpression.getTableName(),
-                alterColumnExpression.getColumnName(),
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        SqlContext sqlContext = new SqlContext.Builder()
+                .action("DROP")
+                .schemaName("")
+                .tableName(alterColumnExpression.getTableName())
+                .oldColumnName(alterColumnExpression.getColumnName())
+                .newColumnName(null)
+                .dataTypeString(null)
+                .nullAble(null)
+                .defaultValue(null)
+                .commentText(null)
+                .build();
 
         for (AlterSqlConverterDecorator decorator : decorators) {
             sqlContext = decorator.apply(this, alterColumnExpression, sqlContext);
         }
 
-        String qualifiedTableName = getQualifiedTableName(sqlContext.schemaName, sqlContext.tableName);
-        String formattedColumnName = getFormattedColumnNameOrEmpty(sqlContext.oldColumnName);
+        String qualifiedTableName = getQualifiedTableName(sqlContext.getSchemaName(), sqlContext.getTableName());
+        String formattedColumnName = getFormattedColumnNameOrEmpty(sqlContext.getOldColumnName());
         String sql = String.format("ALTER TABLE %s DROP COLUMN %s;", qualifiedTableName, formattedColumnName).trim();
         return Optional.of(sql);
     }
@@ -116,9 +105,16 @@ public class MysqlAlterSqlConverter extends BaseAlterSqlConverter {
         return new ArrayList<>();
     }
 
-    protected String generateColumnSql(String action, String schemaName, String tableName, String oldColumnName, String newColumnName,
-                                       String dataTypeString,
-                                       String nullAble, String defaultValue, String commentText) {
+    protected String generateColumnSql(SqlContext sqlContext) {
+        final String action = sqlContext.getAction();
+        final String schemaName = sqlContext.getSchemaName();
+        final String tableName = sqlContext.getTableName();
+        final String oldColumnName = sqlContext.getOldColumnName();
+        final String newColumnName = sqlContext.getNewColumnName();
+        final String dataTypeString = sqlContext.getDataTypeString();
+        final String nullAble = sqlContext.getNullAble();
+        final String defaultValue = sqlContext.getDefaultValue();
+        final String commentText = sqlContext.getCommentText();
         String qualifiedTableName = getQualifiedTableName(schemaName, tableName);
         String formattedOldColumnName = getFormattedColumnNameOrEmpty(oldColumnName);
         String formattedNewColumnName = getFormattedColumnNameOrEmpty(newColumnName);
